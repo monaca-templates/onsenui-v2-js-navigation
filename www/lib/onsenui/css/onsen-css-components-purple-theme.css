@@ -55,7 +55,8 @@ h6 {
   left: 0px;
   right: 0px;
   bottom: 0px;
-  overflow: visible;
+  overflow-x: visible;
+  overflow-y: hidden;
   font-size: 17px;
   color: #524b57;
   -ms-overflow-style: none;
@@ -413,6 +414,30 @@ input:disabled + .switch__toggle {
       <input type="range" class="range" style="width:100%" value="90">
     </div>
 */
+ons-range:before {
+  content: '';
+  display: block;
+  position: relative;
+  top: 17px;
+  height: 2px;
+  margin-bottom: -2px;
+  background-color: #ddd;
+}
+ons-range .range {
+  position: relative;
+  background: transparent;
+}
+ons-range .range::-moz-range-track {
+  background: transparent;
+}
+ons-range[disabled] {
+  opacity: 0.3;
+  cursor: default;
+  pointer-events: none;
+}
+ons-range[disabled] .range {
+  opacity: 1;
+}
 .range {
   padding: 0;
   margin: 0;
@@ -430,12 +455,8 @@ input:disabled + .switch__toggle {
   outline: none;
   line-height: 1;
   -webkit-appearance: none;
-  -webkit-border-radius: 4px;
-  border-radius: 4px;
   border: none;
   height: 2px;
-  -webkit-border-radius: 0;
-  border-radius: 0;
   -webkit-border-radius: 3px;
   border-radius: 3px;
   background-image: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#ddd));
@@ -470,7 +491,6 @@ input:disabled + .switch__toggle {
 }
 .range::-webkit-slider-thumb {
   cursor: pointer;
-  -webkit-appearance: none;
   position: relative;
   height: 29px;
   width: 29px;
@@ -480,9 +500,10 @@ input:disabled + .switch__toggle {
   border-radius: 30px;
   -webkit-box-shadow: none;
   box-shadow: none;
-  top: 0;
   margin: 0;
   padding: 0;
+  -webkit-appearance: none;
+  top: 0;
 }
 .range::-moz-range-thumb {
   cursor: pointer;
@@ -505,20 +526,9 @@ input:disabled + .switch__toggle {
   border: 1px solid #ddd;
   border-radius: 30px;
   box-shadow: none;
+  margin: 0;
+  padding: 0;
   top: 0;
-  margin: 0;
-  padding: 0;
-}
-.range::-webkit-slider-thumb:before {
-  position: absolute;
-  top: 13px;
-  right: 28px;
-  left: -10000px;
-  height: 2px;
-  background-color: #8962ed;
-  content: '';
-  margin: 0;
-  padding: 0;
 }
 .range::-ms-fill-lower {
   height: 2px;
@@ -715,19 +725,21 @@ input:disabled + .switch__toggle {
   color: #5b2c7a;
   -webkit-box-shadow: none;
   box-shadow: none;
-  border-bottom: 1px solid #ddd;
   font-weight: 400;
   width: 100%;
   white-space: nowrap;
-  overflow: visible;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(0deg, #ddd, #ddd 100%);
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .navigation-bar {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
@@ -834,30 +846,6 @@ input:disabled + .switch__toggle {
     </div>
 */
 /* topdoc
-  name: Transparent Navigation Bar
-  class: navigation-bar--transparent
-  use: Toolbar Button, Navigation Bar
-  markup:
-    <div class="navigation-bar navigation-bar--transparent">
-      <div class="navigation-bar__left">
-        <span class="toolbar-button--quiet">
-          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
-        </span>
-      </div>
-      <div class="navigation-bar__center">
-        Navigation Bar
-      </div>
-      <div class="navigation-bar__right">
-        <span class="toolbar-button--quiet">Label</span>
-      </div>
-    </div>
-*/
-.navigation-bar--transparent {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-}
-/* topdoc
   name: Navigation Bar with Outline Button
   use: Toolbar Button, Navigation Bar
   markup:
@@ -878,31 +866,6 @@ input:disabled + .switch__toggle {
       </div>
     </div>
 */
-/* topdoc
-  name: Transparent Navigation Bar
-  class: navigation-bar--transparent
-  use: Toolbar Button, Navigation Bar
-  markup:
-    <!-- Prerequisite=This example use ionicons(http://ionicons.com) to display icons. -->
-    <div class="navigation-bar navigation-bar--transparent">
-      <div class="navigation-bar__left">
-        <span class="toolbar-button--quiet">
-          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
-        </span>
-      </div>
-      <div class="navigation-bar__center">
-        Navigation Bar
-      </div>
-      <div class="navigation-bar__right">
-        <span class="toolbar-button--quiet">Label</span>
-      </div>
-    </div>
-*/
-.navigation-bar--transparent {
-  background-color: transparent;
-  background-image: none;
-  border: none;
-}
 /* topdoc
   name: Bottom Bar
   class: bottom-bar
@@ -954,14 +917,18 @@ input:disabled + .switch__toggle {
   bottom: 0px;
   right: 0px;
   left: 0px;
+  border-top: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: top;
+  background-image: -webkit-linear-gradient(270deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(270deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(270deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(180deg, #ddd, #ddd 100%);
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .bottom-bar {
-    border-top: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: top;
     background-image: -webkit-linear-gradient(270deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -moz-linear-gradient(270deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -o-linear-gradient(270deg, #ddd, #ddd 50%, transparent 50%);
@@ -1034,6 +1001,25 @@ input:disabled + .switch__toggle {
   -webkit-background-size: 0;
   background-size: 0;
 }
+/* topdoc
+  name: No Shadow Navigation Bar
+  class: navigation-bar--noshadow
+  use: Toolbar Button, Navigation Bar
+  markup:
+    <div class="navigation-bar navigation-bar--noshadow">
+      <div class="navigation-bar__left">
+        <span class="toolbar-button--quiet">
+          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
+        </span>
+      </div>
+      <div class="navigation-bar__center">
+        Navigation Bar
+      </div>
+      <div class="navigation-bar__right">
+        <span class="toolbar-button--quiet">Label</span>
+      </div>
+    </div>
+*/
 .navigation-bar--noshadow {
   -webkit-box-shadow: none;
   box-shadow: none;
@@ -1110,6 +1096,32 @@ input:disabled + .switch__toggle {
       </div>
     </div>
 */
+/* topdoc
+  name: Transparent Navigation Bar
+  class: navigation-bar--transparent
+  use: Toolbar Button, Navigation Bar
+  markup:
+    <div class="navigation-bar navigation-bar--transparent">
+      <div class="navigation-bar__left">
+        <span class="toolbar-button--quiet">
+          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
+        </span>
+      </div>
+      <div class="navigation-bar__center">
+        Navigation Bar
+      </div>
+      <div class="navigation-bar__right">
+        <span class="toolbar-button--quiet">Label</span>
+      </div>
+    </div>
+*/
+.navigation-bar--transparent {
+  background-color: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  background-image: none;
+  border-bottom: none;
+}
 /* topdoc
   name: Button
   class: button
@@ -1387,7 +1399,7 @@ input:disabled + .switch__toggle {
   outline: 0;
 }
 .button--cta:active {
-  color: var-button-cat-color;
+  color: #fff;
   background-color: #574bdb;
   -webkit-transition: none;
   -moz-transition: none;
@@ -2184,6 +2196,16 @@ input:disabled + .switch__toggle {
   font-weight: 400;
   font-size: 17px;
 }
+.tab-bar__badge.notification {
+  position: absolute;
+  top: 5px;
+  z-index: 10;
+  font-size: 12px;
+  height: 16px;
+  line-height: 16px;
+  -webkit-border-radius: 8px;
+  border-radius: 8px;
+}
 .tab-bar__icon + .tab-bar__label {
   font-size: 10px;
   line-height: 1;
@@ -2657,7 +2679,7 @@ input:disabled + .switch__toggle {
 }
 .toolbar-button--material:active {
   opacity: 1;
-  background-color: #26a69a;
+  background-color: rgba(255,255,255,0.15);
 }
 .back-button {
   height: 44px;
@@ -2673,12 +2695,12 @@ input:disabled + .switch__toggle {
   display: inline-block;
   height: 100%;
   vertical-align: top;
-  margin-left: 12px;
 }
 .back-button__icon {
   display: inline-block;
   height: 100%;
   vertical-align: top;
+  margin-right: 6px;
 }
 .back-button__icon:before {
   font-family: 'Ionicons';
@@ -2709,7 +2731,7 @@ input:disabled + .switch__toggle {
 }
 .back-button--material:active {
   opacity: 1;
-  background-color: #26a69a;
+  background-color: rgba(255,255,255,0.15);
 }
 /* topdoc
   name: Checkbox
@@ -3409,13 +3431,15 @@ input:disabled + .switch__toggle {
     </ul>
 */
 .list__item__left {
-  min-height: 44px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
-  padding-right: 14px;
+  padding: 12px 14px 12px 0;
   -webkit-box-ordinal-group: 1;
   -webkit-order: 0;
   -moz-box-ordinal-group: 1;
@@ -3429,6 +3453,8 @@ input:disabled + .switch__toggle {
   -webkit-align-self: stretch;
   -ms-flex-item-align: stretch;
   align-self: stretch;
+  line-height: 1.2em;
+  min-height: 44px;
 }
 .list__item__left:empty {
   width: 0;
@@ -3437,7 +3463,9 @@ input:disabled + .switch__toggle {
   margin: 0;
 }
 .list__item__center {
-  min-height: 44px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -3473,15 +3501,21 @@ input:disabled + .switch__toggle {
   -ms-flex-item-align: stretch;
   align-self: stretch;
   margin-left: 0;
-  border-bottom: 1px solid #ddd;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(0deg, #ddd, #ddd 100%);
+  padding: 12px 6px 12px 0;
+  line-height: 1.2em;
+  min-height: 44px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item__center {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
@@ -3489,14 +3523,16 @@ input:disabled + .switch__toggle {
   }
 }
 .list__item__right {
-  min-height: 44px;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
   display: -ms-flexbox;
   display: flex;
   margin-left: auto;
-  padding-right: 12px;
+  padding: 12px 12px 12px 0;
   -webkit-box-ordinal-group: 3;
   -webkit-order: 2;
   -moz-box-ordinal-group: 3;
@@ -3510,15 +3546,20 @@ input:disabled + .switch__toggle {
   -webkit-align-self: stretch;
   -ms-flex-item-align: stretch;
   align-self: stretch;
-  border-bottom: 1px solid #ddd;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(0deg, #ddd, #ddd 100%);
+  line-height: 1.2em;
+  min-height: 44px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item__right {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
@@ -3615,7 +3656,6 @@ input:disabled + .switch__toggle {
   margin: 1px 0 -1px 0;
   color: #524b57;
   background-color: #fff;
-  min-height: 44px;
 }
 .list__item:first-child {
   -webkit-box-shadow: inset 0px 1px 0px 0px #ddd;
@@ -3651,78 +3691,6 @@ input:disabled + .switch__toggle {
 .list--noborder .list__item:first-child {
   -webkit-box-shadow: none;
   box-shadow: none;
-}
-/* topdoc
-  name: List item without divider
-  class: list__item--nodivider
-  use: List
-  markup:
-    <ul class="list">
-      <li class="list__item list__item--nodivider">
-        <div class="list__item__center list__item--nodivider__center">Item</div>
-      </li>
-      <li class="list__item list__item--nodivider">
-        <div class="list__item__center list__item--nodivider__center">Item</div>
-      </li>
-    </ul>
- */
-.list__item--nodivider__center {
-  border: none;
-  background-image: none;
-}
-.list__item--nodivider__right {
-  border: none;
-  background-image: none;
-}
-.list__item--nodivider.list__item--chevron:before {
-  border: none;
-  background-image: none;
-}
-/* topdoc
-  name: List item with long divider
-  class: list__item--longdivider
-  use: List
-  markup:
-    <ul class="list">
-      <li class="list__item list__item--longdivider">
-        <div class="list__item__center list__item--longdivider__center">Item</div>
-      </li>
-      <li class="list__item list__item--longdivider">
-        <div class="list__item__center list__item--longdivider__center">Item</div>
-      </li>
-    </ul>
- */
-.list__item--longdivider {
-  border-bottom: 1px solid #ddd;
-}
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .list__item--longdivider {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
-    background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
-    background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
-    background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
-    background-image: linear-gradient(0deg, #ddd, #ddd 50%, transparent 50%);
-  }
-}
-.list__item--longdivider:last-of-type {
-  border: none;
-  background-image: none;
-}
-.list__item--longdivider__center {
-  border: none;
-  background-image: none;
-}
-.list__item--longdivider__right {
-  border: none;
-  background-image: none;
-}
-.list__item--longdivider.list__item--chevron:before {
-  border: none;
-  background-image: none;
 }
 /* topdoc
   name: Category List Header
@@ -3813,7 +3781,6 @@ input:disabled + .switch__toggle {
   transition: none;
 }
 .list__item--chevron:before {
-  min-height: 44px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -moz-box;
@@ -3842,16 +3809,20 @@ input:disabled + .switch__toggle {
   width: 18px;
   text-align: right;
   border-bottom: 1px solid #ddd;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(0deg, #ddd, #ddd 100%);
   width: 10px;
   padding-right: 8px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item--chevron:before {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
@@ -3879,7 +3850,7 @@ input:disabled + .switch__toggle {
   border-radius: 4px;
   background-image: none;
 }
-.list--inset__item:first-child {
+.list--inset > .list__item:first-child {
   -webkit-box-shadow: none;
   box-shadow: none;
 }
@@ -4043,6 +4014,9 @@ input:disabled + .switch__toggle {
   -webkit-flex-basis: 100%;
   -ms-flex-preferred-size: 100%;
   flex-basis: 100%;
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
+  align-self: flex-end;
   -webkit-box-ordinal-group: 1;
   -webkit-order: 0;
   -moz-box-ordinal-group: 1;
@@ -4060,6 +4034,9 @@ input:disabled + .switch__toggle {
   -webkit-flex-basis: 100%;
   -ms-flex-preferred-size: 100%;
   flex-basis: 100%;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
 }
 /* topdoc
   name: List Item with Thumbnail
@@ -4096,7 +4073,7 @@ input:disabled + .switch__toggle {
   -webkit-border-radius: 6px;
   border-radius: 6px;
   display: block;
-  margin: 8px 10px 8px 0px;
+  margin: 0;
 }
 /* topdoc
   name: List Item with Icon
@@ -4164,7 +4141,6 @@ input:disabled + .switch__toggle {
 }
 .list__item--material {
   border: 0;
-  min-height: 56px;
   padding: 0 0 0 16px;
   line-height: normal;
 }
@@ -4176,23 +4152,29 @@ input:disabled + .switch__toggle {
   box-shadow: none;
 }
 .list__item--material__left {
-  padding: 16px 0px 16px 0px;
+  padding: 14px 0;
   min-width: 56px;
   line-height: 1;
+  min-height: 48px;
 }
 .list__item--material__left:empty,
 .list__item--material__center {
-  padding: 16px 0;
+  padding: 14px 6px 14px 0;
   border-color: #eee;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -moz-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -o-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: linear-gradient(0deg, #eee, #eee 100%);
+  min-height: 48px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item--material__left:empty,
   .list__item--material__center {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
@@ -4200,17 +4182,22 @@ input:disabled + .switch__toggle {
   }
 }
 .list__item--material__right {
-  padding: 16px 16px 16px 0px;
+  padding: 14px 16px 14px 0px;
   line-height: 1;
   border-color: #eee;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -moz-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -o-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: linear-gradient(0deg, #eee, #eee 100%);
+  min-height: 48px;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item--material__right {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
@@ -4219,14 +4206,18 @@ input:disabled + .switch__toggle {
 }
 .list__item--material.list__item--longdivider {
   border-bottom: 1px solid #eee;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -moz-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: -o-linear-gradient(90deg, #eee, #eee 100%);
+  background-image: linear-gradient(0deg, #eee, #eee 100%);
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   .list__item--material.list__item--longdivider {
-    border-bottom: none;
-    -webkit-background-size: 100% 1px;
-    background-size: 100% 1px;
-    background-repeat: no-repeat;
-    background-position: bottom;
     background-image: -webkit-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -moz-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
     background-image: -o-linear-gradient(90deg, #eee, #eee 50%, transparent 50%);
@@ -4374,6 +4365,82 @@ input:disabled + .switch__toggle {
 .list__item--material__icon {
   font-size: 20px;
   padding: 0 4px;
+}
+/* topdoc
+  name: List item without divider
+  class: list__item--nodivider
+  use: List
+  markup:
+    <ul class="list">
+      <li class="list__item list__item--nodivider">
+        <div class="list__item__center list__item--nodivider__center">Item</div>
+      </li>
+      <li class="list__item list__item--nodivider">
+        <div class="list__item__center list__item--nodivider__center">Item</div>
+      </li>
+    </ul>
+ */
+.list__item--nodivider__center {
+  border: none;
+  background-image: none;
+}
+.list__item--nodivider__right {
+  border: none;
+  background-image: none;
+}
+.list__item--nodivider.list__item--chevron:before {
+  border: none;
+  background-image: none;
+}
+/* topdoc
+  name: List item with long divider
+  class: list__item--longdivider
+  use: List
+  markup:
+    <ul class="list">
+      <li class="list__item list__item--longdivider">
+        <div class="list__item__center list__item--longdivider__center">Item</div>
+      </li>
+      <li class="list__item list__item--longdivider">
+        <div class="list__item__center list__item--longdivider__center">Item</div>
+      </li>
+    </ul>
+ */
+.list__item--longdivider {
+  border-bottom: 1px solid #ddd;
+  border-bottom: none;
+  -webkit-background-size: 100% 1px;
+  background-size: 100% 1px;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -moz-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: -o-linear-gradient(90deg, #ddd, #ddd 100%);
+  background-image: linear-gradient(0deg, #ddd, #ddd 100%);
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .list__item--longdivider {
+    background-image: -webkit-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
+    background-image: -moz-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
+    background-image: -o-linear-gradient(90deg, #ddd, #ddd 50%, transparent 50%);
+    background-image: linear-gradient(0deg, #ddd, #ddd 50%, transparent 50%);
+  }
+}
+.list__item--longdivider:last-of-type {
+  border: none;
+  background-image: none;
+}
+.list__item--longdivider__center {
+  border: none;
+  background-image: none;
+}
+.list__item--longdivider__right {
+  border: none;
+  background-image: none;
+}
+.list__item--longdivider.list__item--chevron:before {
+  border: none;
+  background-image: none;
 }
 /* topdoc
   name: Search Input
@@ -4705,7 +4772,31 @@ input[type="search"].search-input::-webkit-search-cancel-button {
   -webkit-transform: translate3d(0, 0, 0);
 }
 .text-input--material__label {
+  color: #afafaf;
+  position: absolute;
+  left: 0px;
+  top: 2px;
+  font-size: 16px;
+  font-weight: 400;
+  font-family: 'Roboto', 'Noto', sans-serif;
+  pointer-events: none;
+}
+.text-input--material__label--active {
   color: #009688;
+  -webkit-transform: translate(0, -75%) scale(0.75);
+  -moz-transform: translate(0, -75%) scale(0.75);
+  -ms-transform: translate(0, -75%) scale(0.75);
+  -o-transform: translate(0, -75%) scale(0.75);
+  transform: translate(0, -75%) scale(0.75);
+  -webkit-transform-origin: left top;
+  -moz-transform-origin: left top;
+  -ms-transform-origin: left top;
+  -o-transform-origin: left top;
+  transform-origin: left top;
+  -webkit-transition: -webkit-transform 0.1s ease-in, color 0.1s ease-in;
+  -moz-transition: -moz-transform 0.1s ease-in, color 0.1s ease-in;
+  -o-transition: -o-transform 0.1s ease-in, color 0.1s ease-in;
+  transition: transform 0.1s ease-in, color 0.1s ease-in;
 }
 .text-input--material:focus {
   background-image: -webkit-gradient(linear, left top, left bottom, from(#009688), to(#009688)), -webkit-gradient(linear, left bottom, left top, color-stop(1px, transparent), color-stop(1px, #afafaf));
@@ -5411,11 +5502,11 @@ input[type="search"].search-input::-webkit-search-cancel-button {
 .popover__container {
   width: 100%;
   height: 100%;
+  pointer-events: none;
   -webkit-transform: translate3d(0, 0, 0);
   -moz-transform: translate3d(0, 0, 0);
   -o-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
-  pointer-events: none;
 }
 .popover__content {
   -webkit-box-sizing: border-box;
@@ -5580,6 +5671,11 @@ input[type="search"].search-input::-webkit-search-cancel-button {
   display: inline-block;
   max-height: 100%;
   overflow: auto;
+  -webkit-transform: none;
+  -moz-transform: none;
+  -ms-transform: none;
+  -o-transform: none;
+  transform: none;
 /*border-bottom 4px solid transparent*/
 }
 .popover__content--material {

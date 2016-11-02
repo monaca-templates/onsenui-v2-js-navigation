@@ -43,11 +43,15 @@ var-material-navigation-bar-color = $material-toolbar-text-color
 */
 
 retina-navigation-bar-border(position = bottom, color = #ddd)
+  border-{position} none
+  background-size 100% 1px
+  background-repeat no-repeat
+  background-position position
+
+  background-image linear-gradient(0deg, color, color 100%) if position == 'bottom'
+  background-image linear-gradient(180deg, color, color 100%) if position == 'top'
+
   +retina-query()
-    border-{position} none
-    background-size 100% 1px
-    background-repeat no-repeat
-    background-position position
     background-image linear-gradient(0deg, color, color 50%, transparent 50%) if position == 'bottom'
     background-image linear-gradient(180deg, color, color 50%, transparent 50%) if position == 'top'
 
@@ -71,11 +75,9 @@ navigation-bar__item()
   background var-navigation-bar-background-color
   color var-navigation-bar-color
   box-shadow var-navigation-bar-box-shadow
-  border-bottom var-navigation-bar-separator
   font-weight var-font-weight
   width 100%
   white-space nowrap
-  overflow visible
   retina-navigation-bar-border(bottom, var-navigation-bar-separator-color)
 
 .navigation-bar__bg
@@ -169,31 +171,6 @@ navigation-bar__item()
 */
 
 /*! topdoc
-  name: Transparent Navigation Bar
-  class: navigation-bar--transparent
-  use: Toolbar Button, Navigation Bar
-  markup:
-    <div class="navigation-bar navigation-bar--transparent">
-      <div class="navigation-bar__left">
-        <span class="toolbar-button--quiet">
-          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
-        </span>
-      </div>
-      <div class="navigation-bar__center">
-        Navigation Bar
-      </div>
-      <div class="navigation-bar__right">
-        <span class="toolbar-button--quiet">Label</span>
-      </div>
-    </div>
-*/
-
-.navigation-bar--transparent
-  background-color transparent
-  background-image none
-  border none
-
-/*! topdoc
   name: Navigation Bar with Outline Button
   use: Toolbar Button, Navigation Bar
   markup:
@@ -214,32 +191,6 @@ navigation-bar__item()
       </div>
     </div>
 */
-
-/*! topdoc
-  name: Transparent Navigation Bar
-  class: navigation-bar--transparent
-  use: Toolbar Button, Navigation Bar
-  markup:
-    <!-- Prerequisite=This example use ionicons(http://ionicons.com) to display icons. -->
-    <div class="navigation-bar navigation-bar--transparent">
-      <div class="navigation-bar__left">
-        <span class="toolbar-button--quiet">
-          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
-        </span>
-      </div>
-      <div class="navigation-bar__center">
-        Navigation Bar
-      </div>
-      <div class="navigation-bar__right">
-        <span class="toolbar-button--quiet">Label</span>
-      </div>
-    </div>
-*/
-
-.navigation-bar--transparent
-  background-color transparent
-  background-image none
-  border none
 
 /*! topdoc
   name: Bottom Bar
@@ -324,6 +275,26 @@ navigation-bar__item()
   background-color var-material-navigation-bar-background-color
   background-size 0
 
+/*! topdoc
+  name: No Shadow Navigation Bar
+  class: navigation-bar--noshadow
+  use: Toolbar Button, Navigation Bar
+  markup:
+    <div class="navigation-bar navigation-bar--noshadow">
+      <div class="navigation-bar__left">
+        <span class="toolbar-button--quiet">
+          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
+        </span>
+      </div>
+      <div class="navigation-bar__center">
+        Navigation Bar
+      </div>
+      <div class="navigation-bar__right">
+        <span class="toolbar-button--quiet">Label</span>
+      </div>
+    </div>
+*/
+
 .navigation-bar--noshadow
   box-shadow none
   background-image none
@@ -393,4 +364,28 @@ navigation-bar--material-font()
     </div>
 */
 
+/*! topdoc
+  name: Transparent Navigation Bar
+  class: navigation-bar--transparent
+  use: Toolbar Button, Navigation Bar
+  markup:
+    <div class="navigation-bar navigation-bar--transparent">
+      <div class="navigation-bar__left">
+        <span class="toolbar-button--quiet">
+          <i class="ion-navicon" style="font-size:32px; vertical-align:-6px;"></i>
+        </span>
+      </div>
+      <div class="navigation-bar__center">
+        Navigation Bar
+      </div>
+      <div class="navigation-bar__right">
+        <span class="toolbar-button--quiet">Label</span>
+      </div>
+    </div>
+*/
 
+.navigation-bar--transparent
+  background-color transparent
+  box-shadow none
+  background-image none
+  border-bottom none
