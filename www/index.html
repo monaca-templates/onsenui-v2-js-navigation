@@ -1,51 +1,66 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
-    <script src="components/loader.js"></script>
-    <script src="lib/onsenui/js/onsenui.min.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+  <script src="components/loader.js"></script>
+  <script src="lib/onsenui/js/onsenui.min.js"></script>
 
-    <link rel="stylesheet" href="components/loader.css">
-    <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
-    <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
-    <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="components/loader.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+  <link rel="stylesheet" href="css/style.css">
 
-    <script>
-        ons.ready(function() {
-          var button = document.getElementById('push-button');
-          var navigator = document.getElementById('navigator');
+  <script>
+    // Page init event
+    document.addEventListener('init', function(event) {
+      var page = event.target;
 
-          button.onclick = function() {
-            navigator.pushPage('page2.html');
-          };
-        });
-    </script>
+      if (page.matches('#first-page')) {
+
+        page.querySelector('#push-button').onclick = function() {
+          document.querySelector('#navigator').pushPage('page2.html');
+        };
+
+      } else if (page.matches('#second-page')) {
+
+        page.querySelector('#pop-button').onclick = function() {
+          document.querySelector('#navigator').popPage();
+        };
+
+      }
+    });
+  </script>
 </head>
 <body>
-    <ons-navigator id="navigator" page="page1.html"></ons-navigator>
-    <ons-template id="page1.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="center">Page 1</div>
-        </ons-toolbar>
+  <ons-navigator id="navigator" page="page1.html"></ons-navigator>
 
+  <ons-template id="page1.html">
+    <ons-page id="first-page">
+      <ons-toolbar>
+        <div class="center">Page 1</div>
+      </ons-toolbar>
+
+      <div class="content" style="text-align: center">
         <p>This is the first page.</p>
-
         <ons-button id="push-button">Push page</ons-button>
-      </ons-page>
-    </ons-template>
+      </div>
+    </ons-page>
+  </ons-template>
 
-    <ons-template id="page2.html">
-      <ons-page>
-        <ons-toolbar>
-          <div class="left"><ons-back-button>Back</ons-back-button></div>
-          <div class="center">Page 2</div>
-        </ons-toolbar>
+  <ons-template id="page2.html">
+    <ons-page id="second-page">
+      <ons-toolbar>
+        <div class="left"><ons-back-button>Page 1</ons-back-button></div>
+        <div class="center">Page 2</div>
+      </ons-toolbar>
 
+      <div class="content" style="text-align: center">
         <p>This is the second page.</p>
-      </ons-page>
-    </ons-template>
+        <ons-button id="pop-button">Pop page</ons-button>
+      </div>
+    </ons-page>
+  </ons-template>
 </body>
 </html>
