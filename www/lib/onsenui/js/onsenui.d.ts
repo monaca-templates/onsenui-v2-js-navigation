@@ -1,6 +1,6 @@
 // Type definitions for Onsen UI 2
 // Project: https://onsen.io/
-// Definitions by: Fran Dios <https://github.com/frankdiox/>
+// Definitions by: Fran Dios <https://github.com/frandiox/>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 
 // module declaration
@@ -288,7 +288,7 @@ declare namespace ons {
    */
   class PageLoader {
     internalLoader: Function;
-    load(options: {page: any, parent: Element, params?: Object}, done: Function);
+    load(options: {page: any, parent: Element, params?: Object}, done: Function): void;
   }
 }
 
