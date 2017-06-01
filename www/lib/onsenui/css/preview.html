@@ -17,7 +17,7 @@
         background-color: white;
       }
 
-      h1 {
+      h1#title {
         font-size: 16px;
         font-weight: 500;
         font-family: Helvetica;
@@ -124,7 +124,7 @@
   </head>
   <body ontouchstart=""> <!-- Hack to fix ":active" CSS selector on mobile browsers.-->
 
-    <h1>CSS Components for Onsen UI</h1>
+    <h1 id="title">CSS Components for Onsen UI</h1>
 
     <div class="components">
       
@@ -317,6 +317,27 @@
       
       <div class="component-preview">
         <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_notification">
+          <a href="#material_notification" class="component-preview__link">Material Notification</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <span class="notification notification--material">1</span>
+<span class="notification notification--material">10</span>
+<span class="notification notification--material">999</span>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;span class=&quot;notification notification--material&quot;&gt;1&lt;/span&gt;
+&lt;span class=&quot;notification notification--material&quot;&gt;10&lt;/span&gt;
+&lt;span class=&quot;notification notification--material&quot;&gt;999&lt;/span&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
         <h2 class="component-preview__title" id="toolbar">
           <a href="#toolbar" class="component-preview__link">Toolbar</a>
         </h2>
@@ -459,15 +480,15 @@
           <div style="width: 100%;">
             <div class="toolbar">
   <div class="toolbar__center">
-    <div class="button-bar" style="width:200px;margin:7px 50px;">
-      <div class="button-bar__item">
-        <input type="radio" class="button-bar__input" name="navi-segment-a" checked>
-        <div class="button-bar__button">One</div>
+    <div class="segment" style="width:200px;margin:7px 50px;">
+      <div class="segment__item">
+        <input type="radio" class="segment__input" name="navi-segment-a" checked>
+        <div class="segment__button">One</div>
       </div>
 
-      <div class="button-bar__item">
-        <input type="radio" class="button-bar__input" name="navi-segment-a">
-        <div class="button-bar__button">Two</div>
+      <div class="segment__item">
+        <input type="radio" class="segment__input" name="navi-segment-a">
+        <div class="segment__button">Two</div>
       </div>
     </div>
   </div>
@@ -478,15 +499,15 @@
 
         <pre class="component-preview__markup">&lt;div class=&quot;toolbar&quot;&gt;
   &lt;div class=&quot;toolbar__center&quot;&gt;
-    &lt;div class=&quot;button-bar&quot; style=&quot;width:200px;margin:7px 50px;&quot;&gt;
-      &lt;div class=&quot;button-bar__item&quot;&gt;
-        &lt;input type=&quot;radio&quot; class=&quot;button-bar__input&quot; name=&quot;navi-segment-a&quot; checked&gt;
-        &lt;div class=&quot;button-bar__button&quot;&gt;One&lt;/div&gt;
+    &lt;div class=&quot;segment&quot; style=&quot;width:200px;margin:7px 50px;&quot;&gt;
+      &lt;div class=&quot;segment__item&quot;&gt;
+        &lt;input type=&quot;radio&quot; class=&quot;segment__input&quot; name=&quot;navi-segment-a&quot; checked&gt;
+        &lt;div class=&quot;segment__button&quot;&gt;One&lt;/div&gt;
       &lt;/div&gt;
 
-      &lt;div class=&quot;button-bar__item&quot;&gt;
-        &lt;input type=&quot;radio&quot; class=&quot;button-bar__input&quot; name=&quot;navi-segment-a&quot;&gt;
-        &lt;div class=&quot;button-bar__button&quot;&gt;Two&lt;/div&gt;
+      &lt;div class=&quot;segment__item&quot;&gt;
+        &lt;input type=&quot;radio&quot; class=&quot;segment__input&quot; name=&quot;navi-segment-a&quot;&gt;
+        &lt;div class=&quot;segment__button&quot;&gt;Two&lt;/div&gt;
       &lt;/div&gt;
     &lt;/div&gt;
   &lt;/div&gt;
@@ -870,36 +891,79 @@
 
         <div class="page component-preview__example">
           <div style="width: 100%;">
-            <div class="button-bar" style="width:280px;margin:0 auto;">
-  <div class="button-bar__item">
-    <input type="radio" class="button-bar__input" name="segment-a" checked>
-    <button class="button-bar__button">One</button>
+            <div class="segment" style="width: 280px; margin: 0 auto;">
+  <div class="segment__item">
+    <input type="radio" class="segment__input" name="segment-a" checked>
+    <button class="segment__button">One</button>
   </div>
-  <div class="button-bar__item">
-    <input type="radio" class="button-bar__input" name="segment-a">
-    <button class="button-bar__button">Two</button>
+  <div class="segment__item">
+    <input type="radio" class="segment__input" name="segment-a">
+    <button class="segment__button">Two</button>
   </div>
-  <div class="button-bar__item">
-    <input type="radio" class="button-bar__input" name="segment-a">
-    <button class="button-bar__button">Three</button>
+  <div class="segment__item">
+    <input type="radio" class="segment__input" name="segment-a">
+    <button class="segment__button">Three</button>
   </div>
 </div>
 
           </div>
         </div>
 
-        <pre class="component-preview__markup">&lt;div class=&quot;button-bar&quot; style=&quot;width:280px;margin:0 auto;&quot;&gt;
-  &lt;div class=&quot;button-bar__item&quot;&gt;
-    &lt;input type=&quot;radio&quot; class=&quot;button-bar__input&quot; name=&quot;segment-a&quot; checked&gt;
-    &lt;button class=&quot;button-bar__button&quot;&gt;One&lt;/button&gt;
+        <pre class="component-preview__markup">&lt;div class=&quot;segment&quot; style=&quot;width: 280px; margin: 0 auto;&quot;&gt;
+  &lt;div class=&quot;segment__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input&quot; name=&quot;segment-a&quot; checked&gt;
+    &lt;button class=&quot;segment__button&quot;&gt;One&lt;/button&gt;
   &lt;/div&gt;
-  &lt;div class=&quot;button-bar__item&quot;&gt;
-    &lt;input type=&quot;radio&quot; class=&quot;button-bar__input&quot; name=&quot;segment-a&quot;&gt;
-    &lt;button class=&quot;button-bar__button&quot;&gt;Two&lt;/button&gt;
+  &lt;div class=&quot;segment__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input&quot; name=&quot;segment-a&quot;&gt;
+    &lt;button class=&quot;segment__button&quot;&gt;Two&lt;/button&gt;
   &lt;/div&gt;
-  &lt;div class=&quot;button-bar__item&quot;&gt;
-    &lt;input type=&quot;radio&quot; class=&quot;button-bar__input&quot; name=&quot;segment-a&quot;&gt;
-    &lt;button class=&quot;button-bar__button&quot;&gt;Three&lt;/button&gt;
+  &lt;div class=&quot;segment__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input&quot; name=&quot;segment-a&quot;&gt;
+    &lt;button class=&quot;segment__button&quot;&gt;Three&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_segment">
+          <a href="#material_segment" class="component-preview__link">Material Segment</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="segment segment--material" style="width: 280px; margin: 0 auto;">
+  <div class="segment__item segment--material__item">
+    <input type="radio" class="segment__input segment--material__input" name="segment-b" checked>
+    <button class="segment__button segment--material__button">One</button>
+  </div>
+  <div class="segment__item segment--material__item">
+    <input type="radio" class="segment__input segment--material__input" name="segment-b">
+    <button class="segment__button segment--material__button">Two</button>
+  </div>
+  <div class="segment__item segment--material__item">
+    <input type="radio" class="segment__input segment--material__input" name="segment-b">
+    <button class="segment__button segment--material__button">Three</button>
+  </div>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;segment segment--material&quot; style=&quot;width: 280px; margin: 0 auto;&quot;&gt;
+  &lt;div class=&quot;segment__item segment--material__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input segment--material__input&quot; name=&quot;segment-b&quot; checked&gt;
+    &lt;button class=&quot;segment__button segment--material__button&quot;&gt;One&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;segment__item segment--material__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input segment--material__input&quot; name=&quot;segment-b&quot;&gt;
+    &lt;button class=&quot;segment__button segment--material__button&quot;&gt;Two&lt;/button&gt;
+  &lt;/div&gt;
+  &lt;div class=&quot;segment__item segment--material__item&quot;&gt;
+    &lt;input type=&quot;radio&quot; class=&quot;segment__input segment--material__input&quot; name=&quot;segment-b&quot;&gt;
+    &lt;button class=&quot;segment__button segment--material__button&quot;&gt;Three&lt;/button&gt;
   &lt;/div&gt;
 &lt;/div&gt;
 </pre>
@@ -2808,18 +2872,101 @@
       
       <div class="component-preview">
         <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="list_title">
+          <a href="#list_title" class="component-preview__link">List title</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="list-title">LIST TITLE</div>
+<ul class="list">
+  <li class="list-item">
+    <div class="list-item__center">Item</div>
+  </li>
+  <li class="list-item">
+    <div class="list-item__center">Item</div>
+  </li>
+</ul>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;list-title&quot;&gt;LIST TITLE&lt;/div&gt;
+&lt;ul class=&quot;list&quot;&gt;
+  &lt;li class=&quot;list-item&quot;&gt;
+    &lt;div class=&quot;list-item__center&quot;&gt;Item&lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;list-item&quot;&gt;
+    &lt;div class=&quot;list-item__center&quot;&gt;Item&lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_list_title">
+          <a href="#material_list_title" class="component-preview__link">Material List Title</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <h3 class="list-title list-title--material">LIST TITLE</h3>
+<ul class="list list--material">
+  <li class="list-item list-item--material">
+    <div class="list-item__center list-item--material__center">Item</div>
+  </li>
+  <li class="list-item list-item--material">
+    <div class="list-item__center list-item--material__center">Item</div>
+  </li>
+</ul>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;h3 class=&quot;list-title list-title--material&quot;&gt;LIST TITLE&lt;/h3&gt;
+&lt;ul class=&quot;list list--material&quot;&gt;
+  &lt;li class=&quot;list-item list-item--material&quot;&gt;
+    &lt;div class=&quot;list-item__center list-item--material__center&quot;&gt;Item&lt;/div&gt;
+  &lt;/li&gt;
+  &lt;li class=&quot;list-item list-item--material&quot;&gt;
+    &lt;div class=&quot;list-item__center list-item--material__center&quot;&gt;Item&lt;/div&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
         <h2 class="component-preview__title" id="search_input">
           <a href="#search_input" class="component-preview__link">Search Input</a>
         </h2>
 
         <div class="page component-preview__example">
           <div style="width: 100%;">
-            <input type="search" value="" placeholder="Search" class="search-input" style="width: 200px;">
+            <input type="search" value="" placeholder="Search" class="search-input" style="width: 280px;">
 
           </div>
         </div>
 
-        <pre class="component-preview__markup">&lt;input type=&quot;search&quot; value=&quot;&quot; placeholder=&quot;Search&quot; class=&quot;search-input&quot; style=&quot;width: 200px;&quot;&gt;
+        <pre class="component-preview__markup">&lt;input type=&quot;search&quot; value=&quot;&quot; placeholder=&quot;Search&quot; class=&quot;search-input&quot; style=&quot;width: 280px;&quot;&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_search_input">
+          <a href="#material_search_input" class="component-preview__link">Material Search Input</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <input type="search" value="" placeholder="Search" class="search-input search-input--material" style="width: 280px;">
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;input type=&quot;search&quot; value=&quot;&quot; placeholder=&quot;Search&quot; class=&quot;search-input search-input--material&quot; style=&quot;width: 280px;&quot;&gt;
 </pre>
       </div>
       
@@ -3512,10 +3659,26 @@
   <option>Option 3</option>
 </select>
 
+&nbsp;
+
+<select class="select-input" disabled>
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</select>
+
           </div>
         </div>
 
         <pre class="component-preview__markup">&lt;select class=&quot;select-input&quot;&gt;
+  &lt;option&gt;Option 1&lt;/option&gt;
+  &lt;option&gt;Option 2&lt;/option&gt;
+  &lt;option&gt;Option 3&lt;/option&gt;
+&lt;/select&gt;
+
+&amp;nbsp;
+
+&lt;select class=&quot;select-input&quot; disabled&gt;
   &lt;option&gt;Option 1&lt;/option&gt;
   &lt;option&gt;Option 2&lt;/option&gt;
   &lt;option&gt;Option 3&lt;/option&gt;
@@ -3537,10 +3700,26 @@
   <option>Option 3</option>
 </select>
 
+&nbsp;
+
+<select class="select-input select-input--material" disabled>
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</select>
+
           </div>
         </div>
 
         <pre class="component-preview__markup">&lt;select class=&quot;select-input select-input--material&quot;&gt;
+  &lt;option&gt;Option 1&lt;/option&gt;
+  &lt;option&gt;Option 2&lt;/option&gt;
+  &lt;option&gt;Option 3&lt;/option&gt;
+&lt;/select&gt;
+
+&amp;nbsp;
+
+&lt;select class=&quot;select-input select-input--material&quot; disabled&gt;
   &lt;option&gt;Option 1&lt;/option&gt;
   &lt;option&gt;Option 2&lt;/option&gt;
   &lt;option&gt;Option 3&lt;/option&gt;
@@ -3562,6 +3741,14 @@
   <option>Option 3</option>
 </select>
 
+&nbsp;
+
+<select class="select-input select-input--underbar" disabled>
+  <option>Option 1</option>
+  <option>Option 2</option>
+  <option>Option 3</option>
+</select>
+
           </div>
         </div>
 
@@ -3570,6 +3757,272 @@
   &lt;option&gt;Option 2&lt;/option&gt;
   &lt;option&gt;Option 3&lt;/option&gt;
 &lt;/select&gt;
+
+&amp;nbsp;
+
+&lt;select class=&quot;select-input select-input--underbar&quot; disabled&gt;
+  &lt;option&gt;Option 1&lt;/option&gt;
+  &lt;option&gt;Option 2&lt;/option&gt;
+  &lt;option&gt;Option 3&lt;/option&gt;
+&lt;/select&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="action_sheet">
+          <a href="#action_sheet" class="component-preview__link">Action Sheet</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="action-sheet-mask"></div>
+<div class="action-sheet">
+  <div class="action-sheet-title">Title</div>
+  <button class="action-sheet-button">Label</button>
+  <button class="action-sheet-button">Cancel</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;action-sheet-mask&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;action-sheet&quot;&gt;
+  &lt;div class=&quot;action-sheet-title&quot;&gt;Title&lt;/div&gt;
+  &lt;button class=&quot;action-sheet-button&quot;&gt;Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button&quot;&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="action_sheet_with_delete_label">
+          <a href="#action_sheet_with_delete_label" class="component-preview__link">Action Sheet with Delete Label</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="action-sheet-mask"></div>
+<div class="action-sheet">
+  <button class="action-sheet-button">Label</button>
+  <button class="action-sheet-button action-sheet-button--destructive">Delete Label</button>
+  <button class="action-sheet-button">Cancel</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;action-sheet-mask&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;action-sheet&quot;&gt;
+  &lt;button class=&quot;action-sheet-button&quot;&gt;Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--destructive&quot;&gt;Delete Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button&quot;&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_action_sheet">
+          <a href="#material_action_sheet" class="component-preview__link">Material Action Sheet</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="action-sheet-mask action-sheet-mask--material"></div>
+<div class="action-sheet action-sheet--material">
+  <button class="action-sheet-button action-sheet-button--material"><i class="ion-android-checkbox-blank action-sheet-icon--material"></i>Label</button>
+  <button class="action-sheet-button action-sheet-button--material"><i class="ion-android-checkbox-blank action-sheet-icon--material"></i>Label</button>
+  <button class="action-sheet-button action-sheet-button--material"><i class="ion-android-close action-sheet-icon--material"></i>Cancel</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;action-sheet-mask action-sheet-mask--material&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;action-sheet action-sheet--material&quot;&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--material&quot;&gt;&lt;i class=&quot;ion-android-checkbox-blank action-sheet-icon--material&quot;&gt;&lt;/i&gt;Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--material&quot;&gt;&lt;i class=&quot;ion-android-checkbox-blank action-sheet-icon--material&quot;&gt;&lt;/i&gt;Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--material&quot;&gt;&lt;i class=&quot;ion-android-close action-sheet-icon--material&quot;&gt;&lt;/i&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_action_sheet_with_title">
+          <a href="#material_action_sheet_with_title" class="component-preview__link">Material Action Sheet with Title</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="action-sheet-mask action-sheet-mask--material"></div>
+<div class="action-sheet action-sheet--material">
+  <div class="action-sheet-title action-sheet-title--material">Title</div>
+  <button class="action-sheet-button action-sheet-button--material"><i class="ion-android-checkbox-blank action-sheet-icon--material"></i>Label</button>
+  <button class="action-sheet-button action-sheet-button--material"><i class="ion-android-close action-sheet-icon--material"></i>Cancel</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;action-sheet-mask action-sheet-mask--material&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;action-sheet action-sheet--material&quot;&gt;
+  &lt;div class=&quot;action-sheet-title action-sheet-title--material&quot;&gt;Title&lt;/div&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--material&quot;&gt;&lt;i class=&quot;ion-android-checkbox-blank action-sheet-icon--material&quot;&gt;&lt;/i&gt;Label&lt;/button&gt;
+  &lt;button class=&quot;action-sheet-button action-sheet-button--material&quot;&gt;&lt;i class=&quot;ion-android-close action-sheet-icon--material&quot;&gt;&lt;/i&gt;Cancel&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="card">
+          <a href="#card" class="component-preview__link">Card</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div style="background-color: #eee; height: 200px; padding: 1px 0 0 0;">
+  <div class="card">
+    <div class="card__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+  </div>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div style=&quot;background-color: #eee; height: 200px; padding: 1px 0 0 0;&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;div class=&quot;card__content&quot;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="card_with_title">
+          <a href="#card_with_title" class="component-preview__link">Card with Title</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div style="background-color: #eee; height: 200px; padding: 1px 0 0 0;">
+  <div class="card">
+    <h2 class="card__title">Card Title</h2>
+    <div class="card__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+  </div>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div style=&quot;background-color: #eee; height: 200px; padding: 1px 0 0 0;&quot;&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;h2 class=&quot;card__title&quot;&gt;Card Title&lt;/h2&gt;
+    &lt;div class=&quot;card__content&quot;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_card">
+          <a href="#material_card" class="component-preview__link">Material Card</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div style="background-color: #eee; height: 200px; padding: 1px 0 0 0;">
+  <div class="card card--material">
+    <div class="card__content card--material__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+  </div>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div style=&quot;background-color: #eee; height: 200px; padding: 1px 0 0 0;&quot;&gt;
+  &lt;div class=&quot;card card--material&quot;&gt;
+    &lt;div class=&quot;card__content card--material__content&quot;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_card_with_title">
+          <a href="#material_card_with_title" class="component-preview__link">Material Card with Title</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div style="background-color: #eee; height: 200px; padding: 1px 0 0 0;">
+  <div class="card card--material">
+    <div class="card__title card--material__title">Card Title</div>
+    <div class="card__content card--material__content">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
+  </div>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div style=&quot;background-color: #eee; height: 200px; padding: 1px 0 0 0;&quot;&gt;
+  &lt;div class=&quot;card card--material&quot;&gt;
+    &lt;div class=&quot;card__title card--material__title&quot;&gt;Card Title&lt;/div&gt;
+    &lt;div class=&quot;card__content card--material__content&quot;&gt;Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="toast">
+          <a href="#toast" class="component-preview__link">Toast</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="toast">
+  <div class="toast__message">Message Message Message Message Message Message</div>
+  <button class="toast__button">ACTION</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;toast&quot;&gt;
+  &lt;div class=&quot;toast__message&quot;&gt;Message Message Message Message Message Message&lt;/div&gt;
+  &lt;button class=&quot;toast__button&quot;&gt;ACTION&lt;/button&gt;
+&lt;/div&gt;
+</pre>
+      </div>
+      
+      <div class="component-preview">
+        <button class="component-preview__toggle">HTML</button>
+        <h2 class="component-preview__title" id="material_toast">
+          <a href="#material_toast" class="component-preview__link">Material Toast</a>
+        </h2>
+
+        <div class="page component-preview__example">
+          <div style="width: 100%;">
+            <div class="toast toast--material">
+  <div class="toast__message toast--material__message">Message Message Message Message Message Message</div>
+  <button class="toast__button toast--material__button">ACTION</button>
+</div>
+
+          </div>
+        </div>
+
+        <pre class="component-preview__markup">&lt;div class=&quot;toast toast--material&quot;&gt;
+  &lt;div class=&quot;toast__message toast--material__message&quot;&gt;Message Message Message Message Message Message&lt;/div&gt;
+  &lt;button class=&quot;toast__button toast--material__button&quot;&gt;ACTION&lt;/button&gt;
+&lt;/div&gt;
 </pre>
       </div>
       

@@ -1,13 +1,11 @@
 
 :root {
-  --range-track-background-color: var(--border-color);
+  --range-thumb-size: 28px;
+  --range-track-background-color: #a4aab3;
   --range-track-background-color-active: var(--highlight-color);
   --range-thumb-background-color: #fff;
-  --range-thumb-border-color: var(--border-color);
-
-  --range-thumb-border: 1px solid var(--range-thumb-border-color);
   --range-track-height: 2px;
-  --range-thumb-width: var(--thumb-size);
+  --range-thumb-width: var(--range-thumb-size);
 
   --material-range-track-height: 2px;
   --material-range-thumb-width: 12px;
@@ -21,9 +19,8 @@
     height: var(--range-thumb-width);
     width: var(--range-thumb-width);
     background-color: var(--range-thumb-background-color);
-    border: var(--range-thumb-border);
-    /* TODO: Add shadow */
-    /*box-shadow: 0 0 0 1px #e4e4e4, 0 3px 2px rgba(0, 0, 0, 0.25); */
+    border: none;
+    box-shadow: 0 0 1px 0 rgba(0, 0, 0, 0.25), 0 3px 2px rgba(0, 0, 0, 0.25);
     border-radius: var(--round-border);
     margin: 0;
     padding: 0;
@@ -63,14 +60,14 @@
 .range {
   display: inline-block;
   width: 100px;
-  height: 32px;
+  height: calc(var(--range-thumb-size) + 2px);
   margin: 0;
   padding: 0;
   background-image: linear-gradient(var(--range-track-background-color), var(--range-track-background-color));
   background-position: left center;
   background-size: 100% var(--range-track-height);
   background-repeat: no-repeat;
-  overflow: visible;
+  background-color: transparent;
 }
 
 .range__input {
@@ -80,8 +77,7 @@
   background-position: left center;
   background-size: 0% var(--range-track-height);
   background-repeat: no-repeat;
-  overflow: hidden;
-  height: 32px;
+  height: calc(var(--range-thumb-size) + 2px);
   position: relative;
   z-index: 1;
   width: 100%;
@@ -90,9 +86,7 @@
 .range__input::-moz-range-track {
   position: relative;
   border: none;
-  background-color: var(--range-track-background-color);
-  height: var(--range-track-height);
-  border-radius: var(--round-border);
+  background: none;
   box-shadow: none;
   top: 0;
   margin: 0;
@@ -165,7 +159,6 @@
   background-image: linear-gradient(var(--material-range-thumb-color), var(--material-range-thumb-color));
   background-position: center left;
   background-size: 0% 2px;
-  overflow: visible;
 }
 
 .range--material__input::-webkit-slider-thumb {
@@ -176,20 +169,22 @@
   border-radius: 0;
   background-color: transparent;
   background-image: radial-gradient(circle cover, var(--material-range-thumb-color) 0%, var(--material-range-thumb-color) calc(var(--material-range-thumb-radius) + 0.6px), transparent calc(var(--material-range-thumb-radius) + 1.2px));
+  box-shadow: none;
 }
 
-.range--material__input::-moz-range-thumb {
-  top: 1px;
-  border: 3px solid var(--material-range-track-color);
-  height: var(--material-range-thumb-width);
-  width: var(--material-range-thumb-width);
-  border-radius: 100%;
-  border-color: var(--material-range-thumb-color);
-  background-color: var(--material-range-thumb-color);
+.range--material__input::-moz-range-thumb,
+.range--material__input:focus::-moz-range-thumb {
+  box-sizing: border-box;
+  border: none;
+  height: calc(var(--material-range-thumb-width) + var(--material-range-thumb-vertical-margin));
+  width: calc(var(--material-range-thumb-width) + var(--material-range-thumb-horizontal-margin));
+  border-radius: 0;
+  background-color: transparent;
+  background-image: -moz-radial-gradient(circle cover, var(--material-range-thumb-color) 0%, var(--material-range-thumb-color) calc(var(--material-range-thumb-radius) + 0.6px), transparent calc(var(--material-range-thumb-radius) + 1.2px));
 }
 
 .range--material__input::-moz-range-track {
-  background-color: var(--material-range-track-color);
+  background: none;
 }
 
 .range--material__input::-ms-thumb {
@@ -210,11 +205,6 @@
   margin-top: -6px;
   margin-left: -6px;
   @apply(--range--material--thumb--after);
-}
-
-.range--material__input:focus::-moz-range-thumb {
-  border-color: var(--material-range-thumb-color);
-  background-color: var(--material-range-thumb-color);
 }
 
 .range--material__input::-moz-range-thumb:before {
