@@ -1,6 +1,6 @@
 {
   "name": "onsenui",
-  "version": "2.3.2",
+  "version": "2.5.3",
   "description": "HTML5 Mobile Framework & UI Components",
   "private": false,
   "author": "@kruyvanna",
@@ -20,7 +20,8 @@
     }
   ],
   "scripts": {
-    "test": "gulp test --disable-warnings"
+    "test": "gulp test --disable-warnings",
+    "test:skip-build": "gulp test --disable-warnings --skip-build"
   },
   "main": "js/onsenui.js",
   "typings": "js/onsenui.d.ts",
@@ -58,7 +59,7 @@
     "react",
     "components",
     "angular",
-    "angular2",
+    "vue",
     "hybrid",
     "app",
     "ui",
@@ -93,6 +94,7 @@
     "gulp-clean": "^0.3.1",
     "gulp-concat": "^2.6.0",
     "gulp-connect": "^4.1.0",
+    "gulp-cssmin": "^0.2.0",
     "gulp-download": "0.0.1",
     "gulp-eslint": "^2.0.0",
     "gulp-header": "^1.7.1",
@@ -126,14 +128,15 @@
     "progress-bar-webpack-plugin": "^1.9.3",
     "protractor": "^4.0.10",
     "run-sequence": "^1.2.1",
-    "typescript": "^1.8.10",
+    "svg-inline-loader": "^0.8.0",
+    "typescript": "^2.3.3",
     "wcdoc": "0.1.19",
     "wdio-jasmine-framework": "^0.2.16",
     "webdriverio": "^4.4.0",
     "webpack": "^2.4.1"
   },
   "dependencies": {
-    "@webcomponents/custom-elements": "OnsenUI/custom-elements#1.0.0-rc.3+mod.20170410.1",
+    "@onsenui/custom-elements": "1.0.0",
     "core-js": "2.4.1"
   }
 }
