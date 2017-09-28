@@ -17,6 +17,7 @@ limitations under the License.
 
 import internal from './internal';
 import autoStyle from './autostyle';
+import ModifierUtil from './internal/modifier-util';
 import animationOptionsParse from './animation-options-parser';
 
 const util = {};
@@ -71,7 +72,7 @@ util.findParent = (element, query, until) => {
 
   let parent = element.parentNode;
   for (;;) {
-    if (!parent || parent === document || (until && until(parent))) {
+    if (!parent || parent === document || parent instanceof DocumentFragment || (until && until(parent))) {
       return null;
     } else if (match(parent)) {
       return parent;
@@ -84,15 +85,7 @@ util.findParent = (element, query, until) => {
  * @param {Element} element
  * @return {boolean}
  */
-util.isAttached = (element) => {
-  while (document.documentElement !== element) {
-    if (!element) {
-      return false;
-    }
-    element = element.parentNode;
-  }
-  return true;
-};
+util.isAttached = element => document.body.contains(element);
 
 /**
  * @param {Element} element
@@ -180,15 +173,9 @@ util.createElement = (html) => {
  * @return {HTMLFragment}
  */
 util.createFragment = (html) => {
-  const wrapper = document.createElement('div');
-  wrapper.innerHTML = html;
-  const fragment = document.createDocumentFragment();
-
-  while (wrapper.firstChild) {
-    fragment.appendChild(wrapper.firstChild);
-  }
-
-  return fragment;
+  const template = document.createElement('template');
+  template.innerHTML = html;
+  return document.importNode(template.content, true);
 };
 
 /*
@@ -370,6 +357,16 @@ util.toggleModifier = (...args) => {
   toggle ? util.addModifier(...args) : util.removeModifier(...args)
 };
 
+/**
+ * @param {Element} el
+ * @param {String} defaultClass
+ * @param {Object} scheme
+ */
+util.restoreClass = (el, defaultClass, scheme) => {
+  defaultClass.split(/\s+/).forEach(c => c !== '' && !el.classList.contains(c) && el.classList.add(c));
+  el.hasAttribute('modifier') && ModifierUtil.refresh(el, scheme);
+}
+
 // TODO: FIX
 util.updateParentPosition = (el) => {
   if (!el._parentUpdated && el.parentElement) {
@@ -382,7 +379,7 @@ util.updateParentPosition = (el) => {
 
 util.toggleAttribute = (element, name, value) => {
   if (value) {
-    element.setAttribute(name, value);
+    element.setAttribute(name, typeof value === 'boolean' ? '' : value);
   } else {
     element.removeAttribute(name);
   }
@@ -459,18 +456,16 @@ util.warn = (...args) => {
   }
 };
 
-util.skipContentScroll = gesture => {
-  const clickedElement = document.elementFromPoint(gesture.center.clientX, gesture.center.clientY);
-  const content = util.findParent(clickedElement, '.page__content', e => util.match(e, '.page'));
-  if (content) {
-    const preventScroll = e => e.preventDefault();
-    content.addEventListener('touchmove', preventScroll, true);
-    const clean = e => {
-      content.removeEventListener('touchmove', preventScroll, true);
-      content.removeEventListener('touchend', clean, true);
-    };
-    content.addEventListener('touchend', clean, true);
-  }
-};
+util.preventScroll = gd => {
+  const prevent = e => e.cancelable && e.preventDefault();
+
+  const clean = (e) => {
+    gd.off('touchmove', prevent);
+    gd.off('dragend', clean);
+  };
+
+  gd.on('touchmove', prevent);
+  gd.on('dragend', clean);
+}
 
 export default util;
