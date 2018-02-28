@@ -13,16 +13,14 @@
   --list-header-padding: 0 0 0 15px;
   --list-header-min-height: 24px;
   --list-header-font-weight: var(--font-weight--large);
-  --material-list-item-min-height: 48px;
-  --material-list-item-padding: 0 0 0 16px;
-  --material-list-item-separator-color: #eee;
-  --material-list-header-text-color: #757575;
   --inset-list-border: 1px solid var(--list-item-separator-color);
   --list-title-color: #6d6d72;
   --list-title-font-size: 13px;
   --list-title-font-weight: 500;
   --list-title-line-height: 24px;
   --list-title-padding: 0 0 0 16px;
+  --material-list-item-min-height: 48px;
+  --material-list-item-padding: 0 0 0 16px;
   --material-list-title-color: #757575;
   --material-list-title-font-size: 14px;
   --material-list-title-font-weight: 500;
@@ -297,60 +295,6 @@
 */
 
 /*~
-  name: List Item with Chevron
-  category: List
-  elements: ons-list ons-list-item
-  markup: |
-    <ul class="list">
-      <li class="list-item list-item--chevron">
-        <div class="list-item__center">Item A</div>
-      </li>
-      <li class="list-item list-item--chevron">
-        <div class="list-item__center">Item B</div>
-        <div class="list-item__right list-item--chevron__right">
-          <div class="list-item__label">Label</div>
-        </div>
-      </li>
-    </ul>
- */
-
-.list-item--chevron:before {
-  border-right: 2px solid #c7c7cc;
-  border-bottom: 2px solid #c7c7cc;
-  position: absolute;
-  content: '';
-  width: 7px;
-  height: 7px;
-  background-color: transparent;
-  transform: translateY(-50%) rotate(-45deg);
-  right: 16px;
-  top: 50%;
-  z-index: 5;
-}
-
-.list-item--chevron__right {
-  padding-right: 30px;
-}
-
-/*~
-  name: Nodivider List Item with Chevron
-  category: List
-  elements: ons-list ons-list-item
-  markup: |
-    <ul class="list">
-      <li class="list-item list-item--nodivider list-item--chevron">
-        <div class="list-item__center list-item--nodivider__center">Item A</div>
-      </li>
-      <li class="list-item list-item--nodivider list-item--chevron">
-        <div class="list-item__center list-item--nodivider__center">Item B</div>
-        <div class="list-item__right list-item--nodivider__right list-item--chevron__right">
-          <div class="list-item__label">Label</div>
-        </div>
-      </li>
-    </ul>
- */
-
-/*~
   name: Inset List
   category: List
   elements: ons-list ons-list-item
@@ -562,7 +506,7 @@
     <ul class="list">
       <li class="list-item">
         <div class="list-item__left">
-          <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center">
@@ -573,7 +517,7 @@
 
       <li class="list-item">
         <div class="list-item__left">
-          <img class="list-item__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center">
@@ -659,6 +603,7 @@
 .list--material {
   @apply(--material-font);
   background-image: none;
+  background-color: var(--material-list-background-color);
 }
 
 .list-item--material {
@@ -788,7 +733,7 @@
     <ul class="list list--material">
       <li class="list-item list-item--material">
         <div class="list-item__left list-item--material__left">
-          <img class="list-item__thumbnail list-item--material__thumbnail" src="http://placekitten.com/g/42/41" alt="Cute kitten">
+          <img class="list-item__thumbnail list-item--material__thumbnail" src="https://placekitten.com/g/42/41" alt="Cute kitten">
         </div>
 
         <div class="list-item__center list-item--material__center">
@@ -799,7 +744,7 @@
 
       <li class="list-item list-item--material">
         <div class="list-item__left list-item--material__left">
-          <img class="list-item__thumbnail list-item--material__thumbnail" src="http://placekitten.com/g/40/40" alt="Cute kitten">
+          <img class="list-item__thumbnail list-item--material__thumbnail" src="https://placekitten.com/g/40/40" alt="Cute kitten">
         </div>
 
         <div class="list-item__center list-item--material__center">
@@ -833,7 +778,7 @@
         </div>
 
         <div class="list-item__right list-item--material__right">
-          <i style="color:#4db6ac" class="list-item__icon list-item--material__icon zmdi zmdi-comment"></i>
+          <i style="color:#ccc" class="list-item__icon list-item--material__icon zmdi zmdi-comment"></i>
         </div>
       </li>
 
@@ -848,7 +793,7 @@
         </div>
 
         <div class="list-item__right list-item--material__right">
-          <i style="color:#4db6ac" class="list-item__icon list-item--material__icon zmdi zmdi-comment"></i>
+          <i style="color:#ccc" class="list-item__icon list-item--material__icon zmdi zmdi-comment"></i>
         </div>
       </li>
     </ul>
@@ -858,6 +803,60 @@
   font-size: 20px;
   padding: 0 4px;
 }
+
+/*~
+  name: List Item with Chevron
+  category: List
+  elements: ons-list ons-list-item
+  markup: |
+    <ul class="list">
+      <li class="list-item list-item--chevron">
+        <div class="list-item__center">Item A</div>
+      </li>
+      <li class="list-item list-item--chevron">
+        <div class="list-item__center">Item B</div>
+        <div class="list-item__right list-item--chevron__right">
+          <div class="list-item__label">Label</div>
+        </div>
+      </li>
+    </ul>
+ */
+
+.list-item--chevron:before {
+  border-right: 2px solid var(--list-item-chevron-color);
+  border-bottom: 2px solid var(--list-item-chevron-color);
+  position: absolute;
+  content: '';
+  width: 7px;
+  height: 7px;
+  background-color: transparent;
+  transform: translateY(-50%) rotate(-45deg);
+  right: 16px;
+  top: 50%;
+  z-index: 5;
+}
+
+.list-item--chevron__right {
+  padding-right: 30px;
+}
+
+/*~
+  name: Nodivider List Item with Chevron
+  category: List
+  elements: ons-list ons-list-item
+  markup: |
+    <ul class="list">
+      <li class="list-item list-item--nodivider list-item--chevron">
+        <div class="list-item__center list-item--nodivider__center">Item A</div>
+      </li>
+      <li class="list-item list-item--nodivider list-item--chevron">
+        <div class="list-item__center list-item--nodivider__center">Item B</div>
+        <div class="list-item__right list-item--nodivider__right list-item--chevron__right">
+          <div class="list-item__label">Label</div>
+        </div>
+      </li>
+    </ul>
+ */
 
 /*~
   name: List item without divider
@@ -917,7 +916,7 @@
   name: List title
   category: List
   markup: |
-    <div class="list-title">LIST TITLE</div>
+    <div class="list-title">List Title</div>
     <ul class="list">
       <li class="list-item">
         <div class="list-item__center">Item</div>
@@ -941,6 +940,8 @@
   font-size: var(--list-title-font-size);
   font-weight: var(--list-title-font-weight);
   line-height: var(--list-title-line-height);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 /*~

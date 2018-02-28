@@ -154,7 +154,7 @@
 */
 
 .radio-button--material {
-  line-height: var(--material-radio-button-size) + 2px;
+  line-height: calc(var(--material-radio-button-size) + 2px);
   @apply(--material-font);
 }
 
@@ -236,11 +236,11 @@
 }
 
 :disabled + .radio-button--material__checkmark:after {
-  background-color: #afafaf;
-  border-color: #afafaf;
+  background-color: var(--material-radio-button-disabled-color);
+  border-color: var(--material-radio-button-disabled-color);
 }
 
 :disabled + .radio-button--material__checkmark:before {
-  border-color: #afafaf;
+  border-color: var(--material-radio-button-disabled-color);
 }
 

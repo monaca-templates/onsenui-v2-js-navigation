@@ -1,30 +1,14 @@
-/*! onsenui - v2.6.1 - 2017-09-28 */
-/*
-Copyright 2013-2015 ASIAL CORPORATION
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
- */
-
+/*! onsenui - v2.9.2 - 2018-02-16 */
 @import url("ionicons/css/ionicons.min.css");
 @import url("material-design-iconic-font/css/material-design-iconic-font.min.css");
 @import url("font_awesome/css/font-awesome.min.css");
 
-/* custom elements */
+
 ons-page, ons-navigator,
-ons-split-view, ons-sliding-menu, ons-tabbar,
+ons-tabbar,
 ons-gesture-detector {
   display: block;
+  touch-action: manipulation; /* Remove click delay */
 }
 
 ons-navigator,
@@ -40,6 +24,7 @@ ons-alert-dialog {
   bottom: 0;
   right: 0;
   overflow: hidden;
+  touch-action: manipulation; /* Remove click delay */
 }
 
 ons-toast {
@@ -55,23 +40,12 @@ ons-tab {
           transform: translate3d(0, 0, 0);
 }
 
-ons-page, ons-navigator, ons-tabbar, ons-sliding-menu, ons-split-view, ons-dialog, ons-alert-dialog, ons-action-sheet, ons-toast {
+ons-page, ons-navigator, ons-tabbar, ons-dialog, ons-alert-dialog, ons-action-sheet, ons-toast {
   z-index: 2;
 }
 
 ons-fab, ons-speed-dial {
   z-index: 10001;
-}
-
-* {
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0) !important;
-}
-
-input, textarea {
-  -webkit-user-select: auto;
-  -moz-user-select: text;
 }
 
 ons-toolbar:not([inline]), ons-bottom-toolbar {
@@ -80,14 +54,17 @@ ons-toolbar:not([inline]), ons-bottom-toolbar {
   right: 0;
   z-index: 10000;
 }
+
 ons-toolbar:not([inline]) {
   top: 0;
 }
+
 ons-bottom-toolbar {
   bottom: 0;
 }
 
-.page, .page__content {
+.page, .page__content,
+.page--material, .page--material__content {
   background-color: transparent !important;
   background: transparent !important;
 }
@@ -111,26 +88,6 @@ ons-bottom-toolbar {
 .page.overflow-visible .page__content.content-swiping .page,
 .page.overflow-visible .page__content.content-swiping .page__content {
   overflow: auto;
-}
-
-.toolbar:not(.toolbar--transparent) + .page__background,
-.toolbar:not(.toolbar--cover-content) + .page__background + .page__content {
-  top: 44px;
-}
-
-.toolbar.toolbar--cover-content + .page__background + .page__content,
-.toolbar.toolbar--cover-content + .page__background + .page__content .page__content {
-  padding-top: 44px;
-}
-
-.toolbar--material:not(.toolbar--transparent) + .page__background,
-.toolbar--material:not(.toolbar--cover-content) + .page__background + .page__content {
-  top: 56px;
-}
-
-.toolbar--material.toolbar--cover-content + .page__background + .page__content,
-.toolbar--material.toolbar--cover-content + .page__background + .page__content .page__content {
-  padding-top: 56px;
 }
 
 .page[status-bar-fill] > .page__content {
@@ -176,12 +133,12 @@ ons-tabbar[position="top"] .page[status-bar-fill] > .page__content {
   top: 49px;
 }
 
-.page-with-bottom-toolbar > .page__content {
-  bottom: 44px;
-}
-
 .page__content > .list:not(.list--material):first-child {
   margin-top: -1px; /* Avoid double border with toolbar */
+}
+
+.page--wrapper > .page__background {
+  display: none;
 }
 
 ons-action-sheet[disabled],
@@ -286,14 +243,42 @@ ons-carousel[fullscreen] {
   position: absolute;
   width: 100%;
   height: 20px;
+  padding: 0 16px 0 6px;
+  box-sizing: border-box;
   z-index: 30000;
+  display: -webkit-box;
   display: -webkit-flex;
   display: flex;
+  -webkit-box-pack: justify;
   -webkit-justify-content: space-between;
           justify-content: space-between;
   font-size: 12px;
   line-height: 20px;
   font-family: Arial, Helvetica;
+}
+
+.ons-status-bar-mock i {
+  padding: 0 2px;
+}
+
+.ons-status-bar-mock.android {
+  color: white;
+  background-color: #222;
+  font-family: Roboto, Arial, Helvetica;
+}
+
+.ons-status-bar-mock.android ~ * {
+  top: 20px;
+  bottom: 0;
+  position: inherit;
+  width: 100%;
+}
+
+.ons-ios-scroll-fix .page:not(.page--wrapper)[shown] > .page__content {
+  overflow-y: hidden;
+}
+.ons-ios-scroll-fix ons-splitter-side > .page:not(.page--wrapper)[shown] > .page__content {
+  overflow-y: auto;
 }
 
 ons-row {
@@ -396,6 +381,8 @@ limitations under the License.
   line-height: inherit;
   font-style: normal;
   font-weight: normal;
+  font-size: inherit;
+  text-rendering: auto;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -409,7 +396,7 @@ limitations under the License.
   vertical-align: -25%;
 }
 
-ons-icon[spin] {
+.ons-icon[spin] {
   -webkit-animation: ons-icon-spin 2s infinite linear;
   -moz-animation: ons-icon-spin 2s infinite linear;
   animation: ons-icon-spin 2s infinite linear;
@@ -462,7 +449,7 @@ ons-icon[spin] {
   transform: rotate(270deg);
 }
 
-ons-icon[fixed-width] {
+.ons-icon[fixed-width] {
   width: 1.28571429em;
   text-align: center;
 }
@@ -527,6 +514,54 @@ ons-input input.text-input--material::-moz-placeholder {
 
 ons-input input.text-input--material:-ms-input-placeholder {
   color: transparent;
+}
+
+/* Suppress safe area support for pages in splitter sides */
+@media (orientation: landscape) {
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content {
+    padding-right: 0;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="right"] .page__content {
+    padding-left: 0;
+  }
+}
+/* Support the situation that a progress bar is located just below a toolbar */
+@media (orientation: landscape) {
+  html[onsflag-iphonex-landscape] .page__content > ons-progress-bar > .progress-bar {
+    margin-left: -44px;
+    margin-right: -44px;
+    width: calc(100% + 88px);
+  }
+}
+/* Lists in .page__content in splitter-sides */
+@media (orientation: landscape) {
+  /* Suppress left safe area support for pages in right splitter sides */
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="right"] .page__content > .list:not(.list--inset) {
+    margin-left: 0;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="right"] .page__content > .list:not(.list--inset) > .list-header {
+    padding-left: 15px;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="right"] .page__content > .list:not(.list--inset) > .list-item {
+    padding-left: 14px;
+  }
+
+  /* Suppress right safe area support for pages in left splitter sides */
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content > .list:not(.list--inset) {
+    margin-right: 0;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content > .list:not(.list--inset) > .list-item--chevron:before {
+    right: 16px;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content > .list:not(.list--inset) > .list-item > .list-item__center:last-child {
+    padding-right: 6px;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content > .list:not(.list--inset) > .list-item > .list-item__right {
+    padding-right: 12px;
+  }
+  html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content > .list:not(.list--inset) > .list-item > .list-item--chevron__right {
+    padding-right: 30px;
+  }
 }
 
 /*
@@ -640,93 +675,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-*/
-
-ons-sliding-menu {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  z-index: 0;
-  overflow-x: hidden;
-}
-
-.onsen-sliding-menu__menu,
-.onsen-sliding-menu__main {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  z-index: 0;
-  margin: 0;
-  padding: 0;
-}
-
-.onsen-sliding-menu__menu {
-  opacity: 0;
-}
-
-
-/*
-Copyright 2013-2015 ASIAL CORPORATION
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-*/
-
-ons-split-view {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  top: 0px;
-  bottom: 0px;
-  z-index: 0;
-  overflow: hidden;
-}
-
-.onsen-split-view__secondary {
-  opacity: 0;
-  width: 100%;
-}
-
-.onsen-split-view__secondary,
-.onsen-split-view__main {
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  bottom: 0px;
-  right: 0px;
-  z-index: 0;
-  overflow-x: hidden; 
-}
-
-/*
-Copyright 2013-2015 ASIAL CORPORATION
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
  */
 
 .ons-swiper {
@@ -736,15 +684,20 @@ limitations under the License.
 }
 
 .ons-swiper-target {
+  display: -webkit-box;
   display: -webkit-flex;
   display: flex;
   height: 100%;
   z-index: 1;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
   -webkit-flex-direction: row;
           flex-direction: row;
 }
 
 .ons-swiper-target--vertical {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   -webkit-flex-direction: column;
           flex-direction: column;
 }
@@ -756,6 +709,10 @@ limitations under the License.
   box-sizing: border-box;
   width: 100%;
   position: relative !important;
+}
+
+.ons-swiper-target.active:not(.swiping) > .page:not([shown]) {
+  visibility: hidden;
 }
 
 .ons-swiper-tabbar .tabbar--material__button:after {
