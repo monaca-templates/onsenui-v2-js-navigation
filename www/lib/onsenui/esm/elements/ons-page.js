@@ -241,9 +241,8 @@ var PageElement = function (_BaseElement) {
     value: function _canAnimateToolbar() {
       var content = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._contentElement;
 
-      var toolbar = util.findChild(this, 'ons-toolbar');
-      if (toolbar) {
-        return !toolbar.hasAttribute('static');
+      if (util.findChild(this, 'ons-toolbar')) {
+        return true;
       }
 
       return !!util.findChild(content, function (el) {

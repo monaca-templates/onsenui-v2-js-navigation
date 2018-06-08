@@ -96,14 +96,16 @@ var IOSSlideNavigatorAnimator = function (_IOSSwipeNavigatorAni) {
   }, {
     key: '_shouldAnimateToolbar',
     value: function _shouldAnimateToolbar(enterPage, leavePage) {
+      var toolbars = enterPage._canAnimateToolbar() && leavePage._canAnimateToolbar();
+
       var enterToolbar = enterPage._getToolbarElement();
       var leaveToolbar = leavePage._getToolbarElement();
 
-      var toolbars = enterPage._canAnimateToolbar() && leavePage._canAnimateToolbar();
-      var material = util.hasModifier(enterToolbar, 'material') || util.hasModifier(leaveToolbar, 'material');
-      var transparent = util.hasModifier(enterToolbar, 'transparent') || util.hasModifier(leaveToolbar, 'transparent');
+      var isStatic = enterToolbar.hasAttribute('static') || leaveToolbar.hasAttribute('static');
+      var isMaterial = util.hasModifier(enterToolbar, 'material') || util.hasModifier(leaveToolbar, 'material');
+      var isTransparent = util.hasModifier(enterToolbar, 'transparent') || util.hasModifier(leaveToolbar, 'transparent');
 
-      return toolbars && !material && !transparent;
+      return toolbars && !isStatic && !isMaterial && !isTransparent;
     }
   }, {
     key: '_calculateDelta',

@@ -246,7 +246,9 @@ var SelectElement = function (_BaseElement) {
             return _this4._select[key];
           },
           set: ['form', 'type'].indexOf(key) === -1 ? function (value) {
-            return _this4._select[key] = value;
+            return contentReady(_this4, function () {
+              return _this4._select[key] = value;
+            });
           } : undefined
         });
       });

@@ -117,13 +117,12 @@ var PullHookElement = function (_BaseElement) {
 
     var _this = _possibleConstructorReturn(this, (PullHookElement.__proto__ || _Object$getPrototypeOf(PullHookElement)).call(this));
 
-    _this._shouldFixScroll = util.globals.actualMobileOS !== 'other';
+    _this._shouldFixScroll = util.globals.isUIWebView;
 
     _this._onDrag = _this._onDrag.bind(_this);
     _this._onDragStart = _this._onDragStart.bind(_this);
     _this._onDragEnd = _this._onDragEnd.bind(_this);
     _this._onScroll = _this._onScroll.bind(_this);
-    _this._preventScroll = _this._preventScroll.bind(_this);
 
     _this._setState(STATE_INITIAL, true);
     _this._hide(); // Fix for transparent toolbar transitions
@@ -160,7 +159,12 @@ var PullHookElement = function (_BaseElement) {
         return;
       }
 
-      this._ignoreDrag = event.consumed;
+      var tapY = event.gesture.center.clientY + this._pageElement.scrollTop;
+      var maxY = window.innerHeight;
+      // Only use drags that start near the pullHook to reduce flickerings
+      var draggableAreaRatio = this._shouldFixScroll ? .8 : 1;
+
+      this._ignoreDrag = event.consumed || tapY > maxY * draggableAreaRatio;
 
       if (!this._ignoreDrag) {
         var consume = event.consume;
@@ -197,12 +201,16 @@ var PullHookElement = function (_BaseElement) {
 
       event.stopPropagation();
 
+      var tapY = event.gesture.center.clientY + this._pageElement.scrollTop;
+      var maxY = window.innerHeight;
+
       // Hack to make it work on Android 4.4 WebView and iOS UIWebView. Scrolls manually
       // near the top of the page so there will be no inertial scroll when scrolling down.
       // Allowing default scrolling will kill all 'touchmove' events.
       if (this._shouldFixScroll) {
         this._pageElement.scrollTop = this._startScroll - event.gesture.deltaY;
-        if (this._pageElement.scrollTop < window.innerHeight && event.gesture.direction !== 'up') {
+        // Allow inertia when scrolling down below 50% of the view to reduce flickerings
+        if (event.gesture.interimDirection !== 'up' || tapY <= maxY * .5) {
           event.gesture.preventDefault();
         }
       }
@@ -222,22 +230,12 @@ var PullHookElement = function (_BaseElement) {
           this._setState(STATE_INITIAL);
         }
 
-        if (!this._pulling && this._shouldFixScroll) {
-          this._pulling = true;
-          this._gestureDetector.on('touchmove', this._preventScroll);
-        }
-
         this._translateTo(scroll);
       }
     }
   }, {
     key: '_onDragEnd',
     value: function _onDragEnd(event) {
-      if (this._pulling && this._shouldFixScroll) {
-        this._pulling = false;
-        this._gestureDetector.off('touchmove', this._preventScroll);
-      }
-
       if (!event.gesture || this.disabled || this._ignoreDrag) {
         return;
       }
@@ -253,12 +251,6 @@ var PullHookElement = function (_BaseElement) {
           this._translateTo(0, { animate: true });
         }
       }
-    }
-  }, {
-    key: '_preventScroll',
-    value: function _preventScroll(event) {
-      // Fix for Android & iOS when starting from scrollTop > 0 or pulling back
-      event.cancelable && event.preventDefault();
     }
 
     /**

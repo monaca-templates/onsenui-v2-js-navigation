@@ -260,15 +260,6 @@ var TabElement = function (_BaseElement) {
 
       return new _Promise(function (resolve) {
         _this3._pageLoader.load({ parent: parent, page: page }, function (pageElement) {
-
-          if (!_this3.isActive()) {
-            // Perf, fixes #2324 when active tab is 0
-            pageElement.style.visibility = 'hidden';
-            _this3._tabbar._loadInactive.promise.then(function () {
-              return pageElement.style.visibility = '';
-            });
-          }
-
           parent.replaceChild(pageElement, parent.children[_this3.index]); // Ensure position
           _this3._loadedPage = pageElement;
           resolve(pageElement);
@@ -340,7 +331,11 @@ var TabElement = function (_BaseElement) {
               var parentTarget = tabbar._targetElement;
               var dummyPage = util.create('div', { height: '100%', width: '100%', visibility: 'hidden' });
               parentTarget.insertBefore(dummyPage, parentTarget.children[index]); // Ensure position
-              return _this4._loadPageElement(parentTarget, pageTarget).then(deferred.resolve);
+
+              var load = function load() {
+                return _this4._loadPageElement(parentTarget, pageTarget).then(deferred.resolve);
+              };
+              return _this4.isActive() ? load() : tabbar._loadInactive.promise.then(load);
             }
 
             return deferred.resolve(_this4.pageElement);

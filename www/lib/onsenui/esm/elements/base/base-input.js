@@ -77,6 +77,7 @@ var BaseInputElement = function (_BaseElement) {
       this.appendChild(util.createFragment(this._template));
 
       this._setInputId();
+
       this._updateBoundAttributes();
 
       ModifierUtil.initModifier(this, this._scheme);

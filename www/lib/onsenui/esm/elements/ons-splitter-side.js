@@ -499,13 +499,15 @@ var SplitterSideElement = function (_BaseElement) {
     value: function _updateAnimation() {
       var animation = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.getAttribute('animation');
 
-      this._animator && this._animator.deactivate();
-      this._animator = this._animatorFactory.newAnimator({ animation: animation });
-      this._animator.activate(this);
-      this._animationOpt = {
-        timing: this._animator.duration,
-        duration: this._animator.duration
-      };
+      if (this.parentNode) {
+        this._animator && this._animator.deactivate();
+        this._animator = this._animatorFactory.newAnimator({ animation: animation });
+        this._animator.activate(this);
+        this._animationOpt = {
+          timing: this._animator.duration,
+          duration: this._animator.duration
+        };
+      }
     }
   }, {
     key: '_updateAnimationOptions',

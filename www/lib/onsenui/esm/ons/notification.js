@@ -139,7 +139,7 @@ notification._createAlertDialog = function () {
     };
 
     el.dialog = document.createElement('ons-alert-dialog');
-    el.dialog.innerHTML = '\n    <div class="alert-dialog-mask"></div>\n    <div class="alert-dialog">\n      <div class="alert-dialog-container">\n        <div class="alert-dialog-title">\n          ' + (options.title || '') + '\n        </div>\n        <div class="alert-dialog-content">\n          ' + (options.message || options.messageHTML) + '\n          ' + inputString + '\n        </div>\n        <div class="\n          alert-dialog-footer\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : '') + '\n        ">\n          ' + buttons + '\n        </div>\n      </div>\n    </div>\n  ';
+    el.dialog.innerHTML = '\n    <div class="alert-dialog-mask"\n      style="\n        ' + (options.maskColor ? 'background-color: ' + options.maskColor : '') + '\n      "></div>\n    <div class="alert-dialog">\n      <div class="alert-dialog-container">\n        <div class="alert-dialog-title">\n          ' + (options.title || '') + '\n        </div>\n        <div class="alert-dialog-content">\n          ' + (options.message || options.messageHTML) + '\n          ' + inputString + '\n        </div>\n        <div class="\n          alert-dialog-footer\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : '') + '\n        ">\n          ' + buttons + '\n        </div>\n      </div>\n    </div>\n  ';
     contentReady(el.dialog);
 
     // Set attributes
@@ -255,6 +255,9 @@ notification._createAlertDialog = function () {
  * @param {String} [options.modifier]
  *   [en]Modifier for the dialog.[/en]
  *   [ja]アラートダイアログのmodifier属性の値を指定します。[/ja]
+ * @param {String} [options.maskColor]
+ *   [en]Color of the background mask. Default is "rgba(0, 0, 0, 0.2)" ("rgba(0, 0, 0, 0.3)" for Material).[/en]
+ *   [ja]背景のマスクの色を指定します。"rgba(0, 0, 0, 0.2)"がデフォルト値です。[/ja]
  * @param {Function} [options.callback]
  *   [en]Function that executes after dialog has been closed.[/en]
  *   [ja]アラートダイアログが閉じられた時に呼び出される関数オブジェクトを指定します。[/ja]
