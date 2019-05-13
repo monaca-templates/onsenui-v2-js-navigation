@@ -1007,10 +1007,6 @@ var NavigatorElement = function (_BaseElement) {
     value: function _lastIndexOfPage(pageName) {
       var index = void 0;
       for (index = this.pages.length - 1; index >= 0; index--) {
-        if (!this._pageMap.has(this.pages[index])) {
-          util.throw('Incorrect state of pageMap');
-        }
-
         if (pageName === this._pageMap.get(this.pages[index])) {
           break;
         }

@@ -175,8 +175,8 @@ var SegmentElement = function (_BaseElement) {
     value: function connectedCallback() {
       var _this2 = this;
 
-      if (this.hasAttribute('tabbar-id')) {
-        contentReady(this, function () {
+      contentReady(this, function () {
+        if (_this2.hasAttribute('tabbar-id')) {
           var page = util.findParent(_this2, 'ons-page');
           _this2._tabbar = page && page.querySelector('#' + _this2.getAttribute('tabbar-id'));
           if (!_this2._tabbar || _this2._tabbar.tagName !== 'ONS-TABBAR') {
@@ -189,8 +189,8 @@ var SegmentElement = function (_BaseElement) {
           });
 
           _this2._tabbar.addEventListener('prechange', _this2._onTabbarPreChange);
-        });
-      }
+        }
+      });
 
       this.addEventListener('change', this._onChange);
     }

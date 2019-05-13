@@ -24,6 +24,7 @@ import onsElements from '../ons/elements';
 import util from '../ons/util';
 import autoStyle from '../ons/autostyle';
 import BaseElement from './base/base-element';
+import contentReady from '../ons/content-ready';
 
 var autoPrefix = 'fa'; // FIXME: To be removed in v3
 
@@ -129,7 +130,9 @@ var IconElement = function (_BaseElement) {
 
     var _this = _possibleConstructorReturn(this, (IconElement.__proto__ || _Object$getPrototypeOf(IconElement)).call(this));
 
-    _this._compile();
+    contentReady(_this, function () {
+      _this._compile();
+    });
     return _this;
   }
 
@@ -214,7 +217,10 @@ var IconElement = function (_BaseElement) {
         classList.push('ons-icon--ion');
       } else if (iconName.indexOf('fa-') === 0) {
         classList.push(iconName);
-        classList.push('fa');
+        // default icon style to Font Awesome Solid if icon style is not specified already
+        if (!(this.classList.contains('far') || this.classList.contains('fab') || this.classList.contains('fal'))) {
+          classList.push('fa');
+        }
       } else if (iconName.indexOf('md-') === 0) {
         classList.push('zmdi');
         classList.push('zmdi-' + iconName.split(/-(.+)?/)[1]);

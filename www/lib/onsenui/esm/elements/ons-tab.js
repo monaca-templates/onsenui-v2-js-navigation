@@ -281,8 +281,6 @@ var TabElement = function (_BaseElement) {
     value: function disconnectedCallback() {
       this.removeEventListener('click', this._onClick, false);
       if (this._loadedPage) {
-        this._pageLoader.unload(this._loadedPage);
-        this._loadedPage = null;
         this._hasLoaded = false;
         this.loaded = null;
       }
