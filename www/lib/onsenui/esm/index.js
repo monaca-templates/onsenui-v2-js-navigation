@@ -1,4 +1,4 @@
-/* onsenui v2.10.8 - 2019-04-01 */
+/* onsenui v2.10.10 - 2019-07-29 */
 
 import ons from './ons/index.js';
 import './ons/platform';
