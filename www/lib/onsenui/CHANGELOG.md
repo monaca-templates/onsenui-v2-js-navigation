@@ -2,6 +2,52 @@
 CHANGELOG
 ====
 
+2.11.2
+---
+
+ ### Bug Fixes
+
+ * ons.platform: isIOS now returns true for iPadOS. ([#2804](https://github.com/OnsenUI/OnsenUI/pull/2804)).
+ * ons.platform: Only prompt input cursor for supported input types. ([#2803](https://github.com/OnsenUI/OnsenUI/issues/2803)).
+ * core: Fix animations not working for platform-specific animations.
+ * ons-fab: Fix fab not being positioned relative to tab page. ([#2810](https://github.com/OnsenUI/OnsenUI/issues/2810)).
+ * core: Fix setImmediate not defined for ESM bug.
+ * ons.platform: isIPhoneX now works for iPhone 11 and 12 variants. ([#2811](https://github.com/OnsenUI/OnsenUI/pull/2811)).
+
+ ### New Features
+
+ * core: Add blur and focus methods for input elements. ([#2809](https://github.com/OnsenUI/OnsenUI/pull/2809)).
+
+2.11.1
+---
+
+ ### Misc
+
+ * Remove preinstall script that was causing npm install to fail.
+
+2.11.0
+---
+
+ ### Bug Fixes
+
+ * ons-input: Add spellcheck to list of attributes passed to inner input. ([#2706](https://github.com/OnsenUI/OnsenUI/issues/2706)).
+ * ons.notification: Fix prompt callback not running when submitOnEnter is false. ([#2618](https://github.com/OnsenUI/OnsenUI/issues/2618)).
+ * ons-tab: Fall back to icon if active-icon not set when updating button content. ([#2720](https://github.com/OnsenUI/OnsenUI/pull/2720))
+ * ons-fab: Stop fab scrolling with viewport when wrapped in another element. ([#2778](https://github.com/OnsenUI/OnsenUI/issues/2778))
+ * ons.notification: Resolve toast when hide is called before timeout. ([#2755](https://github.com/OnsenUI/OnsenUI/issues/2755))
+ * ons-navigator: Fix navigator still running when non-existent page is pushed. ([#2740](https://github.com/OnsenUI/OnsenUI/issues/2740))
+ * core: Fix status-bar-fill not being automatically set on iPadOS. ([#2745](https://github.com/OnsenUI/OnsenUI/issues/2745))
+ * core: Fix isIPad returning false on iPadOS. ([#2621](https://github.com/OnsenUI/OnsenUI/issues/2621))
+ * ons-carousel: Fix wrong active index being set on resize for carousels with items narrower that the screen width. ([#2738](https://github.com/OnsenUI/OnsenUI/issues/2738))
+ * ons-navigator: Fix bug where entry page data contains leave page data in postpop. ([#2575](https://github.com/OnsenUI/OnsenUI/issues/2575))
+ * ons-navigator: Fix pushPage's callback being called by popPage. ([#2761](https://github.com/OnsenUI/OnsenUI/issues/2761))
+ * ons-carousel: Fix carousel not swiping when inside modal on iOS. ([#2572](https://github.com/OnsenUI/OnsenUI/issues/2572))
+
+ ### BREAKING CHANGES
+
+ * UIWebView is no longer supported. FastClick is also removed.
+ * ons-navigator: If options are not set for popPage, it no longer defaults to the options set when the page was pushed.
+
 2.10.10
 ---
 

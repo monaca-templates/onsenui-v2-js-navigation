@@ -1,6 +1,15 @@
-import _typeof from 'babel-runtime/helpers/typeof';
-import _classCallCheck from 'babel-runtime/helpers/classCallCheck';
-import _createClass from 'babel-runtime/helpers/createClass';
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -121,8 +130,8 @@ var Platform = function () {
      * @method isIPhoneX
      * @signature isIPhoneX()
      * @description
-     *   [en]Returns whether the device is iPhone X, XS, XS Max, or XR.[/en]
-     *   [ja]iPhone X や XS、XS Max、または XR 上で実行されているかどうかを返します。[/ja]
+     *   [en]Returns whether the device is iPhone X, XS, XS Max, XR, 11, 11 Pro, 11 Pro Max, 12 Mini, 12, 12 Pro or 12 Pro Max.[/en]
+     *   [ja]iPhone X や XS、XS Max、XR、11、11 Pro、11 Pro Max、12 Mini、12、12 Pro、または12 Pro Max上で実行されているかどうかを返します。[/ja]
      * @return {Boolean}
      */
 
@@ -133,10 +142,23 @@ var Platform = function () {
       // We cannot avoid using window.screen.
       // We also cannot use cordova-plugin-device since its behavior is different between simulators and real devices.
       // This works well both in iOS Safari and (UI|WK)WebView of iPhone X.
-      return this.isIPhone() && (window.screen.width === 375 && window.screen.height === 812 || // X, XS portrait
-      window.screen.width === 812 && window.screen.height === 375 || // X, XS landscape
-      window.screen.width === 414 && window.screen.height === 896 || // XS Max, XR portrait
-      window.screen.width === 896 && window.screen.height === 414); // XS Max, XR landscape
+      return this.isIPhone() && (
+      // X, XS, 11 Pro, 12 Mini
+      window.screen.width === 375 && window.screen.height === 812 || // portrait
+      window.screen.width === 812 && window.screen.height === 375 || // landscape
+
+      // XS Max, XR, 11, 11 Pro Max
+      window.screen.width === 414 && window.screen.height === 896 || // portrait
+      window.screen.width === 896 && window.screen.height === 414 || // landscape
+
+      // 12, 12 Pro
+      window.screen.width === 390 && window.screen.height === 844 || // portrait
+      window.screen.width === 844 && window.screen.height === 390 || // landscape
+
+      // 12 Pro Max
+      window.screen.width === 428 && window.screen.height === 926 || // portrait
+      window.screen.width === 926 && window.screen.height === 428 // landscape
+      );
     }
 
     /**
@@ -151,7 +173,7 @@ var Platform = function () {
   }, {
     key: 'isIPad',
     value: function isIPad() {
-      return (/iPad/i.test(navigator.userAgent)
+      return (/iPad/i.test(navigator.userAgent) || this.isIPadOS()
       );
     }
 
@@ -192,7 +214,7 @@ var Platform = function () {
         return (/iOS/i.test(device.platform)
         );
       } else {
-        return (/iPhone|iPad|iPod/i.test(navigator.userAgent)
+        return (/iPhone|iPad|iPod/i.test(navigator.userAgent) || this.isIPadOS()
         );
       }
     }
@@ -217,6 +239,24 @@ var Platform = function () {
         return parseInt(ver.split('.')[0]) >= 7;
       }
       return false;
+    }
+
+    /**
+     * @method isIPadOS
+     * @signature isIPadOS()
+     * @description
+     *   [en]Returns whether the OS is iPadOS.[/en]
+     *   [ja][/ja]
+     * @return {Boolean}
+     */
+
+  }, {
+    key: 'isIPadOS',
+    value: function isIPadOS() {
+      // The iPadOS User Agent string is the same as MacOS so as a
+      // workaround we test the max touch points, which is 5 for
+      // iPads and 0 for desktop browsers.
+      return !!(/Macintosh/i.test(navigator.userAgent) && navigator.maxTouchPoints && navigator.maxTouchPoints === 5);
     }
 
     //----------------
@@ -254,21 +294,6 @@ var Platform = function () {
     value: function isWKWebView() {
       var lte9 = /constructor/i.test(NativeHTMLElement);
       return !!(this.isIOS() && window.webkit && window.webkit.messageHandlers && window.indexedDB && !lte9);
-    }
-
-    /**
-     * @method isUIWebView
-     * @signature isUIWebView()
-     * @description
-     *   [en]Returns whether app is running in UIWebView.[/en]
-     *   [ja]UIWebViewで実行されているかどうかを返します。[/ja]
-     * @return {Boolean}
-     */
-
-  }, {
-    key: 'isUIWebView',
-    value: function isUIWebView() {
-      return !!(this.isIOS() && !this.isIOSSafari() && !this.isWKWebView());
     }
 
     //----------------
@@ -576,4 +601,4 @@ var Platform = function () {
   return Platform;
 }();
 
-export default new Platform();
+exports.default = new Platform();
