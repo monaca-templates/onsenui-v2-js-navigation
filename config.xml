@@ -4,10 +4,7 @@
   <description/>
   <author/>
   <content src="index.html"/>
-  <access origin="*"/>
   <allow-navigation href="*"/>
-  <allow-intent href="itms:*"/>
-  <allow-intent href="itms-apps:*"/>
   <preference name="DisallowOverscroll" value="true"/>
   <preference name="Orientation" value="default"/>
   <preference name="loglevel" value="DEBUG"/>
