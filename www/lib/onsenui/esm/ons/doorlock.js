@@ -1,13 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -25,12 +15,12 @@ limitations under the License.
 
 */
 
-var generateId = function () {
-  var i = 0;
-  return function () {
+const generateId = (function() {
+  let i = 0;
+  return function() {
     return i++;
   };
-}();
+})();
 
 /**
  * Door locking system.
@@ -38,16 +28,12 @@ var generateId = function () {
  * @param {Object} [options]
  * @param {Function} [options.log]
  */
+export default class DoorLock {
 
-var DoorLock = function () {
-  function DoorLock() {
-    var options = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, DoorLock);
-
+  constructor(options = {}) {
     this._lockList = [];
     this._waitList = [];
-    this._log = options.log || function () {};
+    this._log = options.log || function() {};
   }
 
   /**
@@ -55,75 +41,56 @@ var DoorLock = function () {
    *
    * @return {Function} Callback for unlocking.
    */
+  lock() {
+    const unlock = () => {
+      this._unlock(unlock);
+    };
+    unlock.id = generateId();
+    this._lockList.push(unlock);
+    this._log('lock: ' + (unlock.id));
 
+    return unlock;
+  }
 
-  _createClass(DoorLock, [{
-    key: 'lock',
-    value: function lock() {
-      var _this = this;
-
-      var unlock = function unlock() {
-        _this._unlock(unlock);
-      };
-      unlock.id = generateId();
-      this._lockList.push(unlock);
-      this._log('lock: ' + unlock.id);
-
-      return unlock;
-    }
-  }, {
-    key: '_unlock',
-    value: function _unlock(fn) {
-      var index = this._lockList.indexOf(fn);
-      if (index === -1) {
-        throw new Error('This function is not registered in the lock list.');
-      }
-
-      this._lockList.splice(index, 1);
-      this._log('unlock: ' + fn.id);
-
-      this._tryToFreeWaitList();
-    }
-  }, {
-    key: '_tryToFreeWaitList',
-    value: function _tryToFreeWaitList() {
-      while (!this.isLocked() && this._waitList.length > 0) {
-        this._waitList.shift()();
-      }
+  _unlock(fn) {
+    const index = this._lockList.indexOf(fn);
+    if (index === -1) {
+      throw new Error('This function is not registered in the lock list.');
     }
 
-    /**
-     * Register a callback for waiting unlocked door.
-     *
-     * @params {Function} callback Callback on unlocking the door completely.
-     */
+    this._lockList.splice(index, 1);
+    this._log('unlock: ' + fn.id);
 
-  }, {
-    key: 'waitUnlock',
-    value: function waitUnlock(callback) {
-      if (!(callback instanceof Function)) {
-        throw new Error('The callback param must be a function.');
-      }
+    this._tryToFreeWaitList();
+  }
 
-      if (this.isLocked()) {
-        this._waitList.push(callback);
-      } else {
-        callback();
-      }
+  _tryToFreeWaitList() {
+    while (!this.isLocked() && this._waitList.length > 0) {
+      this._waitList.shift()();
+    }
+  }
+
+  /**
+   * Register a callback for waiting unlocked door.
+   *
+   * @params {Function} callback Callback on unlocking the door completely.
+   */
+  waitUnlock(callback) {
+    if (!(callback instanceof Function)) {
+      throw new Error('The callback param must be a function.');
     }
 
-    /**
-     * @return {Boolean}
-     */
-
-  }, {
-    key: 'isLocked',
-    value: function isLocked() {
-      return this._lockList.length > 0;
+    if (this.isLocked()) {
+      this._waitList.push(callback);
+    } else {
+      callback();
     }
-  }]);
+  }
 
-  return DoorLock;
-}();
-
-exports.default = DoorLock;
+  /**
+   * @return {Boolean}
+   */
+  isLocked() {
+    return this._lockList.length > 0;
+  }
+}

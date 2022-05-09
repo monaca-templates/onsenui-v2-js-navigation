@@ -1,68 +1,43 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import autoStyle from '../ons/autostyle.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
-var _util2 = _interopRequireDefault(_util);
-
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var scheme = {
+const scheme = {
   '.progress-circular': 'progress-circular--*',
   '.progress-circular__background': 'progress-circular--*__background',
   '.progress-circular__primary': 'progress-circular--*__primary',
   '.progress-circular__secondary': 'progress-circular--*__secondary'
 };
 
-var template = _util2.default.createElement('\n  <svg class="progress-circular">\n    <circle class="progress-circular__background" />\n    <circle class="progress-circular__secondary" cx="50%" cy="50%" r="40%" />\n    <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" />\n  </svg>\n');
+const template = util.createElement(`
+  <svg class="progress-circular">
+    <circle class="progress-circular__background" />
+    <circle class="progress-circular__secondary" cx="50%" cy="50%" r="40%" />
+    <circle class="progress-circular__primary" cx="50%" cy="50%" r="40%" />
+  </svg>
+`);
 
-var INDET = 'indeterminate';
+const INDET = 'indeterminate';
 
 /**
  * @element ons-progress-circular
@@ -87,9 +62,7 @@ var INDET = 'indeterminate';
  *  indeterminate>
  * </ons-progress-circular>
  */
-
-var ProgressCircularElement = function (_BaseElement) {
-  _inherits(ProgressCircularElement, _BaseElement);
+export default class ProgressCircularElement extends BaseElement {
 
   /**
    * @attribute modifier
@@ -122,175 +95,146 @@ var ProgressCircularElement = function (_BaseElement) {
    *   [ja]この属性が設定された場合、ループするアニメーションが表示されます。[/ja]
    */
 
-  function ProgressCircularElement() {
-    _classCallCheck(this, ProgressCircularElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (ProgressCircularElement.__proto__ || Object.getPrototypeOf(ProgressCircularElement)).call(this));
-
-    (0, _contentReady2.default)(_this, function () {
-      return _this._compile();
-    });
-    return _this;
+    contentReady(this, () => this._compile());
   }
 
-  _createClass(ProgressCircularElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      if (name === 'modifier') {
-        _modifierUtil2.default.onModifierChanged(last, current, this, scheme);
-        this.hasAttribute(INDET) && this._updateDeterminate();
-      } else if (name === 'value' || name === 'secondary-value') {
-        this._updateValue();
-      } else if (name === INDET) {
-        this._updateDeterminate();
-      }
-    }
-  }, {
-    key: '_updateDeterminate',
-    value: function _updateDeterminate() {
-      var _this2 = this;
+  static get observedAttributes() {
+    return ['modifier', 'value', 'secondary-value', INDET];
+  }
 
-      (0, _contentReady2.default)(this, function () {
-        return _util2.default.toggleModifier(_this2, INDET, { force: _this2.hasAttribute(INDET) });
+  attributeChangedCallback(name, last, current) {
+    if (name === 'modifier') {
+      ModifierUtil.onModifierChanged(last, current, this, scheme);
+      this.hasAttribute(INDET) && this._updateDeterminate();
+    } else if (name === 'value' || name === 'secondary-value') {
+      this._updateValue();
+    } else if (name === INDET) {
+      this._updateDeterminate();
+    }
+  }
+
+  _updateDeterminate() {
+    contentReady(this, () => util.toggleModifier(this, INDET, { force: this.hasAttribute(INDET) }));
+  }
+
+  _updateValue() {
+    if (this.hasAttribute('value')) {
+      contentReady(this, () => {
+        const per = Math.ceil(this.getAttribute('value') * 251.32 * 0.01);
+        this._primary.style['stroke-dasharray'] = per + '%, 251.32%';
       });
     }
-  }, {
-    key: '_updateValue',
-    value: function _updateValue() {
-      var _this3 = this;
+    if (this.hasAttribute('secondary-value')) {
+      contentReady(this, () => {
+        const per =  Math.ceil(this.getAttribute('secondary-value') * 251.32 * 0.01);
+        this._secondary.style.display = null;
+        this._secondary.style['stroke-dasharray'] = per + '%, 251.32%';
+      });
+    } else {
+      contentReady(this, () => {
+        this._secondary.style.display = 'none';
+      });
+    }
+  }
 
-      if (this.hasAttribute('value')) {
-        (0, _contentReady2.default)(this, function () {
-          var per = Math.ceil(_this3.getAttribute('value') * 251.32 * 0.01);
-          _this3._primary.style['stroke-dasharray'] = per + '%, 251.32%';
-        });
-      }
-      if (this.hasAttribute('secondary-value')) {
-        (0, _contentReady2.default)(this, function () {
-          var per = Math.ceil(_this3.getAttribute('secondary-value') * 251.32 * 0.01);
-          _this3._secondary.style.display = null;
-          _this3._secondary.style['stroke-dasharray'] = per + '%, 251.32%';
-        });
-      } else {
-        (0, _contentReady2.default)(this, function () {
-          _this3._secondary.style.display = 'none';
-        });
-      }
+  /**
+   * @property value
+   * @type {Number}
+   * @description
+   *   [en]Current progress. Should be a value between 0 and 100.[/en]
+   *   [ja]現在の進行状況の値を指定します。0から100の間の値を指定して下さい。[/ja]
+   */
+  set value(value) {
+    if (typeof value !== 'number' || value < 0 || value > 100) {
+      util.throw('Invalid value');
     }
 
-    /**
-     * @property value
-     * @type {Number}
-     * @description
-     *   [en]Current progress. Should be a value between 0 and 100.[/en]
-     *   [ja]現在の進行状況の値を指定します。0から100の間の値を指定して下さい。[/ja]
-     */
+    this.setAttribute('value', Math.floor(value));
+  }
 
-  }, {
-    key: '_compile',
-    value: function _compile() {
-      if (this._isCompiled()) {
-        this._template = _util2.default.findChild(this, '.progress-circular');
-      } else {
-        this._template = template.cloneNode(true);
-      }
+  get value() {
+    return parseInt(this.getAttribute('value') || '0');
+  }
 
-      this._primary = _util2.default.findChild(this._template, '.progress-circular__primary');
-      this._secondary = _util2.default.findChild(this._template, '.progress-circular__secondary');
-
-      this._updateDeterminate();
-      this._updateValue();
-
-      this.appendChild(this._template);
-
-      _autostyle2.default.prepare(this);
-      _modifierUtil2.default.initModifier(this, scheme);
-    }
-  }, {
-    key: '_isCompiled',
-    value: function _isCompiled() {
-      if (!_util2.default.findChild(this, '.progress-circular')) {
-        return false;
-      }
-
-      var svg = _util2.default.findChild(this, '.progress-circular');
-
-      if (!_util2.default.findChild(svg, '.progress-circular__secondary')) {
-        return false;
-      }
-
-      if (!_util2.default.findChild(svg, '.progress-circular__primary')) {
-        return false;
-      }
-
-      return true;
-    }
-  }, {
-    key: 'value',
-    set: function set(value) {
-      if (typeof value !== 'number' || value < 0 || value > 100) {
-        _util2.default.throw('Invalid value');
-      }
-
-      this.setAttribute('value', Math.floor(value));
-    },
-    get: function get() {
-      return parseInt(this.getAttribute('value') || '0');
+  /**
+   * @property secondaryValue
+   * @type {Number}
+   * @description
+   *   [en]Current secondary progress. Should be a value between 0 and 100.[/en]
+   *   [ja]現在の２番目の進行状況の値を指定します。0から100の間の値を指定して下さい。[/ja]
+   */
+  set secondaryValue(value) {
+    if (typeof value !== 'number' || value < 0 || value > 100) {
+      util.throw('Invalid value');
     }
 
-    /**
-     * @property secondaryValue
-     * @type {Number}
-     * @description
-     *   [en]Current secondary progress. Should be a value between 0 and 100.[/en]
-     *   [ja]現在の２番目の進行状況の値を指定します。0から100の間の値を指定して下さい。[/ja]
-     */
+    this.setAttribute('secondary-value', Math.floor(value));
+  }
 
-  }, {
-    key: 'secondaryValue',
-    set: function set(value) {
-      if (typeof value !== 'number' || value < 0 || value > 100) {
-        _util2.default.throw('Invalid value');
-      }
+  get secondaryValue() {
+    return parseInt(this.getAttribute('secondary-value') || '0');
+  }
 
-      this.setAttribute('secondary-value', Math.floor(value));
-    },
-    get: function get() {
-      return parseInt(this.getAttribute('secondary-value') || '0');
+  /**
+   * @property indeterminate
+   * @type {Boolean}
+   * @description
+   *   [en]If this property is `true`, an infinite looping animation will be shown.[/en]
+   *   [ja]この属性が設定された場合、ループするアニメーションが表示されます。[/ja]
+   */
+  set indeterminate(value) {
+    if (value) {
+      this.setAttribute(INDET, '');
+    }
+    else {
+      this.removeAttribute(INDET);
+    }
+  }
+
+  get indeterminate() {
+    return this.hasAttribute(INDET);
+  }
+
+  _compile() {
+    if (this._isCompiled()) {
+      this._template = util.findChild(this, '.progress-circular');
+    } else {
+      this._template = template.cloneNode(true);
     }
 
-    /**
-     * @property indeterminate
-     * @type {Boolean}
-     * @description
-     *   [en]If this property is `true`, an infinite looping animation will be shown.[/en]
-     *   [ja]この属性が設定された場合、ループするアニメーションが表示されます。[/ja]
-     */
+    this._primary = util.findChild(this._template, '.progress-circular__primary');
+    this._secondary = util.findChild(this._template, '.progress-circular__secondary');
 
-  }, {
-    key: 'indeterminate',
-    set: function set(value) {
-      if (value) {
-        this.setAttribute(INDET, '');
-      } else {
-        this.removeAttribute(INDET);
-      }
-    },
-    get: function get() {
-      return this.hasAttribute(INDET);
+    this._updateDeterminate();
+    this._updateValue();
+
+    this.appendChild(this._template);
+
+    autoStyle.prepare(this);
+    ModifierUtil.initModifier(this, scheme);
+  }
+
+  _isCompiled() {
+    if (!util.findChild(this, '.progress-circular')) {
+      return false;
     }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'value', 'secondary-value', INDET];
+
+    const svg = util.findChild(this, '.progress-circular');
+
+    if (!util.findChild(svg, '.progress-circular__secondary')) {
+      return false;
     }
-  }]);
 
-  return ProgressCircularElement;
-}(_baseElement2.default);
+    if (!util.findChild(svg, '.progress-circular__primary')) {
+      return false;
+    }
 
-exports.default = ProgressCircularElement;
+    return true;
+  }
+}
 
-
-_elements2.default.ProgressCircular = ProgressCircularElement;
+onsElements.ProgressCircular = ProgressCircularElement;
 customElements.define('ons-progress-circular', ProgressCircularElement);

@@ -1,67 +1,32 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import autoStyle from '../ons/autostyle.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import TabbarElement from './ons-tabbar.js';
+import contentReady from '../ons/content-ready.js';
+import { PageLoader, defaultPageLoader } from '../ons/page-loader.js';
 
-var _util2 = _interopRequireDefault(_util);
+const defaultClassName = 'tabbar__item';
 
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _onsTabbar = require('./ons-tabbar');
-
-var _onsTabbar2 = _interopRequireDefault(_onsTabbar);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-var _pageLoader = require('../ons/page-loader');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var defaultClassName = 'tabbar__item';
-
-var scheme = {
+const scheme = {
   '': 'tabbar--*__item',
   '.tabbar__button': 'tabbar--*__button'
 };
@@ -114,9 +79,7 @@ var scheme = {
  * </template>
 
  */
-
-var TabElement = function (_BaseElement) {
-  _inherits(TabElement, _BaseElement);
+export default class TabElement extends BaseElement {
 
   /**
    * @attribute page
@@ -171,302 +134,257 @@ var TabElement = function (_BaseElement) {
    *   [ja][/ja]
    */
 
-  function TabElement() {
-    _classCallCheck(this, TabElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (TabElement.__proto__ || Object.getPrototypeOf(TabElement)).call(this));
-
-    if (['label', 'icon', 'badge'].some(_this.hasAttribute.bind(_this))) {
-      _this._compile();
+    if (['label', 'icon', 'badge'].some(this.hasAttribute.bind(this))) {
+      this._compile();
     } else {
-      (0, _contentReady2.default)(_this, function () {
-        return _this._compile();
-      });
+      contentReady(this, () => this._compile());
     }
 
-    _this._pageLoader = _pageLoader.defaultPageLoader;
-    _this._onClick = _this._onClick.bind(_this);
-    return _this;
+    this._pageLoader = defaultPageLoader;
+    this._onClick = this._onClick.bind(this);
+
+    const {onConnected, onDisconnected} = util.defineListenerProperty(this, 'click');
+    this._connectOnClick = onConnected;
+    this._disconnectOnClick = onDisconnected;
   }
 
-  _createClass(TabElement, [{
-    key: '_compile',
-    value: function _compile() {
-      _autostyle2.default.prepare(this);
-      this.classList.add(defaultClassName);
-
-      if (this._button) {
-        return;
-      }
-
-      var button = _util2.default.create('button.tabbar__button');
-      while (this.childNodes[0]) {
-        button.appendChild(this.childNodes[0]);
-      }
-
-      var input = _util2.default.create('input', { display: 'none' });
-      input.type = 'radio';
-
-      this.appendChild(input);
-      this.appendChild(button);
-
-      this._updateButtonContent();
-      _modifierUtil2.default.initModifier(this, scheme);
-      this._updateRipple();
+  set pageLoader(loader) {
+    if (!(loader instanceof PageLoader)) {
+      util.throwPageLoader();
     }
-  }, {
-    key: '_updateRipple',
-    value: function _updateRipple() {
-      this._button && _util2.default.updateRipple(this._button, this.hasAttribute('ripple'));
+    this._pageLoader = loader;
+  }
+
+  get pageLoader() {
+    return this._pageLoader;
+  }
+
+  _compile() {
+    autoStyle.prepare(this);
+    this.classList.add(defaultClassName);
+
+    if (this._button) {
+      return;
     }
-  }, {
-    key: '_updateButtonContent',
-    value: function _updateButtonContent() {
-      var _this2 = this;
 
-      var button = this._button;
+    const button = util.create('button.tabbar__button');
+    while (this.childNodes[0]) {
+      button.appendChild(this.childNodes[0]);
+    }
 
-      var iconWrapper = this._icon;
-      if (this.hasAttribute('icon')) {
-        iconWrapper = iconWrapper || _util2.default.createElement('<div class="tabbar__icon"><ons-icon></ons-icon></div>');
-        var icon = iconWrapper.children[0];
-        var fix = function (last) {
-          return function () {
-            return icon.attributeChangedCallback('icon', last, _this2.getAttribute('icon'));
-          };
-        }(icon.getAttribute('icon'));
-        if (this.hasAttribute('icon') && this.hasAttribute('active-icon')) {
-          icon.setAttribute('icon', this.getAttribute(this.isActive() ? 'active-icon' : 'icon'));
-        } else if (this.hasAttribute('icon')) {
-          icon.setAttribute('icon', this.getAttribute('icon'));
-        }
-        iconWrapper.parentElement !== button && button.insertBefore(iconWrapper, button.firstChild);
+    const input = util.create('input', { display: 'none' });
+    input.type = 'radio';
 
-        // dirty fix for https://github.com/OnsenUI/OnsenUI/issues/1654
-        icon.attributeChangedCallback instanceof Function ? fix() : setImmediate(function () {
-          return icon.attributeChangedCallback instanceof Function && fix();
-        });
+    this.appendChild(input);
+    this.appendChild(button);
+
+    this._updateButtonContent();
+    ModifierUtil.initModifier(this, scheme);
+    this._updateRipple();
+  }
+
+  _updateRipple() {
+    this._button && util.updateRipple(this._button, this.hasAttribute('ripple'));
+  }
+
+  _updateButtonContent() {
+    const button = this._button;
+
+    let iconWrapper = this._icon;
+    if (this.hasAttribute('icon')) {
+      iconWrapper = iconWrapper || util.createElement('<div class="tabbar__icon"><ons-icon></ons-icon></div>');
+      const icon = iconWrapper.children[0];
+      const fix = (last => () => icon.attributeChangedCallback('icon', last, this.getAttribute('icon')))(icon.getAttribute('icon'));
+      if (this.hasAttribute('icon') && this.hasAttribute('active-icon')) {
+        icon.setAttribute('icon', this.getAttribute(this.isActive() ? 'active-icon' : 'icon'));
+      } else if (this.hasAttribute('icon')) {
+        icon.setAttribute('icon', this.getAttribute('icon'));
+      }
+      iconWrapper.parentElement !== button && button.insertBefore(iconWrapper, button.firstChild);
+
+      // dirty fix for https://github.com/OnsenUI/OnsenUI/issues/1654
+      icon.attributeChangedCallback instanceof Function
+        ? fix()
+        : setImmediate(() => icon.attributeChangedCallback instanceof Function && fix());
+    } else {
+      iconWrapper && iconWrapper.remove();
+    }
+
+    ['label', 'badge'].forEach((attr, index) => {
+      let prop = this.querySelector(`.tabbar__${attr}`);
+      if (this.hasAttribute(attr)) {
+        prop = prop || util.create(`.tabbar__${attr}` + (attr === 'badge' ? ' notification' : ''));
+        prop.textContent = this.getAttribute(attr);
+        prop.parentElement !== button && button.appendChild(prop);
       } else {
-        iconWrapper && iconWrapper.remove();
+        prop && prop.remove();
       }
+    });
+  }
 
-      ['label', 'badge'].forEach(function (attr, index) {
-        var prop = _this2.querySelector('.tabbar__' + attr);
-        if (_this2.hasAttribute(attr)) {
-          prop = prop || _util2.default.create('.tabbar__' + attr + (attr === 'badge' ? ' notification' : ''));
-          prop.textContent = _this2.getAttribute(attr);
-          prop.parentElement !== button && button.appendChild(prop);
-        } else {
-          prop && prop.remove();
-        }
-      });
-    }
-  }, {
-    key: '_onClick',
-    value: function _onClick() {
-      if (this.onClick instanceof Function) {
-        this.onClick();
-      } else {
+  get _input() {
+    return util.findChild(this, 'input');
+  }
+
+  get _button() {
+    return util.findChild(this, '.tabbar__button');
+  }
+
+  get _icon() {
+    return this.querySelector('.tabbar__icon');
+  }
+
+  get _tabbar() {
+    return util.findParent(this, 'ons-tabbar');
+  }
+
+  get index() {
+    return Array.prototype.indexOf.call(this.parentElement.children, this);
+  }
+
+  _onClick(event) {
+    setTimeout(() => {
+      if (!event.defaultPrevented) {
         this._tabbar.setActiveTab(this.index, { reject: false });
       }
-    }
-  }, {
-    key: 'setActive',
-    value: function setActive() {
-      var active = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+    });
+  }
 
+  setActive(active = true) {
+    contentReady(this, () => {
       this._input.checked = active;
       this.classList.toggle('active', active);
-      _util2.default.toggleAttribute(this, 'active', active);
+      util.toggleAttribute(this, 'active', active);
 
       if (this.hasAttribute('icon') && this.hasAttribute('active-icon')) {
         this._icon.children[0].setAttribute('icon', this.getAttribute(active ? 'active-icon' : 'icon'));
       }
+    });
+  }
+
+  _loadPageElement(parent, page) {
+    this._hasLoaded = true;
+
+    return new Promise(resolve => {
+      this._pageLoader.load({ parent, page }, pageElement => {
+        parent.replaceChild(pageElement, parent.children[this.index]); // Ensure position
+        this._loadedPage = pageElement;
+        resolve(pageElement);
+      });
+    });
+  }
+
+  get pageElement() {
+    // It has been loaded by ons-tab
+    if (this._loadedPage) {
+      return this._loadedPage;
     }
-  }, {
-    key: '_loadPageElement',
-    value: function _loadPageElement(parent, page) {
-      var _this3 = this;
+    // Manually attached to DOM, 1 per tab
+    const tabbar = this._tabbar;
+    if (tabbar.pages.length === tabbar.tabs.length) {
+      return tabbar.pages[this.index];
+    }
+    // Loaded in another way
+    return null;
+  }
 
-      this._hasLoaded = true;
+  /**
+   * @return {Boolean}
+   */
+  isActive() {
+    return this.classList.contains('active');
+  }
 
-      return new Promise(function (resolve) {
-        _this3._pageLoader.load({ parent: parent, page: page }, function (pageElement) {
-          parent.replaceChild(pageElement, parent.children[_this3.index]); // Ensure position
-          _this3._loadedPage = pageElement;
-          resolve(pageElement);
+  disconnectedCallback() {
+    this.removeEventListener('click', this._onClick, false);
+    if (this._loadedPage) {
+      this._hasLoaded = false;
+      this.loaded = null;
+    }
+
+    this._disconnectOnClick();
+  }
+
+  connectedCallback() {
+    this.addEventListener('click', this._onClick, false);
+
+    if (!util.isAttached(this) || this.loaded) {
+      return; // ons-tabbar compilation may trigger this
+    }
+
+    const deferred = util.defer();
+    this.loaded = deferred.promise;
+
+    contentReady(this, () => {
+      const index = this.index;
+      const tabbar = this._tabbar;
+      if (!tabbar) {
+        util.throw('Tab elements must be children of Tabbar');
+      }
+
+      if (tabbar.hasAttribute('modifier')) {
+        util.addModifier(this, tabbar.getAttribute('modifier'));
+      }
+
+      if (!this._hasLoaded) {
+        if (this.hasAttribute('active')) {
+          this.setActive(true);
+          tabbar.activeIndex = index;
+        }
+
+        if (index === tabbar.tabs.length - 1) {
+          tabbar._onRefresh();
+          setImmediate(() => tabbar._onRefresh());
+        }
+
+        TabbarElement.rewritables.ready(tabbar, () => {
+          const pageTarget = this.page || this.getAttribute('page');
+          if (!this.pageElement && pageTarget) {
+            const parentTarget = tabbar._targetElement;
+            const dummyPage = util.create('div', { height: '100%', width: '100%', visibility: 'hidden' });
+            parentTarget.insertBefore(dummyPage, parentTarget.children[index]); // Ensure position
+
+            const load = () => this._loadPageElement(parentTarget, pageTarget).then(deferred.resolve);
+            return this.isActive() ? load() : tabbar._loadInactive.promise.then(load);
+          }
+
+          return deferred.resolve(this.pageElement);
         });
-      });
-    }
-  }, {
-    key: 'isActive',
-
-
-    /**
-     * @return {Boolean}
-     */
-    value: function isActive() {
-      return this.classList.contains('active');
-    }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {
-      this.removeEventListener('click', this._onClick, false);
-      if (this._loadedPage) {
-        this._hasLoaded = false;
-        this.loaded = null;
       }
+    });
+
+    this._connectOnClick();
+  }
+
+  static get observedAttributes() {
+    return ['modifier', 'ripple', 'icon', 'label', 'page', 'badge', 'class'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    switch (name) {
+      case 'class':
+        util.restoreClass(this, defaultClassName, scheme);
+        break;
+      case 'modifier':
+        contentReady(this, () => ModifierUtil.onModifierChanged(last, current, this, scheme));
+        break;
+      case 'ripple':
+        contentReady(this, () => this._updateRipple());
+        break;
+      case 'icon':
+      case 'label':
+      case 'badge':
+        contentReady(this, () => this._updateButtonContent());
+        break;
+      case 'page':
+        this.page = current || '';
+        break;
     }
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this4 = this;
+  }
+}
 
-      this.addEventListener('click', this._onClick, false);
-
-      if (!_util2.default.isAttached(this) || this.loaded) {
-        return; // ons-tabbar compilation may trigger this
-      }
-
-      var deferred = _util2.default.defer();
-      this.loaded = deferred.promise;
-
-      (0, _contentReady2.default)(this, function () {
-        var index = _this4.index;
-        var tabbar = _this4._tabbar;
-        if (!tabbar) {
-          _util2.default.throw('Tab elements must be children of Tabbar');
-        }
-
-        if (tabbar.hasAttribute('modifier')) {
-          _util2.default.addModifier(_this4, tabbar.getAttribute('modifier'));
-        }
-
-        if (!_this4._hasLoaded) {
-          if (_this4.hasAttribute('active')) {
-            _this4.setActive(true);
-            tabbar.setAttribute('activeIndex', index);
-          }
-
-          if (index === tabbar.tabs.length - 1) {
-            tabbar._onRefresh();
-            setImmediate(function () {
-              return tabbar._onRefresh();
-            });
-          }
-
-          _onsTabbar2.default.rewritables.ready(tabbar, function () {
-            var pageTarget = _this4.page || _this4.getAttribute('page');
-            if (!_this4.pageElement && pageTarget) {
-              var parentTarget = tabbar._targetElement;
-              var dummyPage = _util2.default.create('div', { height: '100%', width: '100%', visibility: 'hidden' });
-              parentTarget.insertBefore(dummyPage, parentTarget.children[index]); // Ensure position
-
-              var load = function load() {
-                return _this4._loadPageElement(parentTarget, pageTarget).then(deferred.resolve);
-              };
-              return _this4.isActive() ? load() : tabbar._loadInactive.promise.then(load);
-            }
-
-            return deferred.resolve(_this4.pageElement);
-          });
-        }
-      });
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      var _this5 = this;
-
-      switch (name) {
-        case 'class':
-          _util2.default.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          (0, _contentReady2.default)(this, function () {
-            return _modifierUtil2.default.onModifierChanged(last, current, _this5, scheme);
-          });
-          break;
-        case 'ripple':
-          (0, _contentReady2.default)(this, function () {
-            return _this5._updateRipple();
-          });
-          break;
-        case 'icon':
-        case 'label':
-        case 'badge':
-          (0, _contentReady2.default)(this, function () {
-            return _this5._updateButtonContent();
-          });
-          break;
-        case 'page':
-          this.page = current || '';
-          break;
-      }
-    }
-  }, {
-    key: 'pageLoader',
-    set: function set(loader) {
-      if (!(loader instanceof _pageLoader.PageLoader)) {
-        _util2.default.throwPageLoader();
-      }
-      this._pageLoader = loader;
-    },
-    get: function get() {
-      return this._pageLoader;
-    }
-  }, {
-    key: '_input',
-    get: function get() {
-      return _util2.default.findChild(this, 'input');
-    }
-  }, {
-    key: '_button',
-    get: function get() {
-      return _util2.default.findChild(this, '.tabbar__button');
-    }
-  }, {
-    key: '_icon',
-    get: function get() {
-      return this.querySelector('.tabbar__icon');
-    }
-  }, {
-    key: '_tabbar',
-    get: function get() {
-      return _util2.default.findParent(this, 'ons-tabbar');
-    }
-  }, {
-    key: 'index',
-    get: function get() {
-      return Array.prototype.indexOf.call(this.parentElement.children, this);
-    }
-  }, {
-    key: 'pageElement',
-    get: function get() {
-      // It has been loaded by ons-tab
-      if (this._loadedPage) {
-        return this._loadedPage;
-      }
-      // Manually attached to DOM, 1 per tab
-      var tabbar = this._tabbar;
-      if (tabbar.pages.length === tabbar.tabs.length) {
-        return tabbar.pages[this.index];
-      }
-      // Loaded in another way
-      return null;
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'ripple', 'icon', 'label', 'page', 'badge', 'class'];
-    }
-  }]);
-
-  return TabElement;
-}(_baseElement2.default);
-
-exports.default = TabElement;
-
-
-_elements2.default.Tab = TabElement;
+onsElements.Tab = TabElement;
 customElements.define('ons-tab', TabElement);

@@ -1,51 +1,25 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
-
-var _util2 = _interopRequireDefault(_util);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var scheme = { '': 'carousel-item--*' };
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import BaseElement from './base/base-element.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+const scheme = {'': 'carousel-item--*'};
 
 /**
  * @element ons-carousel-item
@@ -70,39 +44,25 @@ var scheme = { '': 'carousel-item--*' };
  *   </ons-carousel-item>
  * </ons-carousel>
  */
+export default class CarouselItemElement extends BaseElement {
 
-var CarouselItemElement = function (_BaseElement) {
-  _inherits(CarouselItemElement, _BaseElement);
+  constructor() {
+    super();
 
-  function CarouselItemElement() {
-    _classCallCheck(this, CarouselItemElement);
-
-    var _this = _possibleConstructorReturn(this, (CarouselItemElement.__proto__ || Object.getPrototypeOf(CarouselItemElement)).call(this));
-
-    _this.style.width = '100%';
-    _modifierUtil2.default.initModifier(_this, scheme);
-    return _this;
+    this.style.width = '100%';
+    ModifierUtil.initModifier(this, scheme);
   }
 
-  _createClass(CarouselItemElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      if (name === 'modifier') {
-        return _modifierUtil2.default.onModifierChanged(last, current, this, scheme);
-      }
+  static get observedAttributes() {
+    return ['modifier'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    if (name === 'modifier') {
+      return ModifierUtil.onModifierChanged(last, current, this, scheme);
     }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier'];
-    }
-  }]);
+  }
+}
 
-  return CarouselItemElement;
-}(_baseElement2.default);
-
-exports.default = CarouselItemElement;
-
-
-_elements2.default.CarouselItem = CarouselItemElement;
+onsElements.CarouselItem = CarouselItemElement;
 customElements.define('ons-carousel-item', CarouselItemElement);

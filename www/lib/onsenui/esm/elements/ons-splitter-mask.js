@@ -1,106 +1,62 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _baseElement = require('./base/base-element');
+import onsElements from '../ons/elements.js';
+import BaseElement from './base/base-element.js';
+import util from '../ons/util.js';
+import contentReady from '../ons/content-ready.js';
 
-var _baseElement2 = _interopRequireDefault(_baseElement);
+export default class SplitterMaskElement extends BaseElement {
 
-var _util = require('../ons/util');
+  constructor() {
+    super();
 
-var _util2 = _interopRequireDefault(_util);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var SplitterMaskElement = function (_BaseElement) {
-  _inherits(SplitterMaskElement, _BaseElement);
-
-  function SplitterMaskElement() {
-    _classCallCheck(this, SplitterMaskElement);
-
-    var _this = _possibleConstructorReturn(this, (SplitterMaskElement.__proto__ || Object.getPrototypeOf(SplitterMaskElement)).call(this));
-
-    _this._boundOnClick = _this._onClick.bind(_this);
-    (0, _contentReady2.default)(_this, function () {
-      if (_this.parentNode._sides.every(function (side) {
-        return side.mode === 'split';
-      })) {
-        _this.setAttribute('style', 'display: none !important');
+    this._boundOnClick = this._onClick.bind(this);
+    contentReady(this, () => {
+      if (this.parentNode._sides.every(side => side.mode === 'split')) {
+        this.setAttribute('style', 'display: none !important');
       }
     });
-    return _this;
   }
 
-  _createClass(SplitterMaskElement, [{
-    key: '_onClick',
-    value: function _onClick(event) {
-      if (this.onClick instanceof Function) {
-        this.onClick();
-      } else if (_util2.default.match(this.parentNode, 'ons-splitter')) {
-        this.parentNode._sides.forEach(function (side) {
-          return side.close('left').catch(function () {});
-        });
-      }
-      event.stopPropagation();
+  _onClick(event) {
+    if (this.onClick instanceof Function) {
+      this.onClick();
+    } else if (util.match(this.parentNode, 'ons-splitter')) {
+      this.parentNode._sides.forEach(side => side.close('left').catch(() => {}));
     }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {}
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      this.addEventListener('click', this._boundOnClick);
-    }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {
-      this.removeEventListener('click', this._boundOnClick);
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return [];
-    }
-  }]);
+    event.stopPropagation();
+  }
 
-  return SplitterMaskElement;
-}(_baseElement2.default);
+  static get observedAttributes() {
+    return [];
+  }
 
-exports.default = SplitterMaskElement;
+  attributeChangedCallback(name, last, current) {
+  }
 
+  connectedCallback() {
+    this.addEventListener('click', this._boundOnClick);
+  }
 
-_elements2.default.SplitterMask = SplitterMaskElement;
+  disconnectedCallback() {
+    this.removeEventListener('click', this._boundOnClick);
+  }
+}
+
+onsElements.SplitterMask = SplitterMaskElement;
 customElements.define('ons-splitter-mask', SplitterMaskElement);

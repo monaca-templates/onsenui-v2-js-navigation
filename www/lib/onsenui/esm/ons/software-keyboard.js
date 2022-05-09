@@ -1,19 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = require('./util');
-
-var _util2 = _interopRequireDefault(_util);
-
-var _microevent = require('./microevent');
-
-var _microevent2 = _interopRequireDefault(_microevent);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -31,32 +15,35 @@ limitations under the License.
 
 */
 
-var softwareKeyboard = new _microevent2.default();
+import util from './util.js';
+import MicroEvent from './microevent.js';
+
+const softwareKeyboard = new MicroEvent();
 softwareKeyboard._visible = false;
 
-var onShow = function onShow() {
+const onShow = () => {
   softwareKeyboard._visible = true;
   softwareKeyboard.emit('show');
 };
 
-var onHide = function onHide() {
+const onHide = () => {
   softwareKeyboard._visible = false;
   softwareKeyboard.emit('hide');
 };
 
-var bindEvents = function bindEvents() {
+const bindEvents = () => {
   if (typeof Keyboard !== 'undefined') {
     // https://github.com/martinmose/cordova-keyboard/blob/95f3da3a38d8f8e1fa41fbf40145352c13535a00/README.md
     Keyboard.onshow = onShow;
     Keyboard.onhide = onHide;
-    softwareKeyboard.emit('init', { visible: Keyboard.isVisible });
+    softwareKeyboard.emit('init', {visible: Keyboard.isVisible});
 
     return true;
   } else if (typeof cordova.plugins !== 'undefined' && typeof cordova.plugins.Keyboard !== 'undefined') {
     // https://github.com/driftyco/ionic-plugins-keyboard/blob/ca27ecf/README.md
     window.addEventListener('native.keyboardshow', onShow);
     window.addEventListener('native.keyboardhide', onHide);
-    softwareKeyboard.emit('init', { visible: cordova.plugins.Keyboard.isVisible });
+    softwareKeyboard.emit('init', {visible: cordova.plugins.Keyboard.isVisible});
 
     return true;
   }
@@ -64,13 +51,14 @@ var bindEvents = function bindEvents() {
   return false;
 };
 
-var noPluginError = function noPluginError() {
-  _util2.default.warn('ons-keyboard: Cordova Keyboard plugin is not present.');
+const noPluginError = () => {
+  util.warn('ons-keyboard: Cordova Keyboard plugin is not present.');
 };
 
-document.addEventListener('deviceready', function () {
+document.addEventListener('deviceready', () => {
   if (!bindEvents()) {
-    if (document.querySelector('[ons-keyboard-active]') || document.querySelector('[ons-keyboard-inactive]')) {
+    if (document.querySelector('[ons-keyboard-active]') ||
+      document.querySelector('[ons-keyboard-inactive]')) {
       noPluginError();
     }
 
@@ -78,4 +66,4 @@ document.addEventListener('deviceready', function () {
   }
 });
 
-exports.default = softwareKeyboard;
+export default softwareKeyboard;

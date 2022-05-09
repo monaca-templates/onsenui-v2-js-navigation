@@ -17,39 +17,24 @@ limitations under the License.
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var startsWith = function startsWith(s, c) {
-  return s.substr(0, c.length) === c;
-};
-var endsWith = function endsWith(s, c) {
-  return s.substr(s.length - c.length, c.length) === c;
-};
-var unwrap = function unwrap(s) {
-  return s.slice(1, -1);
-};
-var isObjectString = function isObjectString(s) {
-  return startsWith(s, '{') && endsWith(s, '}');
-};
-var isArrayString = function isArrayString(s) {
-  return startsWith(s, '[') && endsWith(s, ']');
-};
-var isQuotedString = function isQuotedString(s) {
-  return startsWith(s, '\'') && endsWith(s, '\'') || startsWith(s, '"') && endsWith(s, '"');
-};
+const startsWith = (s, c) => s.substr(0, c.length) === c;
+const endsWith = (s, c) => s.substr(s.length - c.length, c.length) === c;
+const unwrap = s => s.slice(1, -1);
+const isObjectString = s => startsWith(s, '{') && endsWith(s, '}');
+const isArrayString = s => startsWith(s, '[') && endsWith(s, ']');
+const isQuotedString = s => (startsWith(s, '\'') && endsWith(s, '\'')) || (startsWith(s, '"') && endsWith(s, '"'));
 
-var error = function error(token, string, originalString) {
+const error = (token, string, originalString) => {
   throw new Error('Unexpected token \'' + token + '\' at position ' + (originalString.length - string.length - 1) + ' in string: \'' + originalString + '\'');
 };
 
-var processToken = function processToken(token, string, originalString) {
+const processToken = (token, string, originalString) => {
   if (token === 'true' || token === 'false') {
     return token === 'true';
   } else if (isQuotedString(token)) {
     return unwrap(token);
   } else if (!isNaN(token)) {
-    return +token;
+    return +(token);
   } else if (isObjectString(token)) {
     return parseObject(unwrap(token));
   } else if (isArrayString(token)) {
@@ -59,18 +44,19 @@ var processToken = function processToken(token, string, originalString) {
   }
 };
 
-var nextToken = function nextToken(string) {
+const nextToken = (string) => {
   string = string.trim();
-  var limit = string.length;
+  let limit = string.length;
 
   if (string[0] === ':' || string[0] === ',') {
 
     limit = 1;
+
   } else if (string[0] === '{' || string[0] === '[') {
 
-    var c = string.charCodeAt(0);
-    var nestedObject = 1;
-    for (var i = 1; i < string.length; i++) {
+    const c = string.charCodeAt(0);
+    let nestedObject = 1;
+    for (let i = 1; i < string.length; i++) {
       if (string.charCodeAt(i) === c) {
         nestedObject++;
       } else if (string.charCodeAt(i) === c + 2) {
@@ -81,47 +67,46 @@ var nextToken = function nextToken(string) {
         }
       }
     }
+
   } else if (string[0] === '\'' || string[0] === '"') {
 
-    for (var _i = 1; _i < string.length; _i++) {
-      if (string[_i] === string[0]) {
-        limit = _i + 1;
+    for (let i = 1; i < string.length; i++) {
+      if (string[i] === string[0]) {
+        limit = i + 1;
         break;
       }
     }
+
   } else {
 
-    for (var _i2 = 1; _i2 < string.length; _i2++) {
-      if ([' ', ',', ':'].indexOf(string[_i2]) !== -1) {
-        limit = _i2;
+    for (let i = 1; i < string.length; i++) {
+      if ([' ', ',', ':'].indexOf(string[i]) !== -1) {
+        limit = i;
         break;
       }
     }
+
   }
 
   return string.slice(0, limit);
 };
 
-var parseObject = function parseObject(string) {
-  var isValidKey = function isValidKey(key) {
-    return (/^[A-Z_$][A-Z0-9_$]*$/i.test(key)
-    );
-  };
+const parseObject = (string) => {
+  const isValidKey = key => /^[A-Z_$][A-Z0-9_$]*$/i.test(key);
 
   string = string.trim();
-  var originalString = string;
-  var object = {};
-  var readingKey = true,
-      key = void 0,
-      previousToken = void 0,
-      token = void 0;
+  const originalString = string;
+  const object = {};
+  let readingKey = true, key, previousToken, token;
 
   while (string.length > 0) {
     previousToken = token;
     token = nextToken(string);
     string = string.slice(token.length, string.length).trim();
 
-    if (token === ':' && (!readingKey || !previousToken || previousToken === ',') || token === ',' && readingKey || token !== ':' && token !== ',' && previousToken && previousToken !== ',' && previousToken !== ':') {
+    if ((token === ':' && (!readingKey || !previousToken || previousToken === ','))
+       || (token === ',' && readingKey)
+       || (token !== ':' && token !== ',' && (previousToken && previousToken !== ',' && previousToken !== ':'))) {
       error(token, string, originalString);
     } else if (token === ':' && readingKey && previousToken) {
       previousToken = isQuotedString(previousToken) ? unwrap(previousToken) : previousToken;
@@ -144,12 +129,11 @@ var parseObject = function parseObject(string) {
   return object;
 };
 
-var parseArray = function parseArray(string) {
+const parseArray = (string) => {
   string = string.trim();
-  var originalString = string;
-  var array = [];
-  var previousToken = void 0,
-      token = void 0;
+  const originalString = string;
+  const array = [];
+  let previousToken, token;
 
   while (string.length > 0) {
     previousToken = token;
@@ -174,7 +158,7 @@ var parseArray = function parseArray(string) {
   return array;
 };
 
-var parse = function parse(string) {
+const parse = (string) => {
   string = string.trim();
 
   if (isObjectString(string)) {
@@ -186,4 +170,4 @@ var parse = function parse(string) {
   }
 };
 
-exports.default = parse;
+export default parse;

@@ -1,19 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _platform = require('./platform');
-
-var _platform2 = _interopRequireDefault(_platform);
-
-var _util = require('./util');
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -31,11 +15,12 @@ limitations under the License.
 
 */
 
-var error = function error(message) {
-  return _util2.default.throw('In PageAttributeExpression: ' + message);
-};
+import platform from './platform.js';
+import util from './util.js';
 
-var pageAttributeExpression = {
+const error = message => util.throw(`In PageAttributeExpression: ${message}`);
+
+const pageAttributeExpression = {
   _variables: {},
 
   /**
@@ -45,15 +30,15 @@ var pageAttributeExpression = {
    * @param {String|Function} value Value of the variable. Can be a string or a function. The function must return a string.
    * @param {Boolean} overwrite If this value is false, an error will be thrown when trying to define a variable that has already been defined.
    */
-  defineVariable: function defineVariable(name, value) {
-    var overwrite = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
+  defineVariable: function(name, value, overwrite=false) {
     if (typeof name !== 'string') {
       error('Variable name must be a string');
-    } else if (typeof value !== 'string' && typeof value !== 'function') {
+    }
+    else if (typeof value !== 'string' && typeof value !== 'function') {
       error('Variable value must be a string or a function');
-    } else if (this._variables.hasOwnProperty(name) && !overwrite) {
-      error('"' + name + '" is already defined');
+    }
+    else if (Object.prototype.hasOwnProperty.call(this._variables, name) && !overwrite) {
+      error(`"${name}" is already defined`);
     }
     this._variables[name] = value;
   },
@@ -64,8 +49,8 @@ var pageAttributeExpression = {
    * @param {String} name Name of the variable.
    * @return {String|Function|null}
    */
-  getVariable: function getVariable(name) {
-    if (!this._variables.hasOwnProperty(name)) {
+  getVariable: function(name) {
+    if (!Object.prototype.hasOwnProperty.call(this._variables, name)) {
       return null;
     }
 
@@ -77,7 +62,7 @@ var pageAttributeExpression = {
    *
    * @param {String} name Name of the varaible.
    */
-  removeVariable: function removeVariable(name) {
+  removeVariable: function(name) {
     delete this._variables[name];
   },
 
@@ -86,21 +71,21 @@ var pageAttributeExpression = {
    *
    * @return {Object}
    */
-  getAllVariables: function getAllVariables() {
+  getAllVariables: function() {
     return this._variables;
   },
-  _parsePart: function _parsePart(part) {
-    var c = void 0,
-        inInterpolation = false,
-        currentIndex = 0;
+  _parsePart: function(part) {
+    let c,
+      inInterpolation = false,
+      currentIndex = 0;
 
-    var tokens = [];
+    const tokens = [];
 
     if (part.length === 0) {
       error('Unable to parse empty string');
     }
 
-    for (var i = 0; i < part.length; i++) {
+    for (let i = 0; i < part.length; i++) {
       c = part.charAt(i);
 
       if (c === '$' && part.charAt(i + 1) === '{') {
@@ -108,20 +93,21 @@ var pageAttributeExpression = {
           error('Nested interpolation not supported');
         }
 
-        var token = part.substring(currentIndex, i);
+        const token = part.substring(currentIndex, i);
         if (token.length > 0) {
           tokens.push(part.substring(currentIndex, i));
         }
 
         currentIndex = i;
         inInterpolation = true;
-      } else if (c === '}') {
+      }
+      else if (c === '}') {
         if (!inInterpolation) {
           error('} must be preceeded by ${');
         }
 
-        var _token = part.substring(currentIndex, i + 1);
-        if (_token.length > 0) {
+        const token = part.substring(currentIndex, i + 1);
+        if (token.length > 0) {
           tokens.push(part.substring(currentIndex, i + 1));
         }
 
@@ -138,20 +124,22 @@ var pageAttributeExpression = {
 
     return tokens;
   },
-  _replaceToken: function _replaceToken(token) {
-    var re = /^\${(.*?)}$/,
-        match = token.match(re);
+  _replaceToken: function(token) {
+    const re = /^\${(.*?)}$/,
+      match = token.match(re);
 
     if (match) {
-      var name = match[1].trim();
-      var variable = this.getVariable(name);
+      const name = match[1].trim();
+      const variable = this.getVariable(name);
 
       if (variable === null) {
-        error('Variable "' + name + '" does not exist');
-      } else if (typeof variable === 'string') {
+        error(`Variable "${name}" does not exist`);
+      }
+      else if (typeof variable === 'string') {
         return variable;
-      } else {
-        var rv = variable();
+      }
+      else {
+        const rv = variable();
 
         if (typeof rv !== 'string') {
           error('Must return a string');
@@ -159,19 +147,24 @@ var pageAttributeExpression = {
 
         return rv;
       }
-    } else {
+    }
+    else {
       return token;
     }
   },
-  _replaceTokens: function _replaceTokens(tokens) {
+  _replaceTokens: function(tokens) {
     return tokens.map(this._replaceToken.bind(this));
   },
-  _parseExpression: function _parseExpression(expression) {
-    return expression.split(',').map(function (part) {
-      return part.trim();
-    }).map(this._parsePart.bind(this)).map(this._replaceTokens.bind(this)).map(function (part) {
-      return part.join('');
-    });
+  _parseExpression: function(expression) {
+    return expression.split(',')
+      .map(
+        function(part) {
+          return part.trim();
+        }
+      )
+      .map(this._parsePart.bind(this))
+      .map(this._replaceTokens.bind(this))
+      .map((part) => part.join(''));
   },
 
   /**
@@ -180,7 +173,7 @@ var pageAttributeExpression = {
    * @param {String} expression An page attribute expression.
    * @return {Array}
    */
-  evaluate: function evaluate(expression) {
+  evaluate: function(expression) {
     if (!expression) {
       return [];
     }
@@ -190,10 +183,10 @@ var pageAttributeExpression = {
 };
 
 // Define default variables.
-pageAttributeExpression.defineVariable('mobileOS', _platform2.default.getMobileOS());
-pageAttributeExpression.defineVariable('iOSDevice', _platform2.default.getIOSDevice());
-pageAttributeExpression.defineVariable('runtime', function () {
-  return _platform2.default.isWebView() ? 'cordova' : 'browser';
+pageAttributeExpression.defineVariable('mobileOS', platform.getMobileOS());
+pageAttributeExpression.defineVariable('iOSDevice', platform.getIOSDevice());
+pageAttributeExpression.defineVariable('runtime', () => {
+  return platform.isWebView() ? 'cordova' : 'browser';
 });
 
-exports.default = pageAttributeExpression;
+export default pageAttributeExpression;

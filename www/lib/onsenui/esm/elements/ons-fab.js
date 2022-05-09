@@ -1,61 +1,27 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import styler from '../ons/styler.js';
+import autoStyle from '../ons/autostyle.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+const defaultClassName = 'fab';
 
-var _elements = require('../ons/elements');
-
-var _elements2 = _interopRequireDefault(_elements);
-
-var _util = require('../ons/util');
-
-var _util2 = _interopRequireDefault(_util);
-
-var _styler = require('../ons/styler');
-
-var _styler2 = _interopRequireDefault(_styler);
-
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var defaultClassName = 'fab';
-
-var scheme = {
+const scheme = {
   '': 'fab--*',
   '.fab__icon': 'fab--*__icon'
 };
@@ -79,9 +45,7 @@ var scheme = {
  *   [en]The `<ons-speed-dial>` component is a Floating action button that displays a menu when tapped.[/en]
  *   [ja][/ja]
  */
-
-var FabElement = function (_BaseElement) {
-  _inherits(FabElement, _BaseElement);
+export default class FabElement extends BaseElement {
 
   /**
    * @attribute modifier
@@ -113,227 +77,187 @@ var FabElement = function (_BaseElement) {
    *   [ja]ボタンを無効化する場合は指定します。[/ja]
    */
 
-  function FabElement() {
-    _classCallCheck(this, FabElement);
+  constructor() {
+    super();
 
     // The following statements can be executed before contentReady
     // since these do not access the children
-    var _this = _possibleConstructorReturn(this, (FabElement.__proto__ || Object.getPrototypeOf(FabElement)).call(this));
+    this._hide();
+    this.classList.add(defaultClassName);
 
-    _this._hide();
-    _this.classList.add(defaultClassName);
-
-    (0, _contentReady2.default)(_this, function () {
-      _this._compile();
+    contentReady(this, () => {
+      this._compile();
     });
-    return _this;
   }
 
-  _createClass(FabElement, [{
-    key: '_compile',
-    value: function _compile() {
-      _autostyle2.default.prepare(this);
+  _compile() {
+    autoStyle.prepare(this);
 
-      if (!_util2.default.findChild(this, '.fab__icon')) {
-        var content = document.createElement('span');
-        content.classList.add('fab__icon');
+    if (!util.findChild(this, '.fab__icon')) {
+      const content = document.createElement('span');
+      content.classList.add('fab__icon');
 
-        _util2.default.arrayFrom(this.childNodes).forEach(function (element) {
-          if (!element.tagName || element.tagName.toLowerCase() !== 'ons-ripple') {
-            content.appendChild(element);
-          }
-        });
-        this.appendChild(content);
-      }
-
-      this._updateRipple();
-
-      _modifierUtil2.default.initModifier(this, scheme);
-
-      this._updatePosition();
-    }
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this2 = this;
-
-      setImmediate(function () {
-        return _this2._show();
+      util.arrayFrom(this.childNodes).forEach(element => {
+        if (!element.tagName || element.tagName.toLowerCase() !== 'ons-ripple') {
+          content.appendChild(element);
+        }
       });
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          _util2.default.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          _modifierUtil2.default.onModifierChanged(last, current, this, scheme);
-          break;
-        case 'ripple':
-          this._updateRipple();
-          break;
-        case 'position':
-          this._updatePosition();
-          break;
-      }
-    }
-  }, {
-    key: '_show',
-    value: function _show() {
-      if (!this._manuallyHidden) {
-        // if user has not called ons-fab.hide()
-        this._toggle(true);
-      }
-    }
-  }, {
-    key: '_hide',
-    value: function _hide() {
-      var _this3 = this;
-
-      setImmediate(function () {
-        return _this3._toggle(false);
-      });
-    }
-  }, {
-    key: '_updateRipple',
-    value: function _updateRipple() {
-      _util2.default.updateRipple(this);
-    }
-  }, {
-    key: '_updatePosition',
-    value: function _updatePosition() {
-      var position = this.getAttribute('position');
-      this.classList.remove('fab--top__left', 'fab--bottom__right', 'fab--bottom__left', 'fab--top__right', 'fab--top__center', 'fab--bottom__center');
-      switch (position) {
-        case 'top right':
-        case 'right top':
-          this.classList.add('fab--top__right');
-          break;
-        case 'top left':
-        case 'left top':
-          this.classList.add('fab--top__left');
-          break;
-        case 'bottom right':
-        case 'right bottom':
-          this.classList.add('fab--bottom__right');
-          break;
-        case 'bottom left':
-        case 'left bottom':
-          this.classList.add('fab--bottom__left');
-          break;
-        case 'center top':
-        case 'top center':
-          this.classList.add('fab--top__center');
-          break;
-        case 'center bottom':
-        case 'bottom center':
-          this.classList.add('fab--bottom__center');
-          break;
-        default:
-          break;
-      }
+      this.appendChild(content);
     }
 
-    /**
-     * @method show
-     * @signature show()
-     * @description
-     *  [en]Show the floating action button.[/en]
-     *  [ja][/ja]
-     */
+    this._updateRipple();
 
-  }, {
-    key: 'show',
-    value: function show() {
-      this.toggle(true);
+    ModifierUtil.initModifier(this, scheme);
+
+    this._updatePosition();
+  }
+
+  connectedCallback() {
+    setImmediate(() => this._show());
+  }
+
+  static get observedAttributes() {
+    return ['modifier', 'ripple', 'position', 'class'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    switch (name) {
+      case 'class':
+        util.restoreClass(this, defaultClassName, scheme);
+        break;
+      case 'modifier':
+        ModifierUtil.onModifierChanged(last, current, this, scheme);
+        break;
+      case 'ripple':
+        this._updateRipple();
+        break;
+      case 'position':
+        this._updatePosition();
+        break;
     }
+  }
 
-    /**
-     * @method hide
-     * @signature hide()
-     * @description
-     *  [en]Hide the floating action button.[/en]
-     *  [ja][/ja]
-     */
-
-  }, {
-    key: 'hide',
-    value: function hide() {
-      this.toggle(false);
+  _show() {
+    if (!this._manuallyHidden) { // if user has not called ons-fab.hide()
+      this._toggle(true);
     }
+  }
 
-    /**
-     * @method toggle
-     * @signature toggle()
-     * @description
-     *   [en]Toggle the visibility of the button.[/en]
-     *   [ja][/ja]
-     */
+  _hide() {
+    setImmediate(() => this._toggle(false));
+  }
 
-  }, {
-    key: 'toggle',
-    value: function toggle() {
-      var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : !this.visible;
+  _updateRipple() {
+    util.updateRipple(this);
+  }
 
-      this._manuallyHidden = !action;
-      this._toggle(action);
+  _updatePosition() {
+    const position = this.getAttribute('position');
+    this.classList.remove(
+      'fab--top__left',
+      'fab--bottom__right',
+      'fab--bottom__left',
+      'fab--top__right',
+      'fab--top__center',
+      'fab--bottom__center');
+    switch (position) {
+      case 'top right':
+      case 'right top':
+        this.classList.add('fab--top__right');
+        break;
+      case 'top left':
+      case 'left top':
+        this.classList.add('fab--top__left');
+        break;
+      case 'bottom right':
+      case 'right bottom':
+        this.classList.add('fab--bottom__right');
+        break;
+      case 'bottom left':
+      case 'left bottom':
+        this.classList.add('fab--bottom__left');
+        break;
+      case 'center top':
+      case 'top center':
+        this.classList.add('fab--top__center');
+        break;
+      case 'center bottom':
+      case 'bottom center':
+        this.classList.add('fab--bottom__center');
+        break;
+      default:
+        break;
     }
-  }, {
-    key: '_toggle',
-    value: function _toggle() {
-      var action = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : !this.visible;
+  }
 
-      var isBottom = (this.getAttribute('position') || '').indexOf('bottom') >= 0;
-      var translate = isBottom ? 'translate3d(0px, -' + (_util2.default.globals.fabOffset || 0) + 'px, 0px)' : '';
+  /**
+   * @method show
+   * @signature show()
+   * @description
+   *  [en]Show the floating action button.[/en]
+   *  [ja][/ja]
+   */
+  show() {
+    this.toggle(true);
+  }
 
-      (0, _styler2.default)(this, { transform: translate + ' scale(' + Number(action) + ')' });
-    }
+  /**
+   * @method hide
+   * @signature hide()
+   * @description
+   *  [en]Hide the floating action button.[/en]
+   *  [ja][/ja]
+   */
+  hide() {
+    this.toggle(false);
+  }
 
-    /**
-     * @property disabled
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the element is disabled or not.[/en]
-     *   [ja]無効化されている場合に`true`。[/ja]
-     */
+  /**
+   * @method toggle
+   * @signature toggle()
+   * @description
+   *   [en]Toggle the visibility of the button.[/en]
+   *   [ja][/ja]
+   */
+  toggle(action = !this.visible) {
+    this._manuallyHidden = !action;
+    this._toggle(action);
+  }
 
-  }, {
-    key: 'disabled',
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'disabled', value);
-    },
-    get: function get() {
-      return this.hasAttribute('disabled');
-    }
+  _toggle(action = !this.visible) {
+    const isBottom = (this.getAttribute('position') || '').indexOf('bottom') >= 0;
+    const translate = isBottom ? `translate3d(0px, -${util.globals.fabOffset || 0}px, 0px)` : '';
 
-    /**
-     * @property visible
-     * @readonly
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the element is visible or not.[/en]
-     *   [ja]要素が見える場合に`true`。[/ja]
-     */
+    styler(this, { transform: `${translate} scale(${Number(action)})` });
+  }
 
-  }, {
-    key: 'visible',
-    get: function get() {
-      return this.style.transform.indexOf('scale(0)') === -1 && this.style.display !== 'none';
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'ripple', 'position', 'class'];
-    }
-  }]);
+  /**
+   * @property disabled
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the element is disabled or not.[/en]
+   *   [ja]無効化されている場合に`true`。[/ja]
+   */
+  set disabled(value) {
+    return util.toggleAttribute(this, 'disabled', value);
+  }
 
-  return FabElement;
-}(_baseElement2.default);
+  get disabled() {
+    return this.hasAttribute('disabled');
+  }
 
-exports.default = FabElement;
+  /**
+   * @property visible
+   * @readonly
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the element is visible or not.[/en]
+   *   [ja]要素が見える場合に`true`。[/ja]
+   */
+  get visible() {
+    return this.style.transform.indexOf('scale(0)') === -1 && this.style.display !== 'none';
+  }
+}
 
-
-_elements2.default.Fab = FabElement;
+onsElements.Fab = FabElement;
 customElements.define('ons-fab', FabElement);
