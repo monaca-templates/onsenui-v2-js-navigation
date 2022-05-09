@@ -1,44 +1,32 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _platform = require('../platform');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _platform2 = _interopRequireDefault(_platform);
+*/
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import platform from '../platform.js';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var util = {
+const util = {
   _ready: false,
 
   _domContentLoaded: false,
 
-  _onDOMContentLoaded: function _onDOMContentLoaded() {
+  _onDOMContentLoaded: () => {
     util._domContentLoaded = true;
 
-    if (_platform2.default.isWebView()) {
-      window.document.addEventListener('deviceready', function () {
+    if (platform.isWebView()) {
+      window.document.addEventListener('deviceready', () => {
         util._ready = true;
       }, false);
     } else {
@@ -46,7 +34,7 @@ var util = {
     }
   },
 
-  addBackButtonListener: function addBackButtonListener(fn) {
+  addBackButtonListener: function(fn) {
     if (!this._domContentLoaded) {
       throw new Error('This method is available after DOMContentLoaded');
     }
@@ -54,13 +42,13 @@ var util = {
     if (this._ready) {
       window.document.addEventListener('backbutton', fn, false);
     } else {
-      window.document.addEventListener('deviceready', function () {
+      window.document.addEventListener('deviceready', function() {
         window.document.addEventListener('backbutton', fn, false);
       });
     }
   },
 
-  removeBackButtonListener: function removeBackButtonListener(fn) {
+  removeBackButtonListener: function(fn) {
     if (!this._domContentLoaded) {
       throw new Error('This method is available after DOMContentLoaded');
     }
@@ -68,47 +56,43 @@ var util = {
     if (this._ready) {
       window.document.removeEventListener('backbutton', fn, false);
     } else {
-      window.document.addEventListener('deviceready', function () {
+      window.document.addEventListener('deviceready', function() {
         window.document.removeEventListener('backbutton', fn, false);
       });
     }
   }
 };
-window.addEventListener('DOMContentLoaded', function () {
-  return util._onDOMContentLoaded();
-}, false);
+window.addEventListener('DOMContentLoaded', () => util._onDOMContentLoaded(), false);
 
-var HandlerRepository = {
+const HandlerRepository = {
   _store: {},
 
-  _genId: function () {
-    var i = 0;
-    return function () {
-      return i++;
-    };
-  }(),
+  _genId: (() => {
+    let i = 0;
+    return () => i++;
+  })(),
 
-  set: function set(element, handler) {
+  set: function(element, handler) {
     if (element.dataset.deviceBackButtonHandlerId) {
       this.remove(element);
     }
-    var id = element.dataset.deviceBackButtonHandlerId = HandlerRepository._genId();
+    const id = element.dataset.deviceBackButtonHandlerId = HandlerRepository._genId();
     this._store[id] = handler;
   },
 
-  remove: function remove(element) {
+  remove: function(element) {
     if (element.dataset.deviceBackButtonHandlerId) {
       delete this._store[element.dataset.deviceBackButtonHandlerId];
       delete element.dataset.deviceBackButtonHandlerId;
     }
   },
 
-  get: function get(element) {
+  get: function(element) {
     if (!element.dataset.deviceBackButtonHandlerId) {
       return undefined;
     }
 
-    var id = element.dataset.deviceBackButtonHandlerId;
+    const id = element.dataset.deviceBackButtonHandlerId;
 
     if (!this._store[id]) {
       throw new Error();
@@ -117,236 +101,211 @@ var HandlerRepository = {
     return this._store[id];
   },
 
-  has: function has(element) {
+  has: function(element) {
     if (!element.dataset) {
       return false;
     }
 
-    var id = element.dataset.deviceBackButtonHandlerId;
+    const id = element.dataset.deviceBackButtonHandlerId;
 
     return !!this._store[id];
   }
 };
 
-var DeviceBackButtonDispatcher = function () {
-  function DeviceBackButtonDispatcher() {
-    _classCallCheck(this, DeviceBackButtonDispatcher);
-
+class DeviceBackButtonDispatcher {
+  constructor() {
     this._isEnabled = false;
     this._boundCallback = this._callback.bind(this);
   }
 
+
   /**
    * Enable to handle 'backbutton' events.
    */
+  enable() {
+    if (!this._isEnabled) {
+      util.addBackButtonListener(this._boundCallback);
+      this._isEnabled = true;
+    }
+  }
 
+  /**
+   * Disable to handle 'backbutton' events.
+   */
+  disable() {
+    if (this._isEnabled) {
+      util.removeBackButtonListener(this._boundCallback);
+      this._isEnabled = false;
+    }
+  }
 
-  _createClass(DeviceBackButtonDispatcher, [{
-    key: 'enable',
-    value: function enable() {
-      if (!this._isEnabled) {
-        util.addBackButtonListener(this._boundCallback);
-        this._isEnabled = true;
-      }
+  /**
+   * Fire a 'backbutton' event manually.
+   */
+  fireDeviceBackButtonEvent() {
+    const event = document.createEvent('Event');
+    event.initEvent('backbutton', true, true);
+    document.dispatchEvent(event);
+  }
+
+  _callback() {
+    this._dispatchDeviceBackButtonEvent();
+  }
+
+  /**
+   * @param {HTMLElement} element
+   * @param {Function} callback
+   */
+  createHandler(element, callback) {
+    if (!(element instanceof HTMLElement)) {
+      throw new Error('element must be an instance of HTMLElement');
     }
 
-    /**
-     * Disable to handle 'backbutton' events.
-     */
-
-  }, {
-    key: 'disable',
-    value: function disable() {
-      if (this._isEnabled) {
-        util.removeBackButtonListener(this._boundCallback);
-        this._isEnabled = false;
-      }
+    if (!(callback instanceof Function)) {
+      throw new Error('callback must be an instance of Function');
     }
 
-    /**
-     * Fire a 'backbutton' event manually.
-     */
+    const handler = {
+      _callback: callback,
+      _element: element,
 
-  }, {
-    key: 'fireDeviceBackButtonEvent',
-    value: function fireDeviceBackButtonEvent() {
-      var event = document.createEvent('Event');
-      event.initEvent('backbutton', true, true);
-      document.dispatchEvent(event);
-    }
-  }, {
-    key: '_callback',
-    value: function _callback() {
-      this._dispatchDeviceBackButtonEvent();
-    }
+      disable: function() {
+        HandlerRepository.remove(element);
+      },
 
-    /**
-     * @param {HTMLElement} element
-     * @param {Function} callback
-     */
+      setListener: function(callback) {
+        this._callback = callback;
+      },
 
-  }, {
-    key: 'createHandler',
-    value: function createHandler(element, callback) {
-      if (!(element instanceof HTMLElement)) {
-        throw new Error('element must be an instance of HTMLElement');
+      enable: function() {
+        HandlerRepository.set(element, this);
+      },
+
+      isEnabled: function() {
+        return HandlerRepository.get(element) === this;
+      },
+
+      destroy: function() {
+        HandlerRepository.remove(element);
+        this._callback = this._element = null;
       }
+    };
 
-      if (!(callback instanceof Function)) {
-        throw new Error('callback must be an instance of Function');
-      }
+    handler.enable();
 
-      var handler = {
-        _callback: callback,
+    return handler;
+  }
+
+  _dispatchDeviceBackButtonEvent() {
+    const tree = this._captureTree();
+
+    const element = this._findHandlerLeafElement(tree);
+
+    let handler = HandlerRepository.get(element);
+    handler._callback(createEvent(element));
+
+    function createEvent(element) {
+      return {
         _element: element,
+        callParentHandler: function() {
+          let parent = this._element.parentNode;
 
-        disable: function disable() {
-          HandlerRepository.remove(element);
-        },
-
-        setListener: function setListener(callback) {
-          this._callback = callback;
-        },
-
-        enable: function enable() {
-          HandlerRepository.set(element, this);
-        },
-
-        isEnabled: function isEnabled() {
-          return HandlerRepository.get(element) === this;
-        },
-
-        destroy: function destroy() {
-          HandlerRepository.remove(element);
-          this._callback = this._element = null;
+          while (parent) {
+            handler = HandlerRepository.get(parent);
+            if (handler) {
+              return handler._callback(createEvent(parent));
+            }
+            parent = parent.parentNode;
+          }
         }
       };
-
-      handler.enable();
-
-      return handler;
     }
-  }, {
-    key: '_dispatchDeviceBackButtonEvent',
-    value: function _dispatchDeviceBackButtonEvent() {
-      var tree = this._captureTree();
+  }
 
-      var element = this._findHandlerLeafElement(tree);
+  /**
+   * @return {Object}
+   */
+  _captureTree() {
+    return createTree(document.body);
 
-      var handler = HandlerRepository.get(element);
-      handler._callback(createEvent(element));
+    function createTree(element) {
+      const tree = {
+        element: element,
+        children: Array.prototype.concat.apply([], arrayOf(element.children).map(function(childElement) {
 
-      function createEvent(element) {
-        return {
-          _element: element,
-          callParentHandler: function callParentHandler() {
-            var parent = this._element.parentNode;
-
-            while (parent) {
-              handler = HandlerRepository.get(parent);
-              if (handler) {
-                return handler._callback(createEvent(parent));
-              }
-              parent = parent.parentNode;
-            }
-          }
-        };
-      }
-    }
-
-    /**
-     * @return {Object}
-     */
-
-  }, {
-    key: '_captureTree',
-    value: function _captureTree() {
-      return createTree(document.body);
-
-      function createTree(element) {
-        var tree = {
-          element: element,
-          children: Array.prototype.concat.apply([], arrayOf(element.children).map(function (childElement) {
-
-            if (childElement.style.display === 'none' || childElement._isShown === false) {
-              return [];
-            }
-
-            if (childElement.children.length === 0 && !HandlerRepository.has(childElement)) {
-              return [];
-            }
-
-            var result = createTree(childElement);
-
-            if (result.children.length === 0 && !HandlerRepository.has(result.element)) {
-              return [];
-            }
-
-            return [result];
-          }))
-        };
-
-        if (!HandlerRepository.has(tree.element)) {
-          for (var i = 0; i < tree.children.length; i++) {
-            var subTree = tree.children[i];
-            if (HandlerRepository.has(subTree.element)) {
-              return subTree;
-            }
-          }
-        }
-
-        return tree;
-      }
-
-      function arrayOf(target) {
-        var result = [];
-        for (var i = 0; i < target.length; i++) {
-          result.push(target[i]);
-        }
-        return result;
-      }
-    }
-
-    /**
-     * @param {Object} tree
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_findHandlerLeafElement',
-    value: function _findHandlerLeafElement(tree) {
-      return find(tree);
-
-      function find(node) {
-        if (node.children.length === 0) {
-          return node.element;
-        }
-
-        if (node.children.length === 1) {
-          return find(node.children[0]);
-        }
-
-        return node.children.map(function (childNode) {
-          return childNode.element;
-        }).reduce(function (left, right) {
-          if (!left) {
-            return right;
+          if (childElement.style.display === 'none' || childElement._isShown === false) {
+            return [];
           }
 
-          var leftZ = parseInt(window.getComputedStyle(left, '').zIndex, 10);
-          var rightZ = parseInt(window.getComputedStyle(right, '').zIndex, 10);
-
-          if (!isNaN(leftZ) && !isNaN(rightZ)) {
-            return leftZ > rightZ ? left : right;
+          if (childElement.children.length === 0 && !HandlerRepository.has(childElement)) {
+            return [];
           }
 
-          throw new Error('Capturing backbutton-handler is failure.');
-        }, null);
+          const result = createTree(childElement);
+
+          if (result.children.length === 0 && !HandlerRepository.has(result.element)) {
+            return [];
+          }
+
+          return [result];
+        }))
+      };
+
+      if (!HandlerRepository.has(tree.element)) {
+        for (let i = 0; i < tree.children.length; i++){
+          const subTree = tree.children[i];
+          if (HandlerRepository.has(subTree.element)) {
+            return subTree;
+          }
+        }
       }
+
+      return tree;
     }
-  }]);
 
-  return DeviceBackButtonDispatcher;
-}();
+    function arrayOf(target) {
+      const result = [];
+      for (let i = 0; i < target.length; i++) {
+        result.push(target[i]);
+      }
+      return result;
+    }
+  }
 
-exports.default = new DeviceBackButtonDispatcher();
+  /**
+   * @param {Object} tree
+   * @return {HTMLElement}
+   */
+  _findHandlerLeafElement(tree) {
+    return find(tree);
+
+    function find(node) {
+      if (node.children.length === 0) {
+        return node.element;
+      }
+
+      if (node.children.length === 1) {
+        return find(node.children[0]);
+      }
+
+      return node.children.map(function(childNode) {
+        return childNode.element;
+      }).reduce(function(left, right) {
+        if (!left) {
+          return right;
+        }
+
+        const leftZ = parseInt(window.getComputedStyle(left, '').zIndex, 10);
+        const rightZ = parseInt(window.getComputedStyle(right, '').zIndex, 10);
+
+        if (!isNaN(leftZ) && !isNaN(rightZ)) {
+          return leftZ > rightZ ? left : right;
+        }
+
+        throw new Error('Capturing backbutton-handler is failure.');
+      }, null);
+    }
+  }
+}
+
+export default new DeviceBackButtonDispatcher();

@@ -1,78 +1,54 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; /*
-                                                                                                                                                                                                                                                                  Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                  Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                  you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                  You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                     http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                  Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                  distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                  See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                  limitations under the License.
-                                                                                                                                                                                                                                                                  
-                                                                                                                                                                                                                                                                  */
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _util = require('./util');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _util2 = _interopRequireDefault(_util);
+*/
 
-var _contentReady = require('./content-ready');
+import util from './util.js';
+import contentReady from './content-ready.js';
+import ToastQueue from './internal/toast-queue.js';
 
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-var _toastQueue = require('./internal/toast-queue');
-
-var _toastQueue2 = _interopRequireDefault(_toastQueue);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var _setAttributes = function _setAttributes(element, options) {
-  ['id', 'class', 'animation'].forEach(function (a) {
-    return options.hasOwnProperty(a) && element.setAttribute(a, options[a]);
-  });
+const _setAttributes = (element, options) => {
+  ['id', 'class', 'animation']
+    .forEach(a => Object.prototype.hasOwnProperty.call(options, a) && element.setAttribute(a, options[a]));
 
   if (options.modifier) {
-    _util2.default.addModifier(element, options.modifier);
+    util.addModifier(element, options.modifier);
   }
 };
 
-var _normalizeArguments = function _normalizeArguments(message) {
-  var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-  var defaults = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
-  options = _extends({}, options);
-  typeof message === 'string' ? options.message = message : options = message;
+const _normalizeArguments = (message, options = {}, defaults = {}) => {
+  options = { ...options };
+  typeof message === 'string' ? (options.message = message) : (options = message);
   if (!options || !options.message && !options.messageHTML) {
-    _util2.default.throw('Notifications must contain a message');
+    util.throw('Notifications must contain a message');
   }
 
-  if (options.hasOwnProperty('buttonLabels') || options.hasOwnProperty('buttonLabel')) {
+  if (Object.prototype.hasOwnProperty.call(options, 'buttonLabels') || Object.prototype.hasOwnProperty.call(options, 'buttonLabel')) {
     options.buttonLabels = options.buttonLabels || options.buttonLabel;
     if (!Array.isArray(options.buttonLabels)) {
       options.buttonLabels = [options.buttonLabels || ''];
     }
   }
 
-  return _util2.default.extend({
-    compile: function compile(param) {
-      return param;
-    },
-    callback: function callback(param) {
-      return param;
-    },
-    animation: 'default',
-    cancelable: false,
-    primaryButtonIndex: (options.buttonLabels || defaults.buttonLabels || []).length - 1
-  }, defaults, options);
+  return util.extend({
+      compile: param => param,
+      callback: param => param,
+      animation: 'default',
+      cancelable: false,
+      primaryButtonIndex: (options.buttonLabels || defaults.buttonLabels || []).length - 1
+    }, defaults, options);
 };
 
 /**
@@ -110,125 +86,160 @@ var _normalizeArguments = function _normalizeArguments(message) {
  *     }
  *   );
  */
-var notification = {};
+const notification = {};
 
-notification._createAlertDialog = function () {
-  for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-    params[_key] = arguments[_key];
+notification._createAlertDialog = (...params) => new Promise(resolve => {
+  const options = _normalizeArguments(...params);
+  util.checkMissingImport('AlertDialog', 'AlertDialogButton');
+
+  // Prompt input string
+  let inputString = '';
+  if (options.isPrompt) {
+    inputString = `
+      <input
+        class="text-input text-input--underbar"
+        type="${options.inputType || 'text'}"
+        placeholder="${options.placeholder || ''}"
+        value="${options.defaultValue || ''}"
+        style="width: 100%; margin-top: 10px;"
+      />
+    `;
   }
 
-  return new Promise(function (resolve) {
-    var options = _normalizeArguments.apply(undefined, params);
-    _util2.default.checkMissingImport('AlertDialog', 'AlertDialogButton');
+  // Buttons string
+  let buttons = '';
+  options.buttonLabels.forEach((label, index) => {
+    buttons += `
+      <ons-alert-dialog-button
+        class="
+          ${index === options.primaryButtonIndex ? ' alert-dialog-button--primal' : ''}
+          ${options.buttonLabels.length <= 2 ? ' alert-dialog-button--rowfooter' : ''}
+        "
+        style="position: relative;">
+        ${label}
+      </ons-alert-dialog-button>
+    `;
+  });
 
-    // Prompt input string
-    var inputString = '';
-    if (options.isPrompt) {
-      inputString = '\n      <input\n        class="text-input text-input--underbar"\n        type="' + (options.inputType || 'text') + '"\n        placeholder="' + (options.placeholder || '') + '"\n        value="' + (options.defaultValue || '') + '"\n        style="width: 100%; margin-top: 10px;"\n      />\n    ';
+  // Dialog Element
+  let el = {};
+  const _destroyDialog = () => {
+    if (el.dialog.onDialogCancel) {
+      el.dialog.removeEventListener('dialogcancel', el.dialog.onDialogCancel);
     }
 
-    // Buttons string
-    var buttons = '';
-    options.buttonLabels.forEach(function (label, index) {
-      buttons += '\n      <ons-alert-dialog-button\n        class="\n          ' + (index === options.primaryButtonIndex ? ' alert-dialog-button--primal' : '') + '\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-button--rowfooter' : '') + '\n        "\n        style="position: relative;">\n        ' + label + '\n      </ons-alert-dialog-button>\n    ';
-    });
+    Object.keys(el).forEach(key => delete el[key]);
+    el = null;
 
-    // Dialog Element
-    var el = {};
-    var _destroyDialog = function _destroyDialog() {
-      if (el.dialog.onDialogCancel) {
-        el.dialog.removeEventListener('dialog-cancel', el.dialog.onDialogCancel);
-      }
+    if (options.destroy instanceof Function) {
+      options.destroy();
+    }
+  };
 
-      Object.keys(el).forEach(function (key) {
-        return delete el[key];
-      });
-      el = null;
+  el.dialog = document.createElement('ons-alert-dialog');
+  el.dialog.innerHTML = `
+    <div class="alert-dialog-mask"
+      style="
+        ${options.maskColor ? 'background-color: ' + options.maskColor : ''}
+      "></div>
+    <div class="alert-dialog">
+      <div class="alert-dialog-container">
+        <div class="alert-dialog-title">
+          ${options.title || ''}
+        </div>
+        <div class="alert-dialog-content">
+          ${options.message || options.messageHTML}
+          ${inputString}
+        </div>
+        <div class="
+          alert-dialog-footer
+          ${options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : ''}
+        ">
+          ${buttons}
+        </div>
+      </div>
+    </div>
+  `;
+  contentReady(el.dialog);
 
-      if (options.destroy instanceof Function) {
-        options.destroy();
-      }
-    };
+  // Set attributes
+  _setAttributes(el.dialog, options);
 
-    el.dialog = document.createElement('ons-alert-dialog');
-    el.dialog.innerHTML = '\n    <div class="alert-dialog-mask"\n      style="\n        ' + (options.maskColor ? 'background-color: ' + options.maskColor : '') + '\n      "></div>\n    <div class="alert-dialog">\n      <div class="alert-dialog-container">\n        <div class="alert-dialog-title">\n          ' + (options.title || '') + '\n        </div>\n        <div class="alert-dialog-content">\n          ' + (options.message || options.messageHTML) + '\n          ' + inputString + '\n        </div>\n        <div class="\n          alert-dialog-footer\n          ' + (options.buttonLabels.length <= 2 ? ' alert-dialog-footer--rowfooter' : '') + '\n        ">\n          ' + buttons + '\n        </div>\n      </div>\n    </div>\n  ';
-    (0, _contentReady2.default)(el.dialog);
+  // Prompt events
+  if (options.isPrompt) {
+    el.input = el.dialog.querySelector('.text-input');
 
-    // Set attributes
-    _setAttributes(el.dialog, options);
-
-    // Prompt events
-    if (options.isPrompt) {
-      el.input = el.dialog.querySelector('.text-input');
-
-      if (options.submitOnEnter) {
-        el.input.onkeypress = function (event) {
-          if (event.keyCode === 13) {
-            el.dialog.hide().then(function () {
+    if (options.submitOnEnter) {
+      el.input.onkeypress = event => {
+        if (event.keyCode === 13) {
+          el.dialog.hide()
+            .then(() => {
               if (el) {
-                var resolveValue = el.input.value;
+                const resolveValue = el.input.value;
                 _destroyDialog();
                 options.callback(resolveValue);
                 resolve(resolveValue);
               }
             });
-          }
-        };
-      }
+        }
+      };
     }
+  }
 
-    // Button events
-    el.footer = el.dialog.querySelector('.alert-dialog-footer');
-    _util2.default.arrayFrom(el.dialog.querySelectorAll('.alert-dialog-button')).forEach(function (buttonElement, index) {
-      buttonElement.onclick = function () {
-        el.dialog.hide().then(function () {
-          if (el) {
-            var resolveValue = index;
-            if (options.isPrompt) {
-              resolveValue = index === options.primaryButtonIndex ? el.input.value : null;
+  // Button events
+  el.footer = el.dialog.querySelector('.alert-dialog-footer');
+  util.arrayFrom(el.dialog.querySelectorAll('.alert-dialog-button')).forEach((buttonElement, index) => {
+    buttonElement.onclick = () => {
+        el.dialog.hide()
+          .then(() => {
+            if (el) {
+              let resolveValue = index;
+              if (options.isPrompt) {
+                resolveValue = index === options.primaryButtonIndex ? el.input.value : null;
+              }
+              el.dialog.remove();
+              _destroyDialog();
+              options.callback(resolveValue);
+              resolve(resolveValue);
             }
-            el.dialog.remove();
-            _destroyDialog();
-            options.callback(resolveValue);
-            resolve(resolveValue);
-          }
-        });
-      };
+          });
+    };
 
-      el.footer.appendChild(buttonElement);
-    });
+    el.footer.appendChild(buttonElement);
+  });
 
-    // Cancel events
-    if (options.cancelable) {
-      el.dialog.cancelable = true;
-      el.dialog.onDialogCancel = function () {
-        setImmediate(function () {
-          el.dialog.remove();
-          _destroyDialog();
-        });
-        var resolveValue = options.isPrompt ? null : -1;
-        options.callback(resolveValue);
-        resolve(resolveValue);
-      };
-      el.dialog.addEventListener('dialog-cancel', el.dialog.onDialogCancel, false);
-    }
+  // Cancel events
+  if (options.cancelable) {
+    el.dialog.cancelable = true;
+    el.dialog.onDialogCancel = () => {
+      setImmediate(() => {
+        el.dialog.remove();
+        _destroyDialog();
+      });
+      const resolveValue = options.isPrompt ? null : -1;
+      options.callback(resolveValue);
+      resolve(resolveValue);
+    };
+    el.dialog.addEventListener('dialogcancel', el.dialog.onDialogCancel, false);
+  }
 
-    // Show dialog
-    document.body.appendChild(el.dialog);
-    options.compile(el.dialog);
-    setImmediate(function () {
-      el.dialog.show().then(function () {
+  // Show dialog
+  document.body.appendChild(el.dialog);
+  options.compile(el.dialog);
+  setImmediate(() => {
+    el.dialog.show()
+      .then(() => {
         if (el.input && options.isPrompt && options.autofocus) {
-          var strLength = el.input.value.length;
+          const strLength = el.input.value.length;
           el.input.focus();
-          if (el.input.type && ['text', 'search', 'url', 'tel', 'password'].includes(el.input.type)) {
+          if (el.input.type &&
+            ['text', 'search', 'url', 'tel', 'password'].includes(el.input.type)) {
             el.input.setSelectionRange(strLength, strLength);
           }
         }
       });
-    });
   });
-};
+});
 
 /**
  * @method alert
@@ -299,12 +310,11 @@ notification._createAlertDialog = function () {
  *     このメソッドの引数には、options.messageもしくはoptions.messageHTMLのどちらかを必ず指定する必要があります。
  *   [/ja]
  */
-notification.alert = function (message, options) {
-  return notification._createAlertDialog(message, options, {
+notification.alert = (message, options) =>
+  notification._createAlertDialog(message, options, {
     buttonLabels: ['OK'],
     title: 'Alert'
   });
-};
 
 /**
  * @method confirm
@@ -343,12 +353,11 @@ notification.alert = function (message, options) {
  *     このメソッドの引数には、options.messageもしくはoptions.messageHTMLのどちらかを必ず指定する必要があります。
  *   [/ja]
  */
-notification.confirm = function (message, options) {
-  return notification._createAlertDialog(message, options, {
+notification.confirm = (message, options) =>
+  notification._createAlertDialog(message, options, {
     buttonLabels: ['Cancel', 'OK'],
     title: 'Confirm'
   });
-};
 
 /**
  * @method prompt
@@ -401,15 +410,14 @@ notification.confirm = function (message, options) {
  *     このメソッドの引数には、options.messageもしくはoptions.messageHTMLのどちらかを必ず指定する必要があります。
  *   [/ja]
  */
-notification.prompt = function (message, options) {
-  return notification._createAlertDialog(message, options, {
+notification.prompt = (message, options) =>
+  notification._createAlertDialog(message, options, {
     buttonLabels: ['OK'],
     title: 'Alert',
     isPrompt: true,
     autofocus: true,
     submitOnEnter: true
   });
-};
 
 /**
  * @method toast
@@ -463,24 +471,30 @@ notification.prompt = function (message, options) {
  *   [/en]
  *   [ja][/ja]
  */
-notification.toast = function (message, options) {
-  var promise = new Promise(function (resolve) {
-    _util2.default.checkMissingImport('Toast'); // Throws error, must be inside promise
+notification.toast = (message, options) => {
+  const promise = new Promise(resolve => {
+    util.checkMissingImport('Toast'); // Throws error, must be inside promise
 
     options = _normalizeArguments(message, options, {
       timeout: 0,
       force: false
     });
 
-    var toast = _util2.default.createElement('\n      <ons-toast>\n        ' + options.message + '\n        ' + (options.buttonLabels ? '<button>' + options.buttonLabels[0] + '</button>' : '') + '\n      </ons-toast>\n    ');
+    let toast = util.createElement(`
+      <ons-toast>
+        ${options.message}
+        ${options.buttonLabels ? `<button>${options.buttonLabels[0]}</button>` : ''}
+      </ons-toast>
+    `);
 
     _setAttributes(toast, options);
 
-    var originalHide = toast.hide.bind(toast);
+    const originalHide = toast.hide.bind(toast);
 
-    var finish = function finish(value) {
+    const finish = value => {
       if (toast) {
-        originalHide().then(function () {
+        originalHide()
+        .then(() => {
           if (toast) {
             toast.remove();
             toast = null;
@@ -492,35 +506,27 @@ notification.toast = function (message, options) {
     };
 
     if (options.buttonLabels) {
-      _util2.default.findChild(toast._toast, 'button').onclick = function () {
-        return finish(0);
-      };
+      util.findChild(toast._toast, 'button').onclick = () => finish(0);
     }
 
     // overwrite so that ons.notification.hide resolves when toast.hide is called
-    toast.hide = function () {
-      return finish(-1);
-    };
+    toast.hide = () => finish(-1);
 
     document.body.appendChild(toast);
     options.compile(toast);
 
-    var show = function show() {
-      toast.parentElement && toast.show(options).then(function () {
+    const show = () => {
+      toast.parentElement && toast.show(options).then(() => {
         if (options.timeout) {
-          setTimeout(function () {
-            return finish(-1);
-          }, options.timeout);
+          setTimeout(() => finish(-1), options.timeout);
         }
       });
     };
 
-    setImmediate(function () {
-      return options.force ? show() : _toastQueue2.default.add(show, promise);
-    });
+    setImmediate(() => options.force ? show() : ToastQueue.add(show, promise));
   });
 
   return promise;
 };
 
-exports.default = notification;
+export default notification;

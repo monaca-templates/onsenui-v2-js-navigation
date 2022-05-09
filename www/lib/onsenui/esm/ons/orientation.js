@@ -1,16 +1,23 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _microevent = require('./microevent');
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _microevent2 = _interopRequireDefault(_microevent);
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+*/
 
-var create = function create() {
+import MicroEvent from './microevent.js';
+
+const create = () => {
 
   /**
    * @object ons.orientation
@@ -19,7 +26,7 @@ var create = function create() {
    *   [en]Utility methods for orientation detection.[/en]
    *   [ja]画面のオリエンテーション検知のためのユーティリティメソッドを収めているオブジェクトです。[/ja]
    */
-  var obj = {
+  const obj = {
     /**
      * @event change
      * @description
@@ -88,7 +95,7 @@ var create = function create() {
      *   [en]Returns whether the current screen orientation is portrait or not.[/en]
      *   [ja]オリエンテーションがportraitモードかどうかを返します。[/ja]
      */
-    isPortrait: function isPortrait() {
+    isPortrait: function() {
       return this._isPortrait();
     },
 
@@ -102,11 +109,11 @@ var create = function create() {
      *   [en]Returns whether the current screen orientation is landscape or not.[/en]
      *   [ja]オリエンテーションがlandscapeモードかどうかを返します。[/ja]
      */
-    isLandscape: function isLandscape() {
+    isLandscape: function() {
       return !this.isPortrait();
     },
 
-    _init: function _init() {
+    _init: function() {
       document.addEventListener('DOMContentLoaded', this._onDOMContentLoaded.bind(this), false);
 
       if ('orientation' in window) {
@@ -115,84 +122,68 @@ var create = function create() {
         window.addEventListener('resize', this._onResize.bind(this), false);
       }
 
-      this._isPortrait = function () {
+      this._isPortrait = function() {
         return window.innerHeight > window.innerWidth;
       };
 
       return this;
     },
 
-    _onDOMContentLoaded: function _onDOMContentLoaded() {
+    _onDOMContentLoaded: function() {
       this._installIsPortraitImplementation();
-      this.emit('change', { isPortrait: this.isPortrait() });
+      this.emit('change', {isPortrait: this.isPortrait()});
     },
 
-    _installIsPortraitImplementation: function _installIsPortraitImplementation() {
-      var isPortrait = window.innerWidth < window.innerHeight;
+    _installIsPortraitImplementation: function() {
+      const isPortrait = window.innerWidth < window.innerHeight;
 
       if (!('orientation' in window)) {
-        this._isPortrait = function () {
+        this._isPortrait = function() {
           return window.innerHeight > window.innerWidth;
         };
       } else if (window.orientation % 180 === 0) {
-        this._isPortrait = function () {
+        this._isPortrait = function() {
           return Math.abs(window.orientation % 180) === 0 ? isPortrait : !isPortrait;
         };
       } else {
-        this._isPortrait = function () {
+        this._isPortrait = function() {
           return Math.abs(window.orientation % 180) === 90 ? isPortrait : !isPortrait;
         };
       }
     },
 
-    _onOrientationChange: function _onOrientationChange() {
-      var _this = this;
-
-      var isPortrait = this._isPortrait();
+    _onOrientationChange: function() {
+      const isPortrait = this._isPortrait();
 
       // Wait for the dimensions to change because
       // of Android inconsistency.
-      var nIter = 0;
-      var interval = setInterval(function () {
+      let nIter = 0;
+      const interval = setInterval(() => {
         nIter++;
 
-        var w = window.innerWidth;
-        var h = window.innerHeight;
+        const w = window.innerWidth;
+        const h = window.innerHeight;
 
-        if (isPortrait && w <= h || !isPortrait && w >= h) {
-          _this.emit('change', { isPortrait: isPortrait });
+        if ((isPortrait && w <= h) ||
+           (!isPortrait && w >= h)) {
+          this.emit('change', {isPortrait: isPortrait});
           clearInterval(interval);
         } else if (nIter === 50) {
-          _this.emit('change', { isPortrait: isPortrait });
+          this.emit('change', {isPortrait: isPortrait});
           clearInterval(interval);
         }
       }, 20);
     },
 
     // Run on not mobile browser.
-    _onResize: function _onResize() {
-      this.emit('change', { isPortrait: this.isPortrait() });
+    _onResize: function() {
+      this.emit('change', {isPortrait: this.isPortrait()});
     }
   };
 
-  _microevent2.default.mixin(obj);
+  MicroEvent.mixin(obj);
 
   return obj;
-}; /*
-   Copyright 2013-2015 ASIAL CORPORATION
-   
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-   
-      http://www.apache.org/licenses/LICENSE-2.0
-   
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-   
-   */
+};
 
-exports.default = create()._init();
+export default create()._init();

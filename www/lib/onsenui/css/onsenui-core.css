@@ -1,4 +1,3 @@
-/*! onsenui - v2.11.2 - 2021-01-12 */
 ons-page, ons-navigator,
 ons-tabbar,
 ons-gesture-detector {
@@ -270,16 +269,14 @@ ons-carousel[fullscreen] {
 .ons-ios-scroll-fix .page:not(.page--wrapper)[shown] > .page__content {
   overflow-y: hidden;
 }
+
 .ons-ios-scroll-fix ons-splitter-side > .page:not(.page--wrapper)[shown] > .page__content {
   overflow-y: auto;
 }
 
 ons-row {
-  display: -webkit-box;
   display: -webkit-flex;
-  display: -moz-box;
   display: -moz-flex;
-  display: -ms-flexbox;
   display: flex;
   -webkit-flex-wrap: wrap;
           flex-wrap: wrap;
@@ -288,27 +285,21 @@ ons-row {
 }
 
 ons-row[vertical-align="top"], ons-row[align="top"] {
-  -webkit-box-align: start;
   box-align: start;
-  -ms-flex-align: start;
   -webkit-align-items: flex-start;
   -moz-align-items: flex-start;
   align-items: flex-start;
 }
 
 ons-row[vertical-align="bottom"], ons-row[align="bottom"] {
-  -webkit-box-align: end;
   box-align: end;
-  -ms-flex-align: end;
   -webkit-align-items: flex-end;
   -moz-align-items: flex-end;
   align-items: flex-end;
 }
 
 ons-row[vertical-align="center"], ons-row[align="center"] {
-  -webkit-box-align: center;
   box-align: center;
-  -ms-flex-align: center;
   -webkit-align-items: center;
   -moz-align-items: center;
   align-items: center;
@@ -320,11 +311,8 @@ ons-row + ons-row {
 }
 
 ons-col {
-  -webkit-box-flex: 1;
   -webkit-flex: 1;
-  -moz-box-flex: 1;
   -moz-flex: 1;
-  -ms-flex: 1;
   flex: 1;
   display: block;
   width: 100%;
@@ -333,15 +321,11 @@ ons-col {
 
 ons-col[vertical-align="top"], ons-col[align="top"] {
   -webkit-align-self: flex-start;
-  -moz-align-self: flex-start;
-  -ms-flex-item-align: start;
   align-self: flex-start;
 }
 
 ons-col[vertical-align="bottom"], ons-col[align="bottom"] {
   -webkit-align-self: flex-end;
-  -moz-align-self: flex-end;
-  -ms-flex-item-align: end;
   align-self: flex-end; }
 
 ons-col[vertical-align="center"], ons-col[align="center"] {
@@ -350,7 +334,6 @@ ons-col[vertical-align="center"], ons-col[align="center"] {
   -ms-flex-item-align: center;
   text-align: inherit;
 }
-
 
 /*
 Copyright 2013-2015 ASIAL CORPORATION
@@ -381,6 +364,7 @@ limitations under the License.
 }
 
 .segment__button .ons-icon {
+  line-height: normal;
   line-height: initial;
 }
 
@@ -391,17 +375,7 @@ limitations under the License.
 
 .ons-icon[spin] {
   -webkit-animation: ons-icon-spin 2s infinite linear;
-  -moz-animation: ons-icon-spin 2s infinite linear;
   animation: ons-icon-spin 2s infinite linear;
-}
-
-@-moz-keyframes ons-icon-spin {
-  0% {
-    -moz-transform: rotate(0deg);
-  }
-  100% {
-    -moz-transform: rotate(359deg);
-  }
 }
 
 @-webkit-keyframes ons-icon-spin {
@@ -426,19 +400,16 @@ limitations under the License.
 
 .ons-icon[rotate="90"] {
   -webkit-transform: rotate(90deg);
-  -moz-transform: rotate(90deg);
   transform: rotate(90deg);
 }
 
 .ons-icon[rotate="180"] {
   -webkit-transform: rotate(180deg);
-  -moz-transform: rotate(180deg);
   transform: rotate(180deg);
 }
 
 .ons-icon[rotate="270"] {
   -webkit-transform: rotate(270deg);
-  -moz-transform: rotate(270deg);
   transform: rotate(270deg);
 }
 
@@ -472,6 +443,7 @@ limitations under the License.
 /**
  * ons-icon with Font Awesome backward compatibility
  */
+
 .ons-icon.fa {
   font-family: 'Font Awesome 5 Brands', 'Font Awesome 5 Free';
   font-weight: 900;
@@ -518,6 +490,7 @@ ons-input input.text-input--material:-ms-input-placeholder {
 }
 
 /* Suppress safe area support for pages in splitter sides */
+
 @media (orientation: landscape) {
   html[onsflag-iphonex-landscape] ons-splitter-side[side="left"] .page__content {
     padding-right: 0;
@@ -526,7 +499,9 @@ ons-input input.text-input--material:-ms-input-placeholder {
     padding-left: 0;
   }
 }
+
 /* Support the situation that a progress bar is located just below a toolbar */
+
 @media (orientation: landscape) {
   html[onsflag-iphonex-landscape] .page__content > ons-progress-bar > .progress-bar {
     margin-left: -44px;
@@ -534,7 +509,9 @@ ons-input input.text-input--material:-ms-input-placeholder {
     width: calc(100% + 88px);
   }
 }
+
 /* Lists in .page__content in splitter-sides */
+
 @media (orientation: landscape) {
   /* Suppress left safe area support for pages in right splitter sides */
   html[onsflag-iphonex-landscape] ons-splitter-side[side="right"] .page__content > .list:not(.list--inset) {
@@ -613,6 +590,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
  */
+
 .ripple {
   display: block;
   position: absolute;
@@ -648,6 +626,7 @@ limitations under the License.
 }
 
 /* FIXME */
+
 ons-list-item .ripple__wave,
 ons-list-item .ripple__background,
 .button--material--flat .ripple__wave,
@@ -659,7 +638,6 @@ ons-list-item .ripple__background,
 .ripple--light-gray__background {
   background: rgba(189, 189, 189, 0.3);
 }
-
 
 /*
 Copyright 2013-2015 ASIAL CORPORATION

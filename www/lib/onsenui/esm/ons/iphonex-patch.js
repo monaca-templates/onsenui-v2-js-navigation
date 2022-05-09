@@ -1,11 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -24,13 +16,13 @@ limitations under the License.
 */
 
 // This object should not be exposed to users. Please keep this private.
-var iPhoneXPatch = {};
+const iPhoneXPatch = {};
 
-iPhoneXPatch.isIPhoneXPortraitPatchActive = function () {
+iPhoneXPatch.isIPhoneXPortraitPatchActive = () => {
   return document.documentElement.getAttribute('onsflag-iphonex-portrait') != null && window.innerWidth < window.innerHeight;
 };
 
-iPhoneXPatch.isIPhoneXLandscapePatchActive = function () {
+iPhoneXPatch.isIPhoneXLandscapePatchActive = () => {
   // If width === height, treat it as landscape
   return document.documentElement.getAttribute('onsflag-iphonex-landscape') != null && window.innerWidth >= window.innerHeight;
 };
@@ -38,8 +30,8 @@ iPhoneXPatch.isIPhoneXLandscapePatchActive = function () {
 /**
  * Returns the safe area lengths based on the current state of the safe areas.
  */
-iPhoneXPatch.getSafeAreaLengths = function () {
-  var safeAreaLengths = void 0;
+iPhoneXPatch.getSafeAreaLengths = () => {
+  let safeAreaLengths;
   if (iPhoneXPatch.isIPhoneXPortraitPatchActive()) {
     safeAreaLengths = {
       top: 44,
@@ -69,8 +61,8 @@ iPhoneXPatch.getSafeAreaLengths = function () {
 /**
  * Returns the safe area rect based on the current state of the safe areas.
  */
-iPhoneXPatch.getSafeAreaDOMRect = function () {
-  var safeAreaRect = void 0;
+iPhoneXPatch.getSafeAreaDOMRect = () => {
+  let safeAreaRect;
   if (iPhoneXPatch.isIPhoneXPortraitPatchActive()) {
     safeAreaRect = {
       x: 0,
@@ -94,12 +86,13 @@ iPhoneXPatch.getSafeAreaDOMRect = function () {
     };
   }
 
-  return _extends({}, safeAreaRect, {
+  return {
+    ...safeAreaRect,
     left: safeAreaRect.x,
     top: safeAreaRect.y,
     right: safeAreaRect.x + safeAreaRect.width,
     bottom: safeAreaRect.y + safeAreaRect.height
-  });
+  };
 };
 
-exports.default = iPhoneXPatch;
+export default iPhoneXPatch;

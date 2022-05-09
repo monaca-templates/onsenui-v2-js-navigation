@@ -4,15 +4,7 @@
 
 'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _util = require('./util');
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+import util from './util.js';
 
 var Event, Utils, Detection, PointerEvent;
 
@@ -41,6 +33,7 @@ var Event, Utils, Detection, PointerEvent;
 var GestureDetector = function GestureDetector(element, options) {
   return new GestureDetector.Instance(element, options || {});
 };
+
 
 /**
  * default settings.
@@ -87,7 +80,7 @@ GestureDetector.HAS_POINTEREVENTS = navigator.pointerEnabled || navigator.msPoin
  * @property HAS_TOUCHEVENTS
  * @type {Boolean}
  */
-GestureDetector.HAS_TOUCHEVENTS = 'ontouchstart' in window;
+GestureDetector.HAS_TOUCHEVENTS = ('ontouchstart' in window);
 
 /**
  * detect mobile browsers
@@ -101,7 +94,7 @@ GestureDetector.IS_MOBILE = /mobile|tablet|ip(ad|hone|od)|android|silk/i.test(na
  * @property NO_MOUSEEVENTS
  * @type {Boolean}
  */
-GestureDetector.NO_MOUSEEVENTS = GestureDetector.HAS_TOUCHEVENTS && GestureDetector.IS_MOBILE || GestureDetector.HAS_POINTEREVENTS;
+GestureDetector.NO_MOUSEEVENTS = (GestureDetector.HAS_TOUCHEVENTS && GestureDetector.IS_MOBILE) || GestureDetector.HAS_POINTEREVENTS;
 
 /**
  * interval in which GestureDetector recalculates current velocity/direction/angle in ms
@@ -195,7 +188,7 @@ function setup(opts) {
   Event.determineEventTypes();
 
   // Register all gestures inside GestureDetector.gestures
-  Utils.each(GestureDetector.gestures, function (gesture) {
+  Utils.each(GestureDetector.gestures, function(gesture) {
     Detection.register(gesture);
   });
 
@@ -224,7 +217,7 @@ Utils = GestureDetector.utils = {
    */
   extend: function extend(dest, src, merge) {
     for (var key in src) {
-      if (src.hasOwnProperty(key) && (dest[key] === undefined || !merge)) {
+      if (Object.prototype.hasOwnProperty.call(src, key) && (dest[key] === undefined || !merge)) {
         dest[key] = src[key];
       }
     }
@@ -238,7 +231,7 @@ Utils = GestureDetector.utils = {
    * @param {Function} handler
    */
   on: function on(element, type, handler, opt) {
-    _util2.default.addEventListener(element, type, handler, opt, true);
+    util.addEventListener(element, type, handler, opt, true);
   },
 
   /**
@@ -248,7 +241,7 @@ Utils = GestureDetector.utils = {
    * @param {Function} handler
    */
   off: function off(element, type, handler, opt) {
-    _util2.default.removeEventListener(element, type, handler, opt, true);
+    util.removeEventListener(element, type, handler, opt, true);
   },
 
   /**
@@ -276,7 +269,8 @@ Utils = GestureDetector.utils = {
       // objects
     } else {
       for (i in obj) {
-        if (obj.hasOwnProperty(i) && iterator.call(context, obj[i], i, obj) === false) {
+        if (Object.prototype.hasOwnProperty.call(obj, i) &&
+          iterator.call(context, obj[i], i, obj) === false) {
           return;
         }
       }
@@ -301,11 +295,8 @@ Utils = GestureDetector.utils = {
    */
   inArray: function inArray(src, find, deep) {
     if (deep) {
-      for (var i = 0, len = src.length; i < len; i++) {
-        // Array.findIndex
-        if (Object.keys(find).every(function (key) {
-          return src[i][key] === find[key];
-        })) {
+      for (var i = 0, len = src.length; i < len; i++) { // Array.findIndex
+        if (Object.keys(find).every(function(key) { return src[i][key] === find[key]; })) {
           return i;
         }
       }
@@ -372,7 +363,7 @@ Utils = GestureDetector.utils = {
       };
     }
 
-    Utils.each(touches, function (touch) {
+    Utils.each(touches, function(touch) {
       pageX.push(touch.pageX);
       pageY.push(touch.pageY);
       clientX.push(touch.clientX);
@@ -440,7 +431,7 @@ Utils = GestureDetector.utils = {
     var x = touch2.clientX - touch1.clientX,
         y = touch2.clientY - touch1.clientY;
 
-    return Math.sqrt(x * x + y * y);
+    return Math.sqrt((x * x) + (y * y));
   },
 
   /**
@@ -523,11 +514,11 @@ Utils = GestureDetector.utils = {
     }
 
     // set the css properties
-    Utils.each(props, function (value, prop) {
+    Utils.each(props, function(value, prop) {
       Utils.setPrefixedCss(element, prop, value, toggle);
     });
 
-    var falseFn = toggle && function () {
+    var falseFn = toggle && function() {
       return false;
     };
 
@@ -548,11 +539,12 @@ Utils = GestureDetector.utils = {
    * @return {String} camelCaseStr
    */
   toCamelCase: function toCamelCase(str) {
-    return str.replace(/[_-]([a-z])/g, function (s) {
+    return str.replace(/[_-]([a-z])/g, function(s) {
       return s[1].toUpperCase();
     });
   }
 };
+
 
 /**
  * @module GestureDetector
@@ -598,7 +590,7 @@ Event = GestureDetector.event = {
    */
   on: function on(element, type, handler, opt, hook) {
     var types = type.split(' ');
-    Utils.each(types, function (type) {
+    Utils.each(types, function(type) {
       Utils.on(element, type, handler, opt);
       hook && hook(type);
     });
@@ -615,7 +607,7 @@ Event = GestureDetector.event = {
    */
   off: function off(element, type, handler, opt, hook) {
     var types = type.split(' ');
-    Utils.each(types, function (type) {
+    Utils.each(types, function(type) {
       Utils.off(element, type, handler, opt);
       hook && hook(type);
     });
@@ -648,7 +640,7 @@ Event = GestureDetector.event = {
         self.preventMouseEvents = false;
         self.shouldDetect = true;
       } else if (isPointer && eventType == EVENT_START) {
-        self.shouldDetect = ev.buttons === 1 || PointerEvent.matchType(POINTER_TOUCH, ev);
+        self.shouldDetect = (ev.buttons === 1 || PointerEvent.matchType(POINTER_TOUCH, ev));
         // just a valid start event, but no mouse
       } else if (!isMouse && eventType == EVENT_START) {
         self.preventMouseEvents = true;
@@ -707,7 +699,7 @@ Event = GestureDetector.event = {
       triggerChange = EVENT_RELEASE;
 
       // keep track of how many touches have been removed
-      changedLength = touchList.length - (ev.changedTouches ? ev.changedTouches.length : 1);
+      changedLength = touchList.length - ((ev.changedTouches) ? ev.changedTouches.length : 1);
     }
 
     // after there are still touches on the screen,
@@ -762,14 +754,30 @@ Event = GestureDetector.event = {
     var types;
     if (GestureDetector.HAS_POINTEREVENTS) {
       if (window.PointerEvent) {
-        types = ['pointerdown', 'pointermove', 'pointerup pointercancel lostpointercapture'];
+        types = [
+          'pointerdown',
+          'pointermove',
+          'pointerup pointercancel lostpointercapture'
+        ];
       } else {
-        types = ['MSPointerDown', 'MSPointerMove', 'MSPointerUp MSPointerCancel MSLostPointerCapture'];
+        types = [
+          'MSPointerDown',
+          'MSPointerMove',
+          'MSPointerUp MSPointerCancel MSLostPointerCapture'
+        ];
       }
     } else if (GestureDetector.NO_MOUSEEVENTS) {
-      types = ['touchstart', 'touchmove', 'touchend touchcancel'];
+      types = [
+        'touchstart',
+        'touchmove',
+        'touchend touchcancel'
+      ];
     } else {
-      types = ['touchstart mousedown', 'touchmove mousemove', 'touchend touchcancel mouseup'];
+      types = [
+        'touchstart mousedown',
+        'touchmove mousemove',
+        'touchend touchcancel mouseup'
+      ];
     }
 
     EVENT_TYPES[EVENT_START] = types[0];
@@ -800,7 +808,7 @@ Event = GestureDetector.event = {
       var concat = [].concat(Utils.toArray(ev.touches), Utils.toArray(ev.changedTouches));
       var touchList = [];
 
-      Utils.each(concat, function (touch) {
+      Utils.each(concat, function(touch) {
         if (Utils.inArray(identifiers, touch.identifier) === -1) {
           touchList.push(touch);
         }
@@ -845,7 +853,7 @@ Event = GestureDetector.event = {
        * prevent the browser default actions
        * mostly used to disable scrolling of the browser
        */
-      preventDefault: function preventDefault() {
+      preventDefault: function() {
         var srcEvent = this.srcEvent;
         srcEvent.preventManipulation && srcEvent.preventManipulation();
         srcEvent.preventDefault && srcEvent.preventDefault();
@@ -854,7 +862,7 @@ Event = GestureDetector.event = {
       /**
        * stop bubbling the event up to its parents
        */
-      stopPropagation: function stopPropagation() {
+      stopPropagation: function() {
         this.srcEvent.stopPropagation();
       },
 
@@ -863,12 +871,13 @@ Event = GestureDetector.event = {
        * might be useful after a swipe was detected
        * @return {*}
        */
-      stopDetect: function stopDetect() {
+      stopDetect: function() {
         return Detection.stopDetect();
       }
     };
   }
 };
+
 
 /**
  * @module GestureDetector
@@ -891,7 +900,7 @@ PointerEvent = GestureDetector.PointerEvent = {
   getTouchList: function getTouchList() {
     var touchlist = [];
     // we can use forEach since pointerEvents only is in IE10
-    Utils.each(this.pointers, function (pointer) {
+    Utils.each(this.pointers, function(pointer) {
       touchlist.push(pointer);
     });
     return touchlist;
@@ -903,7 +912,7 @@ PointerEvent = GestureDetector.PointerEvent = {
    * @param {Object} pointerEvent
    */
   updatePointer: function updatePointer(eventType, pointerEvent) {
-    if (eventType == EVENT_END || eventType != EVENT_END && pointerEvent.buttons !== 1) {
+    if (eventType == EVENT_END || (eventType != EVENT_END && pointerEvent.buttons !== 1)) {
       delete this.pointers[pointerEvent.pointerId];
     } else {
       pointerEvent.identifier = pointerEvent.pointerId;
@@ -924,9 +933,9 @@ PointerEvent = GestureDetector.PointerEvent = {
     var pt = ev.pointerType,
         types = {};
 
-    types[POINTER_MOUSE] = pt === (ev.MSPOINTER_TYPE_MOUSE || POINTER_MOUSE);
-    types[POINTER_TOUCH] = pt === (ev.MSPOINTER_TYPE_TOUCH || POINTER_TOUCH);
-    types[POINTER_PEN] = pt === (ev.MSPOINTER_TYPE_PEN || POINTER_PEN);
+    types[POINTER_MOUSE] = (pt === (ev.MSPOINTER_TYPE_MOUSE || POINTER_MOUSE));
+    types[POINTER_TOUCH] = (pt === (ev.MSPOINTER_TYPE_TOUCH || POINTER_TOUCH));
+    types[POINTER_PEN] = (pt === (ev.MSPOINTER_TYPE_PEN || POINTER_PEN));
     return types[pointerType];
   },
 
@@ -937,6 +946,7 @@ PointerEvent = GestureDetector.PointerEvent = {
     this.pointers = {};
   }
 };
+
 
 /**
  * @module GestureDetector
@@ -1091,7 +1101,7 @@ Detection = GestureDetector.detection = {
     // update the start touchlist to calculate the scale/rotation
     if (ev.eventType == EVENT_TOUCH || ev.eventType == EVENT_RELEASE) {
       startEv.touches = [];
-      Utils.each(ev.touches, function (touch) {
+      Utils.each(ev.touches, function(touch) {
         startEv.touches.push({
           clientX: touch.clientX,
           clientY: touch.clientY
@@ -1144,7 +1154,7 @@ Detection = GestureDetector.detection = {
     this.gestures.push(gesture);
 
     // sort the list by index
-    this.gestures.sort(function (a, b) {
+    this.gestures.sort(function(a, b) {
       if (a.index < b.index) {
         return -1;
       }
@@ -1157,6 +1167,7 @@ Detection = GestureDetector.detection = {
     return this.gestures;
   }
 };
+
 
 /**
  * @module GestureDetector
@@ -1172,9 +1183,9 @@ Detection = GestureDetector.detection = {
  * @param {Object} [options={}] options are merged with `GestureDetector.defaults`
  * @return {GestureDetector.Instance}
  */
-GestureDetector.Instance = function (element, options) {
+GestureDetector.Instance = function(element, options) {
   var self = this;
-  var listenerOptions = options && options.passive ? { passive: true } : undefined;
+  var listenerOptions = (options && options.passive) ? { passive: true } : undefined;
 
   // setup GestureDetectorJS window events and register all gestures
   // this also sets up the default options
@@ -1199,7 +1210,7 @@ GestureDetector.Instance = function (element, options) {
    * @property options
    * @type {Object}
    */
-  Utils.each(options, function (value, name) {
+  Utils.each(options, function(value, name) {
     delete options[name];
     options[Utils.toCamelCase(name)] = value;
   });
@@ -1217,7 +1228,7 @@ GestureDetector.Instance = function (element, options) {
    * @property eventStartHandler
    * @type {Object}
    */
-  this.eventStartHandler = Event.onTouch(element, EVENT_START, function (ev) {
+  this.eventStartHandler = Event.onTouch(element, EVENT_START, function(ev) {
     if (self.enabled && ev.eventType == EVENT_START) {
       Detection.startDetect(self, ev);
     } else if (ev.eventType == EVENT_TOUCH) {
@@ -1250,7 +1261,7 @@ GestureDetector.Instance.prototype = {
   on: function onEvent(gestures, handler, opt) {
     var self = this;
 
-    Event.on(self.element, gestures, handler, _util2.default.extend({}, self.options.listenerOptions, opt), function (type) {
+    Event.on(self.element, gestures, handler, util.extend({}, self.options.listenerOptions, opt), function(type) {
       self.eventHandlers.push({ gesture: type, handler: handler });
     });
     return self;
@@ -1272,7 +1283,7 @@ GestureDetector.Instance.prototype = {
   off: function offEvent(gestures, handler, opt) {
     var self = this;
 
-    Event.off(self.element, gestures, handler, _util2.default.extend({}, self.options.listenerOptions, opt), function (type) {
+    Event.off(self.element, gestures, handler, util.extend({}, self.options.listenerOptions, opt), function(type) {
       var index = Utils.inArray(self.eventHandlers, { gesture: type, handler: handler }, true);
       if (index >= 0) {
         self.eventHandlers.splice(index, 1);
@@ -1339,8 +1350,7 @@ GestureDetector.Instance.prototype = {
     Utils.toggleBehavior(this.element, this.options.behavior, false);
 
     // unbind all custom event handlers
-    for (i = -1; eh = this.eventHandlers[++i];) {
-      // eslint-disable-line no-cond-assign
+    for (i = -1; (eh = this.eventHandlers[++i]);) { // eslint-disable-line no-cond-assign
       Utils.off(this.element, eh.gesture, eh.handler);
     }
 
@@ -1352,6 +1362,7 @@ GestureDetector.Instance.prototype = {
     return null;
   }
 };
+
 
 /**
  * @module gestures
@@ -1401,51 +1412,56 @@ GestureDetector.Instance.prototype = {
 /**
  * @param {String} name
  */
-(function (name) {
+(function(name) {
   var triggered = false;
 
   function dragGesture(ev, inst) {
     var cur = Detection.current;
 
     // max touches
-    if (inst.options.dragMaxTouches > 0 && ev.touches.length > inst.options.dragMaxTouches) {
+    if (inst.options.dragMaxTouches > 0 &&
+      ev.touches.length > inst.options.dragMaxTouches) {
       return;
     }
 
     switch (ev.eventType) {
-      case EVENT_START:
-        triggered = false;
-        break;
+    case EVENT_START:
+      triggered = false;
+      break;
 
-      case EVENT_MOVE:
-        // when the distance we moved is too small we skip this gesture
-        // or we can be already in dragging
-        if (ev.distance < inst.options.dragMinDistance && cur.name != name) {
-          return;
+    case EVENT_MOVE:
+      // when the distance we moved is too small we skip this gesture
+      // or we can be already in dragging
+      if (ev.distance < inst.options.dragMinDistance &&
+        cur.name != name) {
+        return;
+      }
+
+      var startCenter = cur.startEvent.center;
+
+      // we are dragging!
+      if (cur.name != name) {
+        cur.name = name;
+        if (inst.options.dragDistanceCorrection && ev.distance > 0) {
+          // When a drag is triggered, set the event center to dragMinDistance pixels from the original event center.
+          // Without this correction, the dragged distance would jumpstart at dragMinDistance pixels instead of at 0.
+          // It might be useful to save the original start point somewhere
+          var factor = Math.abs(inst.options.dragMinDistance / ev.distance);
+          startCenter.pageX += ev.deltaX * factor;
+          startCenter.pageY += ev.deltaY * factor;
+          startCenter.clientX += ev.deltaX * factor;
+          startCenter.clientY += ev.deltaY * factor;
+
+          // recalculate event data using new start point
+          ev = Detection.extendEventData(ev);
         }
+      }
 
-        var startCenter = cur.startEvent.center;
-
-        // we are dragging!
-        if (cur.name != name) {
-          cur.name = name;
-          if (inst.options.dragDistanceCorrection && ev.distance > 0) {
-            // When a drag is triggered, set the event center to dragMinDistance pixels from the original event center.
-            // Without this correction, the dragged distance would jumpstart at dragMinDistance pixels instead of at 0.
-            // It might be useful to save the original start point somewhere
-            var factor = Math.abs(inst.options.dragMinDistance / ev.distance);
-            startCenter.pageX += ev.deltaX * factor;
-            startCenter.pageY += ev.deltaY * factor;
-            startCenter.clientX += ev.deltaX * factor;
-            startCenter.clientY += ev.deltaY * factor;
-
-            // recalculate event data using new start point
-            ev = Detection.extendEventData(ev);
-          }
-        }
-
-        // lock drag to axis?
-        if (cur.lastEvent.dragLockToAxis || inst.options.dragLockToAxis && inst.options.dragLockMinDistance <= ev.distance) {
+      // lock drag to axis?
+      if (cur.lastEvent.dragLockToAxis ||
+        ( inst.options.dragLockToAxis &&
+          inst.options.dragLockMinDistance <= ev.distance
+        )) {
           ev.dragLockToAxis = true;
         }
 
@@ -1453,9 +1469,9 @@ GestureDetector.Instance.prototype = {
         var lastDirection = cur.lastEvent.direction;
         if (ev.dragLockToAxis && lastDirection !== ev.direction) {
           if (Utils.isVertical(lastDirection)) {
-            ev.direction = ev.deltaY < 0 ? DIRECTION_UP : DIRECTION_DOWN;
+            ev.direction = (ev.deltaY < 0) ? DIRECTION_UP : DIRECTION_DOWN;
           } else {
-            ev.direction = ev.deltaX < 0 ? DIRECTION_LEFT : DIRECTION_RIGHT;
+            ev.direction = (ev.deltaX < 0) ? DIRECTION_LEFT : DIRECTION_RIGHT;
           }
         }
 
@@ -1472,7 +1488,8 @@ GestureDetector.Instance.prototype = {
         var isVertical = Utils.isVertical(ev.direction);
 
         // block the browser events
-        if (inst.options.dragBlockVertical && isVertical || inst.options.dragBlockHorizontal && !isVertical) {
+        if ((inst.options.dragBlockVertical && isVertical) ||
+          (inst.options.dragBlockHorizontal && !isVertical)) {
           ev.preventDefault();
         }
         break;
@@ -1487,127 +1504,127 @@ GestureDetector.Instance.prototype = {
       case EVENT_END:
         triggered = false;
         break;
+      }
     }
-  }
 
-  GestureDetector.gestures.Drag = {
-    name: name,
-    index: 50,
-    handler: dragGesture,
-    defaults: {
-      /**
-       * minimal movement that have to be made before the drag event gets triggered
-       * @property dragMinDistance
-       * @type {Number}
-       * @default 10
-       */
-      dragMinDistance: 10,
+    GestureDetector.gestures.Drag = {
+      name: name,
+      index: 50,
+      handler: dragGesture,
+      defaults: {
+        /**
+         * minimal movement that have to be made before the drag event gets triggered
+         * @property dragMinDistance
+         * @type {Number}
+         * @default 10
+         */
+        dragMinDistance: 10,
 
-      /**
-       * Set dragDistanceCorrection to true to make the starting point of the drag
-       * be calculated from where the drag was triggered, not from where the touch started.
-       * Useful to avoid a jerk-starting drag, which can make fine-adjustments
-       * through dragging difficult, and be visually unappealing.
-       * @property dragDistanceCorrection
-       * @type {Boolean}
-       * @default true
-       */
-      dragDistanceCorrection: true,
+        /**
+         * Set dragDistanceCorrection to true to make the starting point of the drag
+         * be calculated from where the drag was triggered, not from where the touch started.
+         * Useful to avoid a jerk-starting drag, which can make fine-adjustments
+         * through dragging difficult, and be visually unappealing.
+         * @property dragDistanceCorrection
+         * @type {Boolean}
+         * @default true
+         */
+        dragDistanceCorrection: true,
 
-      /**
-       * set 0 for unlimited, but this can conflict with transform
-       * @property dragMaxTouches
-       * @type {Number}
-       * @default 1
-       */
-      dragMaxTouches: 1,
+        /**
+         * set 0 for unlimited, but this can conflict with transform
+         * @property dragMaxTouches
+         * @type {Number}
+         * @default 1
+         */
+        dragMaxTouches: 1,
 
-      /**
-       * prevent default browser behavior when dragging occurs
-       * be careful with it, it makes the element a blocking element
-       * when you are using the drag gesture, it is a good practice to set this true
-       * @property dragBlockHorizontal
-       * @type {Boolean}
-       * @default false
-       */
-      dragBlockHorizontal: false,
+        /**
+         * prevent default browser behavior when dragging occurs
+         * be careful with it, it makes the element a blocking element
+         * when you are using the drag gesture, it is a good practice to set this true
+         * @property dragBlockHorizontal
+         * @type {Boolean}
+         * @default false
+         */
+        dragBlockHorizontal: false,
 
-      /**
-       * same as `dragBlockHorizontal`, but for vertical movement
-       * @property dragBlockVertical
-       * @type {Boolean}
-       * @default false
-       */
-      dragBlockVertical: false,
+        /**
+         * same as `dragBlockHorizontal`, but for vertical movement
+         * @property dragBlockVertical
+         * @type {Boolean}
+         * @default false
+         */
+        dragBlockVertical: false,
 
-      /**
-       * dragLockToAxis keeps the drag gesture on the axis that it started on,
-       * It disallows vertical directions if the initial direction was horizontal, and vice versa.
-       * @property dragLockToAxis
-       * @type {Boolean}
-       * @default false
-       */
-      dragLockToAxis: false,
+        /**
+         * dragLockToAxis keeps the drag gesture on the axis that it started on,
+         * It disallows vertical directions if the initial direction was horizontal, and vice versa.
+         * @property dragLockToAxis
+         * @type {Boolean}
+         * @default false
+         */
+        dragLockToAxis: false,
 
-      /**
-       * drag lock only kicks in when distance > dragLockMinDistance
-       * This way, locking occurs only when the distance has become large enough to reliably determine the direction
-       * @property dragLockMinDistance
-       * @type {Number}
-       * @default 25
-       */
-      dragLockMinDistance: 25
+        /**
+         * drag lock only kicks in when distance > dragLockMinDistance
+         * This way, locking occurs only when the distance has become large enough to reliably determine the direction
+         * @property dragLockMinDistance
+         * @type {Number}
+         * @default 25
+         */
+        dragLockMinDistance: 25
+      }
+    };
+  })('drag');
+
+  /**
+   * @module gestures
+   */
+  /**
+   * trigger a simple gesture event, so you can do anything in your handler.
+   * only usable if you know what your doing...
+   *
+   * @class Gesture
+   * @static
+   */
+  /**
+   * @event gesture
+   * @param {Object} ev
+   */
+  GestureDetector.gestures.Gesture = {
+    name: 'gesture',
+    index: 1337,
+    handler: function releaseGesture(ev, inst) {
+      inst.trigger(this.name, ev);
     }
   };
-})('drag');
 
-/**
- * @module gestures
- */
-/**
- * trigger a simple gesture event, so you can do anything in your handler.
- * only usable if you know what your doing...
- *
- * @class Gesture
- * @static
- */
-/**
- * @event gesture
- * @param {Object} ev
- */
-GestureDetector.gestures.Gesture = {
-  name: 'gesture',
-  index: 1337,
-  handler: function releaseGesture(ev, inst) {
-    inst.trigger(this.name, ev);
-  }
-};
+  /**
+   * @module gestures
+   */
+  /**
+   * Touch stays at the same place for x time
+   *
+   * @class Hold
+   * @static
+   */
+  /**
+   * @event hold
+   * @param {Object} ev
+   */
 
-/**
- * @module gestures
- */
-/**
- * Touch stays at the same place for x time
- *
- * @class Hold
- * @static
- */
-/**
- * @event hold
- * @param {Object} ev
- */
+  /**
+   * @param {String} name
+   */
+  (function(name) {
+    var timer;
 
-/**
- * @param {String} name
- */
-(function (name) {
-  var timer;
+    function holdGesture(ev, inst) {
+      var options = inst.options,
+          current = Detection.current;
 
-  function holdGesture(ev, inst) {
-    var options = inst.options,
-        current = Detection.current;
-
-    switch (ev.eventType) {
+      switch (ev.eventType) {
       case EVENT_START:
         clearTimeout(timer);
 
@@ -1616,7 +1633,7 @@ GestureDetector.gestures.Gesture = {
 
         // set timer and if after the timeout it still is hold,
         // we trigger the hold event
-        timer = setTimeout(function () {
+        timer = setTimeout(function() {
           if (current && current.name == name) {
             inst.trigger(name, ev);
           }
@@ -1632,185 +1649,187 @@ GestureDetector.gestures.Gesture = {
       case EVENT_RELEASE:
         clearTimeout(timer);
         break;
+      }
     }
-  }
 
-  GestureDetector.gestures.Hold = {
-    name: name,
-    index: 10,
+    GestureDetector.gestures.Hold = {
+      name: name,
+      index: 10,
+      defaults: {
+        /**
+         * @property holdTimeout
+         * @type {Number}
+         * @default 500
+         */
+        holdTimeout: 500,
+
+        /**
+         * movement allowed while holding
+         * @property holdThreshold
+         * @type {Number}
+         * @default 2
+         */
+        holdThreshold: 2
+      },
+      handler: holdGesture
+    };
+  })('hold');
+
+  /**
+   * @module gestures
+   */
+  /**
+   * when a touch is being released from the page
+   *
+   * @class Release
+   * @static
+   */
+  /**
+   * @event release
+   * @param {Object} ev
+   */
+  GestureDetector.gestures.Release = {
+    name: 'release',
+    index: Infinity,
+    handler: function releaseGesture(ev, inst) {
+      if (ev.eventType == EVENT_RELEASE) {
+        inst.trigger(this.name, ev);
+      }
+    }
+  };
+
+  /**
+   * @module gestures
+   */
+  /**
+   * triggers swipe events when the end velocity is above the threshold
+   * for best usage, set `preventDefault` (on the drag gesture) to `true`
+   * ````
+   *  GestureDetectortime.on("dragleft swipeleft", function(ev) {
+   *    console.log(ev);
+   *    ev.gesture.preventDefault();
+   *  });
+   * ````
+   *
+   * @class Swipe
+   * @static
+   */
+  /**
+   * @event swipe
+   * @param {Object} ev
+   */
+  /**
+   * @event swipeleft
+   * @param {Object} ev
+   */
+  /**
+   * @event swiperight
+   * @param {Object} ev
+   */
+  /**
+   * @event swipeup
+   * @param {Object} ev
+   */
+  /**
+   * @event swipedown
+   * @param {Object} ev
+   */
+  GestureDetector.gestures.Swipe = {
+    name: 'swipe',
+    index: 40,
     defaults: {
       /**
-       * @property holdTimeout
+       * @property swipeMinTouches
        * @type {Number}
-       * @default 500
+       * @default 1
        */
-      holdTimeout: 500,
+      swipeMinTouches: 1,
 
       /**
-       * movement allowed while holding
-       * @property holdThreshold
+       * @property swipeMaxTouches
        * @type {Number}
-       * @default 2
+       * @default 1
        */
-      holdThreshold: 2
+      swipeMaxTouches: 1,
+
+      /**
+       * horizontal swipe velocity
+       * @property swipeVelocityX
+       * @type {Number}
+       * @default 0.6
+       */
+      swipeVelocityX: 0.6,
+
+      /**
+       * vertical swipe velocity
+       * @property swipeVelocityY
+       * @type {Number}
+       * @default 0.6
+       */
+      swipeVelocityY: 0.6
     },
-    handler: holdGesture
+
+    handler: function swipeGesture(ev, inst) {
+      if (ev.eventType == EVENT_RELEASE) {
+        var touches = ev.touches.length,
+            options = inst.options;
+
+        // max touches
+        if (touches < options.swipeMinTouches ||
+          touches > options.swipeMaxTouches) {
+          return;
+        }
+
+        // when the distance we moved is too small we skip this gesture
+        // or we can be already in dragging
+        if (ev.velocityX > options.swipeVelocityX ||
+          ev.velocityY > options.swipeVelocityY) {
+          // trigger swipe events
+          inst.trigger(this.name, ev);
+          inst.trigger(this.name + ev.direction, ev);
+        }
+      }
+    }
   };
-})('hold');
 
-/**
- * @module gestures
- */
-/**
- * when a touch is being released from the page
- *
- * @class Release
- * @static
- */
-/**
- * @event release
- * @param {Object} ev
- */
-GestureDetector.gestures.Release = {
-  name: 'release',
-  index: Infinity,
-  handler: function releaseGesture(ev, inst) {
-    if (ev.eventType == EVENT_RELEASE) {
-      inst.trigger(this.name, ev);
-    }
-  }
-};
+  /**
+   * @module gestures
+   */
+  /**
+   * Single tap and a double tap on a place
+   *
+   * @class Tap
+   * @static
+   */
+  /**
+   * @event tap
+   * @param {Object} ev
+   */
+  /**
+   * @event doubletap
+   * @param {Object} ev
+   */
 
-/**
- * @module gestures
- */
-/**
- * triggers swipe events when the end velocity is above the threshold
- * for best usage, set `preventDefault` (on the drag gesture) to `true`
- * ````
- *  GestureDetectortime.on("dragleft swipeleft", function(ev) {
- *    console.log(ev);
- *    ev.gesture.preventDefault();
- *  });
- * ````
- *
- * @class Swipe
- * @static
- */
-/**
- * @event swipe
- * @param {Object} ev
- */
-/**
- * @event swipeleft
- * @param {Object} ev
- */
-/**
- * @event swiperight
- * @param {Object} ev
- */
-/**
- * @event swipeup
- * @param {Object} ev
- */
-/**
- * @event swipedown
- * @param {Object} ev
- */
-GestureDetector.gestures.Swipe = {
-  name: 'swipe',
-  index: 40,
-  defaults: {
-    /**
-     * @property swipeMinTouches
-     * @type {Number}
-     * @default 1
-     */
-    swipeMinTouches: 1,
+  /**
+   * @param {String} name
+   */
+  (function(name) {
+    var hasMoved = false;
 
-    /**
-     * @property swipeMaxTouches
-     * @type {Number}
-     * @default 1
-     */
-    swipeMaxTouches: 1,
+    function tapGesture(ev, inst) {
+      var options = inst.options,
+          current = Detection.current,
+          prev = Detection.previous,
+          sincePrev,
+          didDoubleTap;
 
-    /**
-     * horizontal swipe velocity
-     * @property swipeVelocityX
-     * @type {Number}
-     * @default 0.6
-     */
-    swipeVelocityX: 0.6,
-
-    /**
-     * vertical swipe velocity
-     * @property swipeVelocityY
-     * @type {Number}
-     * @default 0.6
-     */
-    swipeVelocityY: 0.6
-  },
-
-  handler: function swipeGesture(ev, inst) {
-    if (ev.eventType == EVENT_RELEASE) {
-      var touches = ev.touches.length,
-          options = inst.options;
-
-      // max touches
-      if (touches < options.swipeMinTouches || touches > options.swipeMaxTouches) {
-        return;
-      }
-
-      // when the distance we moved is too small we skip this gesture
-      // or we can be already in dragging
-      if (ev.velocityX > options.swipeVelocityX || ev.velocityY > options.swipeVelocityY) {
-        // trigger swipe events
-        inst.trigger(this.name, ev);
-        inst.trigger(this.name + ev.direction, ev);
-      }
-    }
-  }
-};
-
-/**
- * @module gestures
- */
-/**
- * Single tap and a double tap on a place
- *
- * @class Tap
- * @static
- */
-/**
- * @event tap
- * @param {Object} ev
- */
-/**
- * @event doubletap
- * @param {Object} ev
- */
-
-/**
- * @param {String} name
- */
-(function (name) {
-  var hasMoved = false;
-
-  function tapGesture(ev, inst) {
-    var options = inst.options,
-        current = Detection.current,
-        prev = Detection.previous,
-        sincePrev,
-        didDoubleTap;
-
-    switch (ev.eventType) {
+      switch (ev.eventType) {
       case EVENT_START:
         hasMoved = false;
         break;
 
       case EVENT_MOVE:
-        hasMoved = hasMoved || ev.distance > options.tapMaxDistance;
+        hasMoved = hasMoved || (ev.distance > options.tapMaxDistance);
         break;
 
       case EVENT_END:
@@ -1820,7 +1839,9 @@ GestureDetector.gestures.Swipe = {
           didDoubleTap = false;
 
           // check if double tap
-          if (prev && prev.name == name && sincePrev && sincePrev < options.doubleTapInterval && ev.distance < options.doubleTapDistance) {
+          if (prev && prev.name == name &&
+            (sincePrev && sincePrev < options.doubleTapInterval) &&
+            ev.distance < options.doubleTapDistance) {
             inst.trigger('doubletap', ev);
             didDoubleTap = true;
           }
@@ -1832,152 +1853,152 @@ GestureDetector.gestures.Swipe = {
           }
         }
         break;
+      }
     }
-  }
 
-  GestureDetector.gestures.Tap = {
-    name: name,
-    index: 100,
-    handler: tapGesture,
+    GestureDetector.gestures.Tap = {
+      name: name,
+      index: 100,
+      handler: tapGesture,
+      defaults: {
+        /**
+         * max time of a tap, this is for the slow tappers
+         * @property tapMaxTime
+         * @type {Number}
+         * @default 250
+         */
+        tapMaxTime: 250,
+
+        /**
+         * max distance of movement of a tap, this is for the slow tappers
+         * @property tapMaxDistance
+         * @type {Number}
+         * @default 10
+         */
+        tapMaxDistance: 10,
+
+        /**
+         * always trigger the `tap` event, even while double-tapping
+         * @property tapAlways
+         * @type {Boolean}
+         * @default true
+         */
+        tapAlways: true,
+
+        /**
+         * max distance between two taps
+         * @property doubleTapDistance
+         * @type {Number}
+         * @default 20
+         */
+        doubleTapDistance: 20,
+
+        /**
+         * max time between two taps
+         * @property doubleTapInterval
+         * @type {Number}
+         * @default 300
+         */
+        doubleTapInterval: 300
+      }
+    };
+  })('tap');
+
+  /**
+   * @module gestures
+   */
+  /**
+   * when a touch is being touched at the page
+   *
+   * @class Touch
+   * @static
+   */
+  /**
+   * @event touch
+   * @param {Object} ev
+   */
+  GestureDetector.gestures.Touch = {
+    name: 'touch',
+    index: -Infinity,
     defaults: {
       /**
-       * max time of a tap, this is for the slow tappers
-       * @property tapMaxTime
-       * @type {Number}
-       * @default 250
-       */
-      tapMaxTime: 250,
-
-      /**
-       * max distance of movement of a tap, this is for the slow tappers
-       * @property tapMaxDistance
-       * @type {Number}
-       * @default 10
-       */
-      tapMaxDistance: 10,
-
-      /**
-       * always trigger the `tap` event, even while double-tapping
-       * @property tapAlways
+       * call preventDefault at touchstart, and makes the element blocking by disabling the scrolling of the page,
+       * but it improves gestures like transforming and dragging.
+       * be careful with using this, it can be very annoying for users to be stuck on the page
+       * @property preventDefault
        * @type {Boolean}
-       * @default true
+       * @default false
        */
-      tapAlways: true,
+      preventDefault: false,
 
       /**
-       * max distance between two taps
-       * @property doubleTapDistance
-       * @type {Number}
-       * @default 20
+       * disable mouse events, so only touch (or pen!) input triggers events
+       * @property preventMouse
+       * @type {Boolean}
+       * @default false
        */
-      doubleTapDistance: 20,
+      preventMouse: false
+    },
+    handler: function touchGesture(ev, inst) {
+      if (inst.options.preventMouse && ev.pointerType == POINTER_MOUSE) {
+        ev.stopDetect();
+        return;
+      }
 
-      /**
-       * max time between two taps
-       * @property doubleTapInterval
-       * @type {Number}
-       * @default 300
-       */
-      doubleTapInterval: 300
+      if (inst.options.preventDefault) {
+        ev.preventDefault();
+      }
+
+      if (ev.eventType == EVENT_TOUCH) {
+        inst.trigger('touch', ev);
+      }
     }
   };
-})('tap');
 
-/**
- * @module gestures
- */
-/**
- * when a touch is being touched at the page
- *
- * @class Touch
- * @static
- */
-/**
- * @event touch
- * @param {Object} ev
- */
-GestureDetector.gestures.Touch = {
-  name: 'touch',
-  index: -Infinity,
-  defaults: {
-    /**
-     * call preventDefault at touchstart, and makes the element blocking by disabling the scrolling of the page,
-     * but it improves gestures like transforming and dragging.
-     * be careful with using this, it can be very annoying for users to be stuck on the page
-     * @property preventDefault
-     * @type {Boolean}
-     * @default false
-     */
-    preventDefault: false,
+  /**
+   * @module gestures
+   */
+  /**
+   * User want to scale or rotate with 2 fingers
+   * Preventing the default browser behavior is a good way to improve feel and working. This can be done with the
+   * `preventDefault` option.
+   *
+   * @class Transform
+   * @static
+   */
+  /**
+   * @event transform
+   * @param {Object} ev
+   */
+  /**
+   * @event transformstart
+   * @param {Object} ev
+   */
+  /**
+   * @event transformend
+   * @param {Object} ev
+   */
+  /**
+   * @event pinchin
+   * @param {Object} ev
+   */
+  /**
+   * @event pinchout
+   * @param {Object} ev
+   */
+  /**
+   * @event rotate
+   * @param {Object} ev
+   */
 
-    /**
-     * disable mouse events, so only touch (or pen!) input triggers events
-     * @property preventMouse
-     * @type {Boolean}
-     * @default false
-     */
-    preventMouse: false
-  },
-  handler: function touchGesture(ev, inst) {
-    if (inst.options.preventMouse && ev.pointerType == POINTER_MOUSE) {
-      ev.stopDetect();
-      return;
-    }
+  /**
+   * @param {String} name
+   */
+  (function(name) {
+    var triggered = false;
 
-    if (inst.options.preventDefault) {
-      ev.preventDefault();
-    }
-
-    if (ev.eventType == EVENT_TOUCH) {
-      inst.trigger('touch', ev);
-    }
-  }
-};
-
-/**
- * @module gestures
- */
-/**
- * User want to scale or rotate with 2 fingers
- * Preventing the default browser behavior is a good way to improve feel and working. This can be done with the
- * `preventDefault` option.
- *
- * @class Transform
- * @static
- */
-/**
- * @event transform
- * @param {Object} ev
- */
-/**
- * @event transformstart
- * @param {Object} ev
- */
-/**
- * @event transformend
- * @param {Object} ev
- */
-/**
- * @event pinchin
- * @param {Object} ev
- */
-/**
- * @event pinchout
- * @param {Object} ev
- */
-/**
- * @event rotate
- * @param {Object} ev
- */
-
-/**
- * @param {String} name
- */
-(function (name) {
-  var triggered = false;
-
-  function transformGesture(ev, inst) {
-    switch (ev.eventType) {
+    function transformGesture(ev, inst) {
+      switch (ev.eventType) {
       case EVENT_START:
         triggered = false;
         break;
@@ -1993,7 +2014,8 @@ GestureDetector.gestures.Touch = {
 
         // when the distance we moved is too small we skip this gesture
         // or we can be already in dragging
-        if (scaleThreshold < inst.options.transformMinScale && rotationThreshold < inst.options.transformMinRotation) {
+        if (scaleThreshold < inst.options.transformMinScale &&
+          rotationThreshold < inst.options.transformMinRotation) {
           return;
         }
 
@@ -2026,32 +2048,32 @@ GestureDetector.gestures.Touch = {
           triggered = false;
         }
         break;
+      }
     }
-  }
 
-  GestureDetector.gestures.Transform = {
-    name: name,
-    index: 45,
-    defaults: {
-      /**
-       * minimal scale factor, no scale is 1, zoomin is to 0 and zoomout until higher then 1
-       * @property transformMinScale
-       * @type {Number}
-       * @default 0.01
-       */
-      transformMinScale: 0.01,
+    GestureDetector.gestures.Transform = {
+      name: name,
+      index: 45,
+      defaults: {
+        /**
+         * minimal scale factor, no scale is 1, zoomin is to 0 and zoomout until higher then 1
+         * @property transformMinScale
+         * @type {Number}
+         * @default 0.01
+         */
+        transformMinScale: 0.01,
 
-      /**
-       * rotation in degrees
-       * @property transformMinRotation
-       * @type {Number}
-       * @default 1
-       */
-      transformMinRotation: 1
-    },
+        /**
+         * rotation in degrees
+         * @property transformMinRotation
+         * @type {Number}
+         * @default 1
+         */
+        transformMinRotation: 1
+      },
 
-    handler: transformGesture
-  };
-})('transform');
+      handler: transformGesture
+    };
+  })('transform');
 
-exports.default = GestureDetector;
+export default GestureDetector;

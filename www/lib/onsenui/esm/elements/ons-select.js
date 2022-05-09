@@ -1,66 +1,43 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import autoStyle from '../ons/autostyle.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
-var _util2 = _interopRequireDefault(_util);
-
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var scheme = {
+const scheme = {
   '': 'select-* select--*',
   '.select-input': 'select-input--*'
 };
 
-var defaultClassName = 'select';
+const defaultClassName = 'select';
 
-var INPUT_ATTRIBUTES = ['autofocus', 'disabled', 'form', 'multiple', 'name', 'required', 'size'];
+const INPUT_ATTRIBUTES = [
+  'autofocus',
+  'disabled',
+  'form',
+  'multiple',
+  'name',
+  'required',
+  'size'
+];
 
 /**
  * @element ons-select
@@ -92,8 +69,7 @@ var INPUT_ATTRIBUTES = ['autofocus', 'disabled', 'form', 'multiple', 'name', 're
  * </ons-select>
  */
 
-var SelectElement = function (_BaseElement) {
-  _inherits(SelectElement, _BaseElement);
+export default class SelectElement extends BaseElement {
 
   /**
    * @attribute autofocus
@@ -163,150 +139,122 @@ var SelectElement = function (_BaseElement) {
    *   [ja]一度に表示する選択肢の個数を指定します。選択肢がこの属性で指定した個数よりも多い場合、スクロールが有効になります。[/ja]
    */
 
-  function SelectElement() {
-    _classCallCheck(this, SelectElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (SelectElement.__proto__ || Object.getPrototypeOf(SelectElement)).call(this));
+    contentReady(this, () => this._compile());
 
-    (0, _contentReady2.default)(_this, function () {
-      return _this._compile();
-    });
-
-    _this._deriveGetters();
-    return _this;
+    this._deriveGetters();
   }
 
-  _createClass(SelectElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      var _this2 = this;
+  static get observedAttributes() {
+    return ['modifier', 'class', ...INPUT_ATTRIBUTES];
+  }
 
-      switch (name) {
-        case 'class':
-          _util2.default.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          _modifierUtil2.default.onModifierChanged(last, current, this, scheme);
-          break;
-      }
-
-      if (INPUT_ATTRIBUTES.indexOf(name) >= 0) {
-        (0, _contentReady2.default)(this, function () {
-          return _this2._updateBoundAttributes();
-        });
-      }
-    }
-  }, {
-    key: '_updateBoundAttributes',
-    value: function _updateBoundAttributes() {
-      var _this3 = this;
-
-      INPUT_ATTRIBUTES.forEach(function (attr) {
-        if (_this3.hasAttribute(attr)) {
-          _this3._select.setAttribute(attr, _this3.getAttribute(attr));
-        } else {
-          _this3._select.removeAttribute(attr);
-        }
-      });
+  attributeChangedCallback(name, last, current) {
+    switch (name) {
+      case 'class':
+        util.restoreClass(this, defaultClassName, scheme);
+        break;
+      case 'modifier':
+        ModifierUtil.onModifierChanged(last, current, this, scheme);
+        break;
     }
 
-    /**
-     * @property length
-     * @description
-     *   [en]Number of options in the select box.[/en]
-     *   [ja]このセレクトボックスに含まれる選択肢の個数を返します。 `select` 要素[/ja]
-     */
-
-    /**
-     * @property options
-     * @description
-     *   [en]Several options for handling the select DOM object.[/en]
-     *   [ja]このセレクトボックスに含まれる `option` 要素の配列を返します。[/ja]
-     */
-
-    /**
-     * @property selectedIndex
-     * @description
-     *   [en]Index of the currently selected option.[/en]
-     *   [ja]現在選択されている選択肢のインデックスを返します。[/ja]
-     */
-
-    /**
-     * @property value
-     * @description
-     *   [en]Value of the currently selected option.[/en]
-     *   [ja]現在選択されている選択肢の値を返します。[/ja]
-     */
-
-  }, {
-    key: '_compile',
-    value: function _compile() {
-      _autostyle2.default.prepare(this);
-
-      this.classList.add(defaultClassName);
-      var sel = this._select || document.createElement('select');
-      if (!sel.id && this.hasAttribute('select-id')) {
-        sel.id = this.getAttribute('select-id');
-      }
-      sel.classList.add('select-input');
-      if (!this._select) {
-        _util2.default.arrayFrom(this.childNodes).forEach(function (element) {
-          return sel.appendChild(element);
-        });
-        this.appendChild(sel);
-      }
-
-      _modifierUtil2.default.initModifier(this, scheme);
+    if (INPUT_ATTRIBUTES.indexOf(name) >= 0) {
+      contentReady(this, () => this._updateBoundAttributes());
     }
-  }, {
-    key: '_deriveGetters',
-    value: function _deriveGetters() {
-      var _this4 = this;
+  }
 
-      ['disabled', 'length', 'multiple', 'name', 'options', 'selectedIndex', 'size', 'value', 'form', 'type'].forEach(function (key) {
-        Object.defineProperty(_this4, key, {
+  get _select() {
+    return this.querySelector('select');
+  }
+
+  _updateBoundAttributes() {
+    INPUT_ATTRIBUTES.forEach((attr) => {
+      if (this.hasAttribute(attr)) {
+        this._select.setAttribute(attr, this.getAttribute(attr));
+      }
+      else {
+        this._select.removeAttribute(attr);
+      }
+    });
+  }
+
+  /**
+   * @property length
+   * @description
+   *   [en]Number of options in the select box.[/en]
+   *   [ja]このセレクトボックスに含まれる選択肢の個数を返します。 `select` 要素[/ja]
+   */
+
+  /**
+   * @property options
+   * @description
+   *   [en]Several options for handling the select DOM object.[/en]
+   *   [ja]このセレクトボックスに含まれる `option` 要素の配列を返します。[/ja]
+   */
+
+  /**
+   * @property selectedIndex
+   * @description
+   *   [en]Index of the currently selected option.[/en]
+   *   [ja]現在選択されている選択肢のインデックスを返します。[/ja]
+   */
+
+  /**
+   * @property value
+   * @description
+   *   [en]Value of the currently selected option.[/en]
+   *   [ja]現在選択されている選択肢の値を返します。[/ja]
+   */
+  _compile() {
+    autoStyle.prepare(this);
+
+    this.classList.add(defaultClassName);
+    const sel = this._select || document.createElement('select');
+    if (!sel.id && this.hasAttribute('select-id')) {
+      sel.id = this.getAttribute('select-id');
+    }
+    sel.classList.add('select-input');
+    if (!this._select) {
+      util.arrayFrom(this.childNodes).forEach(element => sel.appendChild(element));
+      this.appendChild(sel);
+    }
+
+    ModifierUtil.initModifier(this, scheme);
+  }
+
+  _deriveGetters() {
+    ['disabled', 'length', 'multiple', 'name', 'options', 'selectedIndex', 'size', 'value', 'form', 'type']
+      .forEach(key => {
+        Object.defineProperty(this, key, {
           configurable: true,
           enumerable: true,
-          get: function get() {
-            return _this4._select[key];
-          },
-          set: ['form', 'type'].indexOf(key) === -1 ? function (value) {
-            return (0, _contentReady2.default)(_this4, function () {
-              return _this4._select[key] = value;
-            });
-          } : undefined
+          get: () => this._select[key],
+          set: ['form', 'type'].indexOf(key) === -1
+            ? value => contentReady(this, () => this._select[key] = value)
+            : undefined
         });
       });
-    }
-  }, {
-    key: 'add',
-    value: function add(option) {
-      var index = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
+  }
 
-      this._select.add(option, index);
-    }
-  }, {
-    key: 'remove',
-    value: function remove(index) {
+  add(option, index = null) {
+    this._select.add(option, index);
+  }
+
+  // If called with an index argument, removes the option element with the given index.
+  // If called with no arguments, removes this.
+  // This behaviour might sound crazy but it is the same as <select>'s `remove` method.
+  // https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/remove
+  remove(index) {
+    if (index === undefined) {
+      Element.prototype.remove.call(this);
+    } else {
       this._select.remove(index);
     }
-  }, {
-    key: '_select',
-    get: function get() {
-      return this.querySelector('select');
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'class'].concat(INPUT_ATTRIBUTES);
-    }
-  }]);
+  }
+}
 
-  return SelectElement;
-}(_baseElement2.default);
-
-exports.default = SelectElement;
-
-
-_elements2.default.Select = SelectElement;
+onsElements.Select = SelectElement;
 customElements.define('ons-select', SelectElement);

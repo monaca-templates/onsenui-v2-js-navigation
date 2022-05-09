@@ -1,8 +1,3 @@
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
 /**
  * MicroEvent - to make any js object an event emitter (server or browser)
  *
@@ -16,41 +11,43 @@ Object.defineProperty(exports, "__esModule", {
 
 /** NOTE: This library is customized for Onsen UI. */
 
-var MicroEvent = function MicroEvent() {};
-MicroEvent.prototype = {
-  on: function on(event, fct) {
+const MicroEvent  = function(){};
+MicroEvent.prototype  = {
+  on: function(event, fct){
     this._events = this._events || {};
     this._events[event] = this._events[event] || [];
     this._events[event].push(fct);
   },
-  once: function once(event, fct) {
+  once: function(event, fct){
     var self = this;
-    var wrapper = function wrapper() {
+    var wrapper = function() {
       self.off(event, wrapper);
       return fct.apply(null, arguments);
     };
     this.on(event, wrapper);
   },
-  off: function off(event, fct) {
+  off: function(event, fct){
     this._events = this._events || {};
     if (event in this._events === false) {
       return;
     }
 
-    this._events[event] = this._events[event].filter(function (_fct) {
-      if (fct) {
-        return fct !== _fct;
-      } else {
-        return false;
-      }
-    });
+    this._events[event] = this._events[event]
+      .filter(function(_fct) {
+        if (fct) {
+           return fct !== _fct;
+        }
+        else {
+          return false;
+        }
+      });
   },
-  emit: function emit(event /* , args... */) {
+  emit: function(event /* , args... */){
     this._events = this._events || {};
     if (event in this._events === false) {
       return;
     }
-    for (var i = 0; i < this._events[event].length; i++) {
+    for (var i = 0; i < this._events[event].length; i++){
       this._events[event][i].apply(this, Array.prototype.slice.call(arguments, 1));
     }
   }
@@ -63,11 +60,11 @@ MicroEvent.prototype = {
  *
  * @param {Object} the object which will support MicroEvent
 */
-MicroEvent.mixin = function (destObject) {
+MicroEvent.mixin  = function(destObject){
   var props = ['on', 'once', 'off', 'emit'];
-  for (var i = 0; i < props.length; i++) {
+  for (var i = 0; i < props.length; i ++){
     if (typeof destObject === 'function') {
-      destObject.prototype[props[i]] = MicroEvent.prototype[props[i]];
+      destObject.prototype[props[i]]  = MicroEvent.prototype[props[i]];
     } else {
       destObject[props[i]] = MicroEvent.prototype[props[i]];
     }
@@ -75,4 +72,4 @@ MicroEvent.mixin = function (destObject) {
 };
 
 window.MicroEvent = MicroEvent;
-exports.default = MicroEvent;
+export default MicroEvent;

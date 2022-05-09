@@ -1,65 +1,31 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import internal from '../ons/internal/index.js';
+import autoStyle from '../ons/autostyle.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
-var _util2 = _interopRequireDefault(_util);
+const defaultClassName = 'toolbar';
 
-var _internal = require('../ons/internal');
-
-var _internal2 = _interopRequireDefault(_internal);
-
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var defaultClassName = 'toolbar';
-
-var scheme = {
+const scheme = {
   '': 'toolbar--*',
   '.toolbar__left': 'toolbar--*__left',
   '.toolbar__center': 'toolbar--*__center',
@@ -122,8 +88,7 @@ var scheme = {
  * </ons-page>
  */
 
-var ToolbarElement = function (_BaseElement) {
-  _inherits(ToolbarElement, _BaseElement);
+export default class ToolbarElement extends BaseElement {
 
   /**
    * @attribute inline
@@ -147,198 +112,176 @@ var ToolbarElement = function (_BaseElement) {
    *   [ja]ツールバーの表現を指定します。[/ja]
    */
 
-  function ToolbarElement() {
-    _classCallCheck(this, ToolbarElement);
+  /**
+   * @property visible
+   * @description
+   *   [en]Whether the toolbar is shown or not.[/en]
+   *   [ja][/ja]
+   */
 
-    var _this = _possibleConstructorReturn(this, (ToolbarElement.__proto__ || Object.getPrototypeOf(ToolbarElement)).call(this));
+  constructor() {
+    super();
 
-    (0, _contentReady2.default)(_this, function () {
-      _this._compile();
+    this._visible = true;
+
+    contentReady(this, () => {
+      this._compile();
     });
-    return _this;
   }
 
-  _createClass(ToolbarElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      switch (name) {
-        case 'class':
-          _util2.default.restoreClass(this, defaultClassName, scheme);
-          break;
-        case 'modifier':
-          _modifierUtil2.default.onModifierChanged(last, current, this, scheme);
-          break;
-      }
+  static get observedAttributes() {
+    return ['modifier', 'class'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    switch (name) {
+      case 'class':
+        util.restoreClass(this, defaultClassName, scheme);
+        break;
+      case 'modifier':
+        ModifierUtil.onModifierChanged(last, current, this, scheme);
+        break;
     }
+  }
 
-    /**
-     * @method setVisibility
-     * @signature setVisibility(visible)
-     * @param {Boolean} visible
-     *   [en]Set to true to show the toolbar, false to hide it[/en]
-     *   [ja][/ja]
-     * @description
-     *   [en]Shows the toolbar if visible is true, otherwise hides it.[/en]
-     *   [ja][/ja]
-     */
+  /**
+   * @method setVisibility
+   * @signature setVisibility(visible)
+   * @param {Boolean} visible
+   *   [en]Set to true to show the toolbar, false to hide it[/en]
+   *   [ja][/ja]
+   * @description
+   *   [en]Shows the toolbar if visible is true, otherwise hides it.[/en]
+   *   [ja][/ja]
+   */
+  setVisibility(visible) {
+    contentReady(this, () => {
+      this._visible = visible;
 
-  }, {
-    key: 'setVisibility',
-    value: function setVisibility(visible) {
-      var _this2 = this;
+      this.style.display = visible ? '' : 'none';
 
-      (0, _contentReady2.default)(this, function () {
-        _this2.style.display = visible ? '' : 'none';
-
-        if (_this2.parentNode) {
-          var siblingBackground = _util2.default.findChild(_this2.parentNode, '.page__background');
-          if (siblingBackground) {
-            siblingBackground.style.top = visible ? null : 0;
-          }
-
-          var siblingContent = _util2.default.findChild(_this2.parentNode, '.page__content');
-          if (siblingContent) {
-            siblingContent.style.top = visible ? null : 0;
-          }
+      if (this.parentNode) {
+        const siblingBackground = util.findChild(this.parentNode, '.page__background');
+        if (siblingBackground) {
+          siblingBackground.style.top = visible ? null : 0;
         }
-      });
-    }
 
-    /**
-     * @method show
-     * @signature show()
-     * @description
-     *   [en]Show the toolbar.[/en]
-     *   [ja][/ja]
-     */
-
-  }, {
-    key: 'show',
-    value: function show() {
-      this.setVisibility(true);
-    }
-
-    /**
-     * @method hide
-     * @signature hide()
-     * @description
-     *   [en]Hide the toolbar.[/en]
-     *   [ja][/ja]
-     */
-
-  }, {
-    key: 'hide',
-    value: function hide() {
-      this.setVisibility(false);
-    }
-
-    /**
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_getToolbarLeftItemsElement',
-    value: function _getToolbarLeftItemsElement() {
-      return this.querySelector('.left') || _internal2.default.nullElement;
-    }
-
-    /**
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_getToolbarCenterItemsElement',
-    value: function _getToolbarCenterItemsElement() {
-      return this.querySelector('.center') || _internal2.default.nullElement;
-    }
-
-    /**
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_getToolbarRightItemsElement',
-    value: function _getToolbarRightItemsElement() {
-      return this.querySelector('.right') || _internal2.default.nullElement;
-    }
-
-    /**
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_getToolbarBackButtonLabelElement',
-    value: function _getToolbarBackButtonLabelElement() {
-      return this.querySelector('ons-back-button .back-button__label') || _internal2.default.nullElement;
-    }
-
-    /**
-     * @return {HTMLElement}
-     */
-
-  }, {
-    key: '_getToolbarBackButtonIconElement',
-    value: function _getToolbarBackButtonIconElement() {
-      return this.querySelector('ons-back-button .back-button__icon') || _internal2.default.nullElement;
-    }
-  }, {
-    key: '_compile',
-    value: function _compile() {
-      _autostyle2.default.prepare(this);
-      this.classList.add(defaultClassName);
-      this._ensureToolbarItemElements();
-      _modifierUtil2.default.initModifier(this, scheme);
-    }
-  }, {
-    key: '_ensureToolbarItemElements',
-    value: function _ensureToolbarItemElements() {
-      for (var i = this.childNodes.length - 1; i >= 0; i--) {
-        // case of not element
-        if (this.childNodes[i].nodeType != 1) {
-          this.removeChild(this.childNodes[i]);
+        const siblingContent = util.findChild(this.parentNode, '.page__content');
+        if (siblingContent) {
+          siblingContent.style.top = visible ? null : 0;
         }
       }
+    });
+  }
 
-      var center = this._ensureToolbarElement('center');
-      center.classList.add('toolbar__title');
+  /**
+   * @method show
+   * @signature show()
+   * @description
+   *   [en]Show the toolbar.[/en]
+   *   [ja][/ja]
+   */
+  show() {
+    this.setVisibility(true);
+  }
 
-      if (this.children.length !== 1 || !this.children[0].classList.contains('center')) {
-        var left = this._ensureToolbarElement('left');
-        var right = this._ensureToolbarElement('right');
+  /**
+   * @method hide
+   * @signature hide()
+   * @description
+   *   [en]Hide the toolbar.[/en]
+   *   [ja][/ja]
+   */
+  hide() {
+    this.setVisibility(false);
+  }
 
-        if (this.children[0] !== left || this.children[1] !== center || this.children[2] !== right) {
-          this.appendChild(left);
-          this.appendChild(center);
-          this.appendChild(right);
-        }
+  get visible() {
+    return this._visible;
+  }
+
+  set visible(value) {
+    this.setVisibility(value);
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  _getToolbarLeftItemsElement() {
+    return this.querySelector('.left') || internal.nullElement;
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  _getToolbarCenterItemsElement() {
+    return this.querySelector('.center') || internal.nullElement;
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  _getToolbarRightItemsElement() {
+    return this.querySelector('.right') || internal.nullElement;
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  _getToolbarBackButtonLabelElement() {
+    return this.querySelector('ons-back-button .back-button__label') || internal.nullElement;
+  }
+
+  /**
+   * @return {HTMLElement}
+   */
+  _getToolbarBackButtonIconElement() {
+    return this.querySelector('ons-back-button .back-button__icon') || internal.nullElement;
+  }
+
+  _compile() {
+    autoStyle.prepare(this);
+    this.classList.add(defaultClassName);
+    this._ensureToolbarItemElements();
+    ModifierUtil.initModifier(this, scheme);
+  }
+
+  _ensureToolbarItemElements() {
+    for (let i = this.childNodes.length - 1; i >= 0 ; i--) {
+      // case of not element
+      if (this.childNodes[i].nodeType != 1) {
+        this.removeChild(this.childNodes[i]);
       }
     }
-  }, {
-    key: '_ensureToolbarElement',
-    value: function _ensureToolbarElement(name) {
-      if (_util2.default.findChild(this, '.toolbar__' + name)) {
-        var _element = _util2.default.findChild(this, '.toolbar__' + name);
-        _element.classList.add(name);
-        return _element;
+
+    const center = this._ensureToolbarElement('center');
+    center.classList.add('toolbar__title');
+
+    if (this.children.length !== 1 || !this.children[0].classList.contains('center')) {
+      const left = this._ensureToolbarElement('left');
+      const right = this._ensureToolbarElement('right');
+
+      if (this.children[0] !== left || this.children[1] !== center || this.children[2] !== right) {
+        this.appendChild(left);
+        this.appendChild(center);
+        this.appendChild(right);
       }
+    }
+  }
 
-      var element = _util2.default.findChild(this, '.' + name) || _util2.default.create('.' + name);
-      element.classList.add('toolbar__' + name);
-
+  _ensureToolbarElement(name) {
+    if (util.findChild(this, '.toolbar__' + name)) {
+      const element = util.findChild(this, '.toolbar__' + name);
+      element.classList.add(name);
       return element;
     }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['modifier', 'class'];
-    }
-  }]);
 
-  return ToolbarElement;
-}(_baseElement2.default);
+    const element = util.findChild(this, '.' + name) || util.create('.' + name);
+    element.classList.add('toolbar__' + name);
 
-exports.default = ToolbarElement;
+    return element;
+  }
+}
 
-
-_elements2.default.Toolbar = ToolbarElement;
+onsElements.Toolbar = ToolbarElement;
 customElements.define('ons-toolbar', ToolbarElement);

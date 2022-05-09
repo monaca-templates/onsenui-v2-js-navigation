@@ -1,53 +1,25 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _orientation = require('../ons/orientation');
-
-var _orientation2 = _interopRequireDefault(_orientation);
-
-var _platform = require('../ons/platform');
-
-var _platform2 = _interopRequireDefault(_platform);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+import onsElements from '../ons/elements.js';
+import orientation from '../ons/orientation.js';
+import platform from '../ons/platform.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
 /**
  * @element ons-if
@@ -74,8 +46,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *   </ons-if>
  * </ons-page>
  */
-var IfElement = function (_BaseElement) {
-  _inherits(IfElement, _BaseElement);
+export default class IfElement extends BaseElement {
 
   /**
    * @attribute platform
@@ -94,75 +65,58 @@ var IfElement = function (_BaseElement) {
    *  [ja]portraitもしくはlandscapeを指定します[/ja]
    */
 
-  function IfElement() {
-    _classCallCheck(this, IfElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (IfElement.__proto__ || Object.getPrototypeOf(IfElement)).call(this));
-
-    (0, _contentReady2.default)(_this, function () {
-      if (_platform2.default._getSelectedPlatform() !== null) {
-        _this._platformUpdate();
-      } else if (!_this._isAllowedPlatform()) {
-        while (_this.childNodes[0]) {
-          _this.childNodes[0].remove();
+    contentReady(this, () => {
+      if (platform._getSelectedPlatform() !== null) {
+        this._platformUpdate();
+      } else if (!this._isAllowedPlatform()) {
+        while (this.childNodes[0]) {
+          this.childNodes[0].remove();
         }
-        _this._platformUpdate();
+        this._platformUpdate();
       }
     });
 
-    _this._onOrientationChange();
-    return _this;
+    this._onOrientationChange();
   }
 
-  _createClass(IfElement, [{
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      _orientation2.default.on('change', this._onOrientationChange.bind(this));
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name) {
-      if (name === 'orientation') {
-        this._onOrientationChange();
-      }
-    }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {
-      _orientation2.default.off('change', this._onOrientationChange);
-    }
-  }, {
-    key: '_platformUpdate',
-    value: function _platformUpdate() {
-      this.style.display = this._isAllowedPlatform() ? '' : 'none';
-    }
-  }, {
-    key: '_isAllowedPlatform',
-    value: function _isAllowedPlatform() {
-      return !this.getAttribute('platform') || this.getAttribute('platform').split(/\s+/).indexOf(_platform2.default.getMobileOS()) >= 0;
-    }
-  }, {
-    key: '_onOrientationChange',
-    value: function _onOrientationChange() {
-      if (this.hasAttribute('orientation') && this._isAllowedPlatform()) {
-        var conditionalOrientation = this.getAttribute('orientation').toLowerCase();
-        var currentOrientation = _orientation2.default.isPortrait() ? 'portrait' : 'landscape';
+  connectedCallback() {
+    orientation.on('change', this._onOrientationChange.bind(this));
+  }
 
-        this.style.display = conditionalOrientation === currentOrientation ? '' : 'none';
-      }
+  static get observedAttributes() {
+    return ['orientation'];
+  }
+
+  attributeChangedCallback(name) {
+    if (name === 'orientation') {
+      this._onOrientationChange();
     }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['orientation'];
+  }
+
+  disconnectedCallback() {
+    orientation.off('change', this._onOrientationChange);
+  }
+
+  _platformUpdate() {
+    this.style.display = this._isAllowedPlatform() ? '' : 'none';
+  }
+
+  _isAllowedPlatform() {
+    return !this.getAttribute('platform') || this.getAttribute('platform').split(/\s+/).indexOf(platform.getMobileOS()) >= 0;
+  }
+
+  _onOrientationChange() {
+    if (this.hasAttribute('orientation') && this._isAllowedPlatform()) {
+      const conditionalOrientation = this.getAttribute('orientation').toLowerCase();
+      const currentOrientation = orientation.isPortrait() ? 'portrait' : 'landscape';
+
+      this.style.display = (conditionalOrientation === currentOrientation) ? '' : 'none';
     }
-  }]);
+  }
+}
 
-  return IfElement;
-}(_baseElement2.default);
-
-exports.default = IfElement;
-
-
-_elements2.default.If = IfElement;
+onsElements.If = IfElement;
 customElements.define('ons-if', IfElement);

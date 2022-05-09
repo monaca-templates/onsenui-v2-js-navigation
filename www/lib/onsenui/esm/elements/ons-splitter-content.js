@@ -1,66 +1,34 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import internal from '../ons/internal/index.js';
+import ModifierUtil from '../ons/internal/modifier-util.js';
+import BaseElement from './base/base-element.js';
+import {PageLoader, defaultPageLoader} from '../ons/page-loader.js';
+import contentReady from '../ons/content-ready.js';
 
-var _util2 = _interopRequireDefault(_util);
-
-var _internal = require('../ons/internal');
-
-var _internal2 = _interopRequireDefault(_internal);
-
-var _modifierUtil = require('../ons/internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _pageLoader = require('../ons/page-loader');
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var rewritables = {
+const rewritables = {
   /**
    * @param {Element} element
    * @param {Function} callback
    */
-  ready: function ready(element, callback) {
+  ready(element, callback) {
     setImmediate(callback);
   }
 };
@@ -97,9 +65,7 @@ var rewritables = {
  *   </ons-splitter-side>
  * </ons-splitter>
  */
-
-var SplitterContentElement = function (_BaseElement) {
-  _inherits(SplitterContentElement, _BaseElement);
+export default class SplitterContentElement extends BaseElement {
 
   /**
    * @attribute page
@@ -113,175 +79,141 @@ var SplitterContentElement = function (_BaseElement) {
    *   [ja]ons-splitter-content要素に表示するページのURLを指定します。[/ja]
    */
 
-  function SplitterContentElement() {
-    _classCallCheck(this, SplitterContentElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (SplitterContentElement.__proto__ || Object.getPrototypeOf(SplitterContentElement)).call(this));
+    this._page = null;
+    this._pageLoader = defaultPageLoader;
 
-    _this._page = null;
-    _this._pageLoader = _pageLoader.defaultPageLoader;
-
-    (0, _contentReady2.default)(_this, function () {
-      rewritables.ready(_this, function () {
-        var page = _this._getPageTarget();
+    contentReady(this, () => {
+      rewritables.ready(this, () => {
+        const page = this._getPageTarget();
 
         if (page) {
-          _this.load(page);
+          this.load(page);
         }
       });
     });
-    return _this;
   }
 
-  _createClass(SplitterContentElement, [{
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      if (!_util2.default.match(this.parentNode, 'ons-splitter')) {
-        _util2.default.throw('"ons-splitter-content" must have "ons-splitter" as parent');
-      }
+  connectedCallback() {
+    if (!util.match(this.parentNode, 'ons-splitter')) {
+      util.throw('"ons-splitter-content" must have "ons-splitter" as parent');
     }
-  }, {
-    key: '_getPageTarget',
-    value: function _getPageTarget() {
-      return this._page || this.getAttribute('page');
+  }
+
+  _getPageTarget() {
+    return this._page || this.getAttribute('page');
+  }
+
+  disconnectedCallback() {}
+
+  static get observedAttributes() {
+    return [];
+  }
+
+  attributeChangedCallback(name, last, current) {
+  }
+
+  /**
+   * @property page
+   * @type {HTMLElement}
+   * @description
+   *   [en]The page to load in the splitter content.[/en]
+   *   [ja]この要素内に表示するページを指定します。[/ja]
+   */
+  get page() {
+    return this._page;
+  }
+
+  /**
+   * @param {*} page
+   */
+  set page(page) {
+    this._page = page;
+  }
+
+  get _content() {
+    return this.children[0];
+  }
+
+  /**
+   * @property pageLoader
+   * @type {Function}
+   * @description
+   *   [en]Page element loaded in the splitter content.[/en]
+   *   [ja]この要素内に表示するページを指定します。[/ja]
+   */
+  get pageLoader() {
+    return this._pageLoader;
+  }
+
+  set pageLoader(loader) {
+    if (!(loader instanceof PageLoader)) {
+      util.throwPageLoader();
     }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {}
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {}
+    this._pageLoader = loader;
+  }
 
-    /**
-     * @property page
-     * @type {HTMLElement}
-     * @description
-     *   [en]The page to load in the splitter content.[/en]
-     *   [ja]この要素内に表示するページを指定します。[/ja]
-     */
+  /**
+   * @method load
+   * @signature load(page, [options])
+   * @param {String} page, [options]
+   *   [en]Page URL. Can be either an HTML document or an `<template>` id.[/en]
+   *   [ja]pageのURLか、`<template>`で宣言したテンプレートのid属性の値を指定します。[/ja]
+   * @param {Object} [options]
+   * @param {Function} [options.callback]
+   * @description
+   *   [en]Show the page specified in `page` in the content.[/en]
+   *   [ja]指定したURLをメインページを読み込みます。[/ja]
+   * @return {Promise}
+   *   [en]Resolves to the new `<ons-page>` element[/en]
+   *   [ja]`<ons-page>`要素を解決するPromiseオブジェクトを返します。[/ja]
+   */
+  load(page, options = {}) {
+    this._page = page;
+    const callback = options.callback || function() {};
 
-  }, {
-    key: 'load',
+    return new Promise(resolve => {
+      let oldContent = this._content || null;
 
+      this._pageLoader.load({page, parent: this}, pageElement => {
+        if (oldContent) {
+          this._pageLoader.unload(oldContent);
+          oldContent = null;
+        }
 
-    /**
-     * @method load
-     * @signature load(page, [options])
-     * @param {String} page, [options]
-     *   [en]Page URL. Can be either an HTML document or an `<template>` id.[/en]
-     *   [ja]pageのURLか、`<template>`で宣言したテンプレートのid属性の値を指定します。[/ja]
-     * @param {Object} [options]
-     * @param {Function} [options.callback]
-     * @description
-     *   [en]Show the page specified in `page` in the content.[/en]
-     *   [ja]指定したURLをメインページを読み込みます。[/ja]
-     * @return {Promise}
-     *   [en]Resolves to the new `<ons-page>` element[/en]
-     *   [ja]`<ons-page>`要素を解決するPromiseオブジェクトを返します。[/ja]
-     */
-    value: function load(page) {
-      var _this2 = this;
+        setImmediate(() => this._show());
 
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      this._page = page;
-      var callback = options.callback || function () {};
-
-      return new Promise(function (resolve) {
-        var oldContent = _this2._content || null;
-
-        _this2._pageLoader.load({ page: page, parent: _this2 }, function (pageElement) {
-          if (oldContent) {
-            _this2._pageLoader.unload(oldContent);
-            oldContent = null;
-          }
-
-          setImmediate(function () {
-            return _this2._show();
-          });
-
-          callback(pageElement);
-          resolve(pageElement);
-        });
+        callback(pageElement);
+        resolve(pageElement);
       });
-    }
-  }, {
-    key: '_show',
-    value: function _show() {
-      if (this._content) {
-        this._content._show();
-      }
-    }
-  }, {
-    key: '_hide',
-    value: function _hide() {
-      if (this._content) {
-        this._content._hide();
-      }
-    }
-  }, {
-    key: '_destroy',
-    value: function _destroy() {
-      if (this._content) {
-        this._pageLoader.unload(this._content);
-      }
-      this.remove();
-    }
-  }, {
-    key: 'page',
-    get: function get() {
-      return this._page;
-    }
+    });
+  }
 
-    /**
-     * @param {*} page
-     */
-    ,
-    set: function set(page) {
-      this._page = page;
+  _show() {
+    if (this._content) {
+      this._content._show();
     }
-  }, {
-    key: '_content',
-    get: function get() {
-      return this.children[0];
+  }
+
+  _hide() {
+    if (this._content) {
+      this._content._hide();
     }
+  }
 
-    /**
-     * @property pageLoader
-     * @type {Function}
-     * @description
-     *   [en]Page element loaded in the splitter content.[/en]
-     *   [ja]この要素内に表示するページを指定します。[/ja]
-     */
-
-  }, {
-    key: 'pageLoader',
-    get: function get() {
-      return this._pageLoader;
-    },
-    set: function set(loader) {
-      if (!(loader instanceof _pageLoader.PageLoader)) {
-        _util2.default.throwPageLoader();
-      }
-      this._pageLoader = loader;
+  _destroy() {
+    if (this._content) {
+      this._pageLoader.unload(this._content);
     }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return [];
-    }
-  }, {
-    key: 'rewritables',
-    get: function get() {
-      return rewritables;
-    }
-  }]);
+    this.remove();
+  }
 
-  return SplitterContentElement;
-}(_baseElement2.default);
+  static get rewritables() {
+    return rewritables;
+  }
+}
 
-exports.default = SplitterContentElement;
-
-
-_elements2.default.SplitterContent = SplitterContentElement;
+onsElements.SplitterContent = SplitterContentElement;
 customElements.define('ons-splitter-content', SplitterContentElement);

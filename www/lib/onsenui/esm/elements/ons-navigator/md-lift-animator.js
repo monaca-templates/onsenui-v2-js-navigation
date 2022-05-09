@@ -1,69 +1,36 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _animator = require('./animator');
+*/
 
-var _animator2 = _interopRequireDefault(_animator);
-
-var _util = require('../../ons/util');
-
-var _util2 = _interopRequireDefault(_util);
-
-var _animit = require('../../ons/animit');
-
-var _animit2 = _interopRequireDefault(_animit);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+import NavigatorAnimator from './animator.js';
+import util from '../../ons/util.js';
+import animit from '../../ons/animit.js';
 
 /**
  * Lift screen transition.
  */
-var MDLiftNavigatorAnimator = function (_NavigatorAnimator) {
-  _inherits(MDLiftNavigatorAnimator, _NavigatorAnimator);
+export default class MDLiftNavigatorAnimator extends NavigatorAnimator {
 
-  function MDLiftNavigatorAnimator() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        _ref$timing = _ref.timing,
-        timing = _ref$timing === undefined ? 'cubic-bezier(.1, .7, .1, 1)' : _ref$timing,
-        _ref$delay = _ref.delay,
-        delay = _ref$delay === undefined ? 0.05 : _ref$delay,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === undefined ? 0.4 : _ref$duration;
+  constructor({timing = 'cubic-bezier(.1, .7, .1, 1)', delay = 0.05, duration = 0.4} = {}) {
+    super({ timing, delay, duration });
 
-    _classCallCheck(this, MDLiftNavigatorAnimator);
-
-    var _this = _possibleConstructorReturn(this, (MDLiftNavigatorAnimator.__proto__ || Object.getPrototypeOf(MDLiftNavigatorAnimator)).call(this, { timing: timing, delay: delay, duration: duration }));
-
-    _this.backgroundMask = _util2.default.createElement('<div style="position: absolute; width: 100%; height: 100%;' + 'background-color: black;"></div>');
-    return _this;
+    this.backgroundMask = util.createElement(
+      '<div style="position: absolute; width: 100%; height: 100%;' +
+        'background-color: black;"></div>'
+    );
   }
 
   /**
@@ -71,58 +38,72 @@ var MDLiftNavigatorAnimator = function (_NavigatorAnimator) {
    * @param {Object} leavePage
    * @param {Function} callback
    */
+  push(enterPage, leavePage, callback) {
+    this.backgroundMask.remove();
+    leavePage.parentNode.insertBefore(this.backgroundMask, leavePage);
 
+    const unblock = super.block(enterPage);
 
-  _createClass(MDLiftNavigatorAnimator, [{
-    key: 'push',
-    value: function push(enterPage, leavePage, callback) {
-      var _this2 = this;
-
-      this.backgroundMask.remove();
-      leavePage.parentNode.insertBefore(this.backgroundMask, leavePage);
-
-      var unblock = _get(MDLiftNavigatorAnimator.prototype.__proto__ || Object.getPrototypeOf(MDLiftNavigatorAnimator.prototype), 'block', this).call(this, enterPage);
-
-      var maskClear = (0, _animit2.default)(this.backgroundMask).wait(this.delay + this.duration).queue(function (done) {
-        _this2.backgroundMask.remove();
+    const maskClear = animit(this.backgroundMask)
+      .wait(this.delay + this.duration)
+      .queue(done => {
+        this.backgroundMask.remove();
         done();
       });
 
-      _animit2.default.runAll(maskClear, (0, _animit2.default)(enterPage, this.def).default({ transform: 'translate3d(0, 100%, 0)' }, { transform: 'translate3d(0, 0, 0)' }), (0, _animit2.default)(leavePage, this.def).default({ opacity: 1 }, { opacity: .4 }).queue(function (done) {
-        unblock();
-        callback();
-        done();
-      }));
-    }
+    animit.runAll(
 
-    /**
-     * @param {Object} enterPage
-     * @param {Object} leavePage
-     * @param {Function} callback
-     */
+      maskClear,
 
-  }, {
-    key: 'pop',
-    value: function pop(enterPage, leavePage, callback) {
-      var _this3 = this;
+      animit(enterPage, this.def)
+        .default(
+          { transform: 'translate3d(0, 100%, 0)' },
+          { transform: 'translate3d(0, 0, 0)' }
+        ),
 
-      this.backgroundMask.remove();
-      enterPage.parentNode.insertBefore(this.backgroundMask, enterPage);
+      animit(leavePage, this.def)
+        .default({ opacity: 1 }, { opacity: .4 })
+        .queue(done => {
+          unblock();
+          callback();
+          done();
+        })
+    );
+  }
 
-      var unblock = _get(MDLiftNavigatorAnimator.prototype.__proto__ || Object.getPrototypeOf(MDLiftNavigatorAnimator.prototype), 'block', this).call(this, enterPage);
+  /**
+   * @param {Object} enterPage
+   * @param {Object} leavePage
+   * @param {Function} callback
+   */
+  pop(enterPage, leavePage, callback) {
+    this.backgroundMask.remove();
+    enterPage.parentNode.insertBefore(this.backgroundMask, enterPage);
 
-      _animit2.default.runAll((0, _animit2.default)(this.backgroundMask).wait(this.delay + this.duration).queue(function (done) {
-        _this3.backgroundMask.remove();
-        done();
-      }), (0, _animit2.default)(enterPage, this.def).default({ opacity: .4 }, { opacity: 1 }).queue(function (done) {
-        unblock();
-        callback();
-        done();
-      }), (0, _animit2.default)(leavePage, this.def).default({ transform: 'translate3d(0, 0, 0)' }, { transform: 'translate3d(0, 100%, 0)' }));
-    }
-  }]);
+    const unblock = super.block(enterPage);
 
-  return MDLiftNavigatorAnimator;
-}(_animator2.default);
+    animit.runAll(
 
-exports.default = MDLiftNavigatorAnimator;
+      animit(this.backgroundMask)
+        .wait(this.delay + this.duration)
+        .queue(done => {
+          this.backgroundMask.remove();
+          done();
+        }),
+
+      animit(enterPage, this.def)
+        .default({ opacity: .4 }, { opacity: 1 })
+        .queue(done => {
+          unblock();
+          callback();
+          done();
+        }),
+
+      animit(leavePage, this.def)
+        .default(
+          { transform: 'translate3d(0, 0, 0)' },
+          { transform: 'translate3d(0, 100%, 0)' }
+        )
+    );
+  }
+}
