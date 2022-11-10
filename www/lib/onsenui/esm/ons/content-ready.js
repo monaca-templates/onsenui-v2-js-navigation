@@ -1,9 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = contentReady;
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -21,8 +15,7 @@ limitations under the License.
 
 */
 
-var readyMap = void 0,
-    queueMap = void 0;
+let readyMap, queueMap;
 
 function isContentReady(element) {
   if (element.childNodes.length > 0) {
@@ -43,16 +36,12 @@ function addCallback(element, fn) {
 }
 
 function consumeQueue(element) {
-  var callbacks = queueMap.get(element, []) || [];
+  const callbacks = queueMap.get(element, []) || [];
   queueMap.delete(element);
-  callbacks.forEach(function (callback) {
-    return callback();
-  });
+  callbacks.forEach(callback => callback());
 }
 
-function contentReady(element) {
-  var fn = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : function () {};
-
+export default function contentReady(element, fn = () => {}) {
   if (readyMap === undefined) {
     readyMap = new WeakMap();
     queueMap = new WeakMap();
@@ -65,14 +54,14 @@ function contentReady(element) {
     return;
   }
 
-  var observer = new MutationObserver(function (changes) {
+  const observer = new MutationObserver(changes => {
     setContentReady(element);
     consumeQueue(element);
   });
-  observer.observe(element, { childList: true, characterData: true });
+  observer.observe(element, {childList: true, characterData: true});
 
   // failback for elements has empty content.
-  setImmediate(function () {
+  setImmediate(() => {
     setContentReady(element);
     consumeQueue(element);
   });

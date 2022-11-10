@@ -1,51 +1,22 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+   http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+import onsElements from '../ons/elements.js';
+import BaseInputElement from './base/base-input.js';
+import contentReady from '../ons/content-ready.js';
+import util from '../ons/util.js';
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
-
-var _elements = require('../ons/elements');
-
-var _elements2 = _interopRequireDefault(_elements);
-
-var _baseInput = require('./base/base-input');
-
-var _baseInput2 = _interopRequireDefault(_baseInput);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-var _util = require('../ons/util');
-
-var _util2 = _interopRequireDefault(_util);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var scheme = {
+const scheme = {
   '.text-input': 'text-input--*',
   '.text-input__label': 'text-input--*__label'
 };
@@ -91,197 +62,180 @@ var scheme = {
  * @example
  * <ons-input placeholder="Username" float></ons-input>
  */
+export default class InputElement extends BaseInputElement {
 
-var InputElement = function (_BaseInputElement) {
-  _inherits(InputElement, _BaseInputElement);
+  constructor() {
+    super();
 
-  function InputElement() {
-    _classCallCheck(this, InputElement);
-
-    var _this = _possibleConstructorReturn(this, (InputElement.__proto__ || Object.getPrototypeOf(InputElement)).call(this));
-
-    _this._boundOnInput = _this._update.bind(_this);
-    _this._boundOnFocusin = _this._update.bind(_this);
-    return _this;
+    this._boundOnInput = this._update.bind(this);
+    this._boundOnFocusin = this._update.bind(this);
   }
 
   /* Inherited props */
 
-  _createClass(InputElement, [{
-    key: '_update',
-    value: function _update() {
-      this._updateLabel();
-      this._updateLabelClass();
+  _update() {
+    this._updateLabel();
+    this._updateLabelClass();
+  }
+
+  get _scheme() {
+    return scheme;
+  }
+
+  get _template() {
+    return `
+      <input type="${this.type}" class="text-input">
+      <span class="text-input__label"></span>
+    `;
+  }
+
+  get type() {
+    const type = this.getAttribute('type');
+    return (['checkbox', 'radio'].indexOf(type) < 0) && type || 'text';
+  }
+
+  set type(value) {
+    this.setAttribute('type', value);
+  }
+
+  /* Own props */
+
+  _updateLabel() {
+    const label = this.getAttribute('placeholder') || '';
+
+    if (typeof this._helper.textContent !== 'undefined') {
+      this._helper.textContent = label;
+    } else {
+      this._helper.innerText = label;
     }
-  }, {
-    key: '_updateLabel',
+  }
 
-
-    /* Own props */
-
-    value: function _updateLabel() {
-      var label = this.getAttribute('placeholder') || '';
-
-      if (typeof this._helper.textContent !== 'undefined') {
-        this._helper.textContent = label;
-      } else {
-        this._helper.innerText = label;
-      }
+  _updateLabelClass() {
+    if (this.value === '') {
+      this._helper.classList.remove('text-input--material__label--active');
+    } else {
+      this._helper.classList.add('text-input--material__label--active');
     }
-  }, {
-    key: '_updateLabelClass',
-    value: function _updateLabelClass() {
-      if (this.value === '') {
-        this._helper.classList.remove('text-input--material__label--active');
-      } else {
-        this._helper.classList.add('text-input--material__label--active');
-      }
+  }
+
+  get _helper() {
+    return this.querySelector('span');
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    contentReady(this, () => {
+      this._input.addEventListener('input', this._boundOnInput);
+      this._input.addEventListener('focusin', this._boundOnFocusin);
+    });
+
+    const type = this.getAttribute('type');
+    if (['checkbox', 'radio'].indexOf(type) >= 0) {
+      util.warn(`Warn: <ons-input type="${type}"> is deprecated since v2.4.0. Use <ons-${type}> instead.`);
     }
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this2 = this;
+  }
 
-      _get(InputElement.prototype.__proto__ || Object.getPrototypeOf(InputElement.prototype), 'connectedCallback', this).call(this);
+  disconnectedCallback() {
+    super.disconnectedCallback();
 
-      (0, _contentReady2.default)(this, function () {
-        _this2._input.addEventListener('input', _this2._boundOnInput);
-        _this2._input.addEventListener('focusin', _this2._boundOnFocusin);
-      });
+    contentReady(this, () => {
+      this._input.removeEventListener('input', this._boundOnInput);
+      this._input.removeEventListener('focusin', this._boundOnFocusin);
+    });
+  }
 
-      var type = this.getAttribute('type');
-      if (['checkbox', 'radio'].indexOf(type) >= 0) {
-        _util2.default.warn('Warn: <ons-input type="' + type + '"> is deprecated since v2.4.0. Use <ons-' + type + '> instead.');
-      }
+  static get observedAttributes() {
+    return [...super.observedAttributes, 'type'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    switch (name) {
+      case 'type':
+        contentReady(this, () => this._input.setAttribute('type', this.type));
+        break;
+      default:
+        super.attributeChangedCallback(name, last, current);
     }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {
-      var _this3 = this;
+  }
 
-      _get(InputElement.prototype.__proto__ || Object.getPrototypeOf(InputElement.prototype), 'disconnectedCallback', this).call(this);
+  /**
+   * @attribute placeholder
+   * @type {String}
+   * @description
+   *   [en]Placeholder text. In Material Design, this placeholder will be a floating label.[/en]
+   *   [ja][/ja]
+   */
 
-      (0, _contentReady2.default)(this, function () {
-        _this3._input.removeEventListener('input', _this3._boundOnInput);
-        _this3._input.removeEventListener('focusin', _this3._boundOnFocusin);
-      });
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      var _this4 = this;
+  /**
+   * @attribute float
+   * @description
+   *  [en]If this attribute is present, the placeholder will be animated in Material Design.[/en]
+   *  [ja]この属性が設定された時、ラベルはアニメーションするようになります。[/ja]
+   */
 
-      switch (name) {
-        case 'type':
-          (0, _contentReady2.default)(this, function () {
-            return _this4._input.setAttribute('type', _this4.type);
-          });
-          break;
-        default:
-          _get(InputElement.prototype.__proto__ || Object.getPrototypeOf(InputElement.prototype), 'attributeChangedCallback', this).call(this, name, last, current);
-      }
-    }
+  /**
+   * @property float
+   * @type {Boolean}
+   * @description
+   *  [en]If this property is present, the placeholder will be animated in Material Design.[/en]
+   *  [ja]この属性が設定された時、ラベルはアニメーションするようになります。[/ja]
+   */
 
-    /**
-     * @attribute placeholder
-     * @type {String}
-     * @description
-     *   [en]Placeholder text. In Material Design, this placeholder will be a floating label.[/en]
-     *   [ja][/ja]
-     */
+  /**
+   * @attribute type
+   * @type {String}
+   * @description
+   *  [en]
+   *    Specify the input type. This is the same as the "type" attribute for normal inputs. It expects strict text types such as `text`, `password`, etc. For checkbox, radio button, select or range, please have a look at the corresponding elements.
+   *
+   *    Please take a look at [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-type) for an exhaustive list of possible values. Depending on the platform and browser version some of these might not work.
+   *  [/en]
+   *  [ja][/ja]
+   */
 
-    /**
-     * @attribute float
-     * @description
-     *  [en]If this attribute is present, the placeholder will be animated in Material Design.[/en]
-     *  [ja]この属性が設定された時、ラベルはアニメーションするようになります。[/ja]
-     */
+  /**
+   * @attribute input-id
+   * @type {String}
+   * @description
+   *  [en]Specify the "id" attribute of the inner `<input>` element. This is useful when using `<label for="...">` elements.[/en]
+   *  [ja][/ja]
+   */
 
-    /**
-     * @attribute type
-     * @type {String}
-     * @description
-     *  [en]
-     *    Specify the input type. This is the same as the "type" attribute for normal inputs. It expects strict text types such as `text`, `password`, etc. For checkbox, radio button, select or range, please have a look at the corresponding elements.
-     *
-     *    Please take a look at [MDN](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/input#attr-type) for an exhaustive list of possible values. Depending on the platform and browser version some of these might not work.
-     *  [/en]
-     *  [ja][/ja]
-     */
+  /**
+   * @property value
+   * @type {String}
+   * @description
+   *   [en]The current value of the input.[/en]
+   *   [ja][/ja]
+   */
 
-    /**
-     * @attribute input-id
-     * @type {String}
-     * @description
-     *  [en]Specify the "id" attribute of the inner `<input>` element. This is useful when using `<label for="...">` elements.[/en]
-     *  [ja][/ja]
-     */
+  /**
+   * @property disabled
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the input is disabled or not.[/en]
+   *   [ja]無効化されている場合に`true`。[/ja]
+   */
 
-    /**
-     * @property value
-     * @type {String}
-     * @description
-     *   [en]The current value of the input.[/en]
-     *   [ja][/ja]
-     */
+  /**
+   * @method focus
+   * @signature focus()
+   * @description
+   *   [en]Focuses the input.[/en]
+   *   [ja][/ja]
+   */
 
-    /**
-     * @property disabled
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the input is disabled or not.[/en]
-     *   [ja]無効化されている場合に`true`。[/ja]
-     */
+  /**
+   * @method blur
+   * @signature blur()
+   * @description
+   *   [en]Removes focus from the input.[/en]
+   *   [ja][/ja]
+   */
+}
 
-    /**
-     * @method focus
-     * @signature focus()
-     * @description
-     *   [en]Focuses the input.[/en]
-     *   [ja][/ja]
-     */
+util.defineBooleanProperties(InputElement, ['float']);
 
-    /**
-     * @method blur
-     * @signature blur()
-     * @description
-     *   [en]Removes focus from the input.[/en]
-     *   [ja][/ja]
-     */
-
-  }, {
-    key: '_scheme',
-    get: function get() {
-      return scheme;
-    }
-  }, {
-    key: '_template',
-    get: function get() {
-      return '\n      <input type="' + this.type + '" class="text-input">\n      <span class="text-input__label"></span>\n    ';
-    }
-  }, {
-    key: 'type',
-    get: function get() {
-      var type = this.getAttribute('type');
-      return ['checkbox', 'radio'].indexOf(type) < 0 && type || 'text';
-    }
-  }, {
-    key: '_helper',
-    get: function get() {
-      return this.querySelector('span');
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return [].concat(_toConsumableArray(_get(InputElement.__proto__ || Object.getPrototypeOf(InputElement), 'observedAttributes', this)), ['type']);
-    }
-  }]);
-
-  return InputElement;
-}(_baseInput2.default);
-
-exports.default = InputElement;
-
-
-_elements2.default.Input = InputElement;
+onsElements.Input = InputElement;
 customElements.define('ons-input', InputElement);

@@ -1,206 +1,150 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.LazyRepeatProvider = exports.LazyRepeatDelegate = undefined;
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     */
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _util = require('../util');
+*/
 
-var _util2 = _interopRequireDefault(_util);
+import util from '../util.js';
+import platform from '../platform.js';
 
-var _platform = require('../platform');
+export class LazyRepeatDelegate {
 
-var _platform2 = _interopRequireDefault(_platform);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var LazyRepeatDelegate = exports.LazyRepeatDelegate = function () {
-  function LazyRepeatDelegate(userDelegate) {
-    var templateElement = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : null;
-
-    _classCallCheck(this, LazyRepeatDelegate);
-
-    if ((typeof userDelegate === 'undefined' ? 'undefined' : _typeof(userDelegate)) !== 'object' || userDelegate === null) {
-      _util2.default.throw('"delegate" parameter must be an object');
+  constructor(userDelegate, templateElement = null) {
+    if (typeof userDelegate !== 'object' || userDelegate === null) {
+      util.throw('"delegate" parameter must be an object');
     }
     this._userDelegate = userDelegate;
 
     if (!(templateElement instanceof Element) && templateElement !== null) {
-      _util2.default.throw('"templateElement" parameter must be an instance of Element or null');
+      util.throw('"templateElement" parameter must be an instance of Element or null');
     }
     this._templateElement = templateElement;
   }
 
-  _createClass(LazyRepeatDelegate, [{
-    key: 'hasRenderFunction',
+  get itemHeight() {
+    return this._userDelegate.itemHeight;
+  }
 
+  /**
+   * @return {Boolean}
+   */
+  hasRenderFunction() {
+    return this._userDelegate._render instanceof Function;
+  }
 
-    /**
-     * @return {Boolean}
-     */
-    value: function hasRenderFunction() {
-      return this._userDelegate._render instanceof Function;
-    }
+  /**
+   * @return {void}
+   */
+  _render() {
+    this._userDelegate._render.apply(this._userDelegate, arguments);
+  }
 
-    /**
-     * @return {void}
-     */
-
-  }, {
-    key: '_render',
-    value: function _render() {
-      this._userDelegate._render.apply(this._userDelegate, arguments);
-    }
-
-    /**
-     * @param {Number} index
-     * @param {Function} done A function that take item object as parameter.
-     */
-
-  }, {
-    key: 'loadItemElement',
-    value: function loadItemElement(index, done) {
-      if (this._userDelegate.loadItemElement instanceof Function) {
-        this._userDelegate.loadItemElement(index, done);
-      } else {
-        var element = this._userDelegate.createItemContent(index, this._templateElement);
-        if (!(element instanceof Element)) {
-          _util2.default.throw('"createItemContent" must return an instance of Element');
-        }
-
-        done({ element: element });
-      }
-    }
-
-    /**
-     * @return {Number}
-     */
-
-  }, {
-    key: 'countItems',
-    value: function countItems() {
-      var count = this._userDelegate.countItems();
-      if (typeof count !== 'number') {
-        _util2.default.throw('"countItems" must return a number');
-      }
-      return count;
-    }
-
-    /**
-     * @param {Number} index
-     * @param {Object} item
-     * @param {Element} item.element
-     */
-
-  }, {
-    key: 'updateItem',
-    value: function updateItem(index, item) {
-      if (this._userDelegate.updateItemContent instanceof Function) {
-        this._userDelegate.updateItemContent(index, item);
-      }
-    }
-
-    /**
-     * @return {Number}
-     */
-
-  }, {
-    key: 'calculateItemHeight',
-    value: function calculateItemHeight(index) {
-      if (this._userDelegate.calculateItemHeight instanceof Function) {
-        var height = this._userDelegate.calculateItemHeight(index);
-
-        if (typeof height !== 'number') {
-          _util2.default.throw('"calculateItemHeight" must return a number');
-        }
-
-        return height;
+  /**
+   * @param {Number} index
+   * @param {Function} done A function that take item object as parameter.
+   */
+  loadItemElement(index, done) {
+    if (this._userDelegate.loadItemElement instanceof Function) {
+      this._userDelegate.loadItemElement(index, done);
+    } else {
+      const element = this._userDelegate.createItemContent(index, this._templateElement);
+      if (!(element instanceof Element)) {
+        util.throw('"createItemContent" must return an instance of Element');
       }
 
-      return 0;
+      done({element});
     }
+  }
 
-    /**
-     * @param {Number} index
-     * @param {Object} item
-     */
+  /**
+   * @return {Number}
+   */
+  countItems() {
+    const count = this._userDelegate.countItems();
+    if (typeof count !== 'number') {
+      util.throw('"countItems" must return a number');
+    }
+    return count;
+  }
 
-  }, {
-    key: 'destroyItem',
-    value: function destroyItem(index, item) {
-      if (this._userDelegate.destroyItem instanceof Function) {
-        this._userDelegate.destroyItem(index, item);
+  /**
+   * @param {Number} index
+   * @param {Object} item
+   * @param {Element} item.element
+   */
+  updateItem(index, item) {
+    if (this._userDelegate.updateItemContent instanceof Function) {
+      this._userDelegate.updateItemContent(index, item);
+    }
+  }
+
+  /**
+   * @return {Number}
+   */
+  calculateItemHeight(index) {
+    if (this._userDelegate.calculateItemHeight instanceof Function) {
+      const height = this._userDelegate.calculateItemHeight(index);
+
+      if (typeof height !== 'number') {
+        util.throw('"calculateItemHeight" must return a number');
       }
+
+      return height;
     }
 
-    /**
-     * @return {void}
-     */
+    return 0;
+  }
 
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      if (this._userDelegate.destroy instanceof Function) {
-        this._userDelegate.destroy();
-      }
-
-      this._userDelegate = this._templateElement = null;
+  /**
+   * @param {Number} index
+   * @param {Object} item
+   */
+  destroyItem(index, item) {
+    if (this._userDelegate.destroyItem instanceof Function) {
+      this._userDelegate.destroyItem(index, item);
     }
-  }, {
-    key: 'itemHeight',
-    get: function get() {
-      return this._userDelegate.itemHeight;
-    }
-  }]);
+  }
 
-  return LazyRepeatDelegate;
-}();
+  /**
+   * @return {void}
+   */
+  destroy() {
+    if (this._userDelegate.destroy instanceof Function) {
+      this._userDelegate.destroy();
+    }
+
+    this._userDelegate = this._templateElement = null;
+  }
+}
 
 /**
  * This class provide core functions for ons-lazy-repeat.
  */
-
-
-var LazyRepeatProvider = exports.LazyRepeatProvider = function () {
+export class LazyRepeatProvider {
 
   /**
    * @param {Element} wrapperElement
    * @param {LazyRepeatDelegate} delegate
    */
-  function LazyRepeatProvider(wrapperElement, delegate) {
-    _classCallCheck(this, LazyRepeatProvider);
-
+  constructor(wrapperElement, delegate) {
     if (!(delegate instanceof LazyRepeatDelegate)) {
-      _util2.default.throw('"delegate" parameter must be an instance of LazyRepeatDelegate');
+      util.throw('"delegate" parameter must be an instance of LazyRepeatDelegate');
     }
 
     this._wrapperElement = wrapperElement;
     this._delegate = delegate;
-    this._insertIndex = this._wrapperElement.children[0] && this._wrapperElement.children[0].tagName === 'ONS-LAZY-REPEAT' ? 1 : 0;
+    this._insertIndex = (this._wrapperElement.children[0] && this._wrapperElement.children[0].tagName === 'ONS-LAZY-REPEAT') ? 1 : 0;
 
     if (wrapperElement.tagName.toLowerCase() === 'ons-list') {
       wrapperElement.classList.add('lazy-list');
@@ -209,7 +153,7 @@ var LazyRepeatProvider = exports.LazyRepeatProvider = function () {
     this._pageContent = this._findPageContentElement(wrapperElement);
 
     if (!this._pageContent) {
-      _util2.default.throw('LazyRepeat must be descendant of a Page element');
+      util.throw('LazyRepeat must be descendant of a Page element');
     }
 
     this.lastScrollTop = this._pageContent.scrollTop;
@@ -225,367 +169,310 @@ var LazyRepeatProvider = exports.LazyRepeatProvider = function () {
     this._onChange();
   }
 
-  _createClass(LazyRepeatProvider, [{
-    key: '_findPageContentElement',
-    value: function _findPageContentElement(wrapperElement) {
-      var pageContent = _util2.default.findParent(wrapperElement, '.page__content');
+  get padding() {
+    return parseInt(this._wrapperElement.style.paddingTop, 10);
+  }
 
-      if (pageContent) {
-        return pageContent;
+  set padding(newValue) {
+    this._wrapperElement.style.paddingTop = newValue + 'px';
+  }
+
+  _findPageContentElement(wrapperElement) {
+    const pageContent = util.findParent(wrapperElement, '.page__content');
+
+    if (pageContent) {
+      return pageContent;
+    }
+
+    const page = util.findParent(wrapperElement, 'ons-page');
+    if (page) {
+      const content = util.findChild(page, '.content');
+      if (content) {
+        return content;
+      }
+    }
+
+    return null;
+  }
+
+  _checkItemHeight(callback) {
+    this._delegate.loadItemElement(0, item => {
+      if (!this._unknownItemHeight) {
+        util.throw('Invalid state');
       }
 
-      var page = _util2.default.findParent(wrapperElement, 'ons-page');
-      if (page) {
-        var content = _util2.default.findChild(page, '.content');
-        if (content) {
-          return content;
-        }
-      }
+      this._wrapperElement.appendChild(item.element);
 
-      return null;
-    }
-  }, {
-    key: '_checkItemHeight',
-    value: function _checkItemHeight(callback) {
-      var _this = this;
+      const done = () => {
+        this._delegate.destroyItem(0, item);
+        item.element && item.element.remove();
+        delete this._unknownItemHeight;
+        callback();
+      };
 
-      this._delegate.loadItemElement(0, function (item) {
-        if (!_this._unknownItemHeight) {
-          _util2.default.throw('Invalid state');
-        }
+      this._itemHeight = item.element.offsetHeight;
 
-        _this._wrapperElement.appendChild(item.element);
-
-        var done = function done() {
-          _this._delegate.destroyItem(0, item);
-          item.element && item.element.remove();
-          delete _this._unknownItemHeight;
-          callback();
-        };
-
-        _this._itemHeight = item.element.offsetHeight;
-
-        if (_this._itemHeight > 0) {
-          done();
-          return;
-        }
-
-        // retry to measure offset height
-        // dirty fix for angular2 directive
-        _this._wrapperElement.style.visibility = 'hidden';
-        item.element.style.visibility = 'hidden';
-
-        setImmediate(function () {
-          _this._itemHeight = item.element.offsetHeight;
-          if (_this._itemHeight == 0) {
-            _util2.default.throw('Invalid state: "itemHeight" must be greater than zero');
-          }
-          _this._wrapperElement.style.visibility = '';
-          done();
-        });
-      });
-    }
-  }, {
-    key: '_countItems',
-    value: function _countItems() {
-      return this._delegate.countItems();
-    }
-  }, {
-    key: '_getItemHeight',
-    value: function _getItemHeight(i) {
-      // Item is rendered
-      if (this._renderedItems.hasOwnProperty(i)) {
-        if (!this._renderedItems[i].hasOwnProperty('height')) {
-          this._renderedItems[i].height = this._renderedItems[i].element.offsetHeight;
-        }
-        return this._renderedItems[i].height;
-      }
-
-      // Item is not rendered, scroll up
-      if (this._topPositions[i + 1] && this._topPositions[i]) {
-        return this._topPositions[i + 1] - this._topPositions[i];
-      }
-      // Item is not rendered, scroll down
-      return this.staticItemHeight || this._delegate.calculateItemHeight(i);
-    }
-  }, {
-    key: '_calculateRenderedHeight',
-    value: function _calculateRenderedHeight() {
-      var _this2 = this;
-
-      return Object.keys(this._renderedItems).reduce(function (a, b) {
-        return a + _this2._getItemHeight(+b);
-      }, 0);
-    }
-  }, {
-    key: '_onChange',
-    value: function _onChange() {
-      this._render();
-    }
-  }, {
-    key: '_lastItemRendered',
-    value: function _lastItemRendered() {
-      return Math.max.apply(Math, _toConsumableArray(Object.keys(this._renderedItems)));
-    }
-  }, {
-    key: '_firstItemRendered',
-    value: function _firstItemRendered() {
-      return Math.min.apply(Math, _toConsumableArray(Object.keys(this._renderedItems)));
-    }
-  }, {
-    key: 'refresh',
-    value: function refresh() {
-      var forceRender = { forceScrollDown: true };
-      var firstItemIndex = this._firstItemRendered();
-
-      if (_util2.default.isInteger(firstItemIndex)) {
-        this._wrapperElement.style.height = this._topPositions[firstItemIndex] + this._calculateRenderedHeight() + 'px';
-        this.padding = this._topPositions[firstItemIndex];
-        forceRender.forceFirstIndex = firstItemIndex;
-      }
-
-      this._removeAllElements();
-      this._render(forceRender);
-      this._wrapperElement.style.height = 'inherit';
-    }
-  }, {
-    key: '_render',
-    value: function _render() {
-      var _this3 = this;
-
-      var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-          _ref$forceScrollDown = _ref.forceScrollDown,
-          forceScrollDown = _ref$forceScrollDown === undefined ? false : _ref$forceScrollDown,
-          forceFirstIndex = _ref.forceFirstIndex,
-          forceLastIndex = _ref.forceLastIndex;
-
-      if (this._unknownItemHeight) {
-        return this._checkItemHeight(this._render.bind(this, arguments[0]));
-      }
-
-      var isScrollUp = !forceScrollDown && this.lastScrollTop > this._pageContent.scrollTop;
-      this.lastScrollTop = this._pageContent.scrollTop;
-      var keep = {};
-
-      var offset = this._wrapperElement.getBoundingClientRect().top;
-      var limit = 4 * window.innerHeight - offset;
-      var count = this._countItems();
-
-      var items = [];
-      var start = forceFirstIndex || Math.max(0, this._calculateStartIndex(offset) - 30); // Recalculate for 0 or undefined
-      var i = start;
-
-      for (var top = this._topPositions[i]; i < count && top < limit; i++) {
-        if (i >= this._topPositions.length) {
-          // perf optimization
-          this._topPositions.length += 100;
-        }
-
-        this._topPositions[i] = top;
-        top += this._getItemHeight(i);
-      }
-
-      if (this._delegate.hasRenderFunction && this._delegate.hasRenderFunction()) {
-        return this._delegate._render(start, i, function () {
-          _this3.padding = _this3._topPositions[start];
-        });
-      }
-
-      if (isScrollUp) {
-        for (var j = i - 1; j >= start; j--) {
-          keep[j] = true;
-          this._renderElement(j, isScrollUp);
-        }
-      } else {
-        var lastIndex = forceLastIndex || Math.max.apply(Math, [i - 1].concat(_toConsumableArray(Object.keys(this._renderedItems)))); // Recalculate for 0 or undefined
-        for (var _j = start; _j <= lastIndex; _j++) {
-          keep[_j] = true;
-          this._renderElement(_j, isScrollUp);
-        }
-      }
-
-      Object.keys(this._renderedItems).forEach(function (key) {
-        return keep[key] || _this3._removeElement(key, isScrollUp);
-      });
-    }
-
-    /**
-     * @param {Number} index
-     * @param {Boolean} isScrollUp
-     */
-
-  }, {
-    key: '_renderElement',
-    value: function _renderElement(index, isScrollUp) {
-      var _this4 = this;
-
-      var item = this._renderedItems[index];
-      if (item) {
-        this._delegate.updateItem(index, item); // update if it exists
+      if (this._itemHeight > 0) {
+        done();
         return;
       }
 
-      this._delegate.loadItemElement(index, function (item) {
-        if (isScrollUp) {
-          _this4._wrapperElement.insertBefore(item.element, _this4._wrapperElement.children[_this4._insertIndex]);
-          _this4.padding = _this4._topPositions[index];
-          item.height = _this4._topPositions[index + 1] - _this4._topPositions[index];
-        } else {
-          _this4._wrapperElement.appendChild(item.element);
-        }
+      // retry to measure offset height
+      // dirty fix for angular2 directive
+      this._wrapperElement.style.visibility = 'hidden';
+      item.element.style.visibility = 'hidden';
 
-        _this4._renderedItems[index] = item;
+      setImmediate(() => {
+        this._itemHeight = item.element.offsetHeight;
+        if (this._itemHeight == 0) {
+          util.throw('Invalid state: "itemHeight" must be greater than zero');
+        }
+        this._wrapperElement.style.visibility = '';
+        done();
+      });
+    });
+  }
+
+  get staticItemHeight() {
+    return this._delegate.itemHeight || this._itemHeight;
+  }
+  _countItems() {
+    return this._delegate.countItems();
+  }
+
+  _getItemHeight(i) {
+    // Item is rendered
+    if (Object.prototype.hasOwnProperty.call(this._renderedItems, i)) {
+      if (!Object.prototype.hasOwnProperty.call(this._renderedItems[i], 'height')) {
+        this._renderedItems[i].height = this._renderedItems[i].element.offsetHeight;
+      }
+      return this._renderedItems[i].height;
+    }
+
+    // Item is not rendered, scroll up
+    if (this._topPositions[i + 1] && this._topPositions[i]) {
+      return this._topPositions[i + 1] - this._topPositions[i];
+    }
+    // Item is not rendered, scroll down
+    return this.staticItemHeight || this._delegate.calculateItemHeight(i);
+  }
+
+  _calculateRenderedHeight() {
+    return Object.keys(this._renderedItems).reduce((a, b) => a + this._getItemHeight(+(b)), 0);
+  }
+
+  _onChange() {
+    this._render();
+  }
+
+  _lastItemRendered() {
+    return Math.max(...Object.keys(this._renderedItems));
+  }
+
+  _firstItemRendered() {
+    return Math.min(...Object.keys(this._renderedItems));
+  }
+
+  refresh() {
+    const forceRender = { forceScrollDown: true };
+    const firstItemIndex = this._firstItemRendered();
+
+    if (util.isInteger(firstItemIndex)) {
+      this._wrapperElement.style.height = this._topPositions[firstItemIndex] + this._calculateRenderedHeight() + 'px';
+      this.padding = this._topPositions[firstItemIndex];
+      forceRender.forceFirstIndex = firstItemIndex;
+    }
+
+    this._removeAllElements();
+    this._render(forceRender);
+    this._wrapperElement.style.height = 'inherit';
+  }
+
+  _render({forceScrollDown = false, forceFirstIndex, forceLastIndex} = {}) {
+    if (this._unknownItemHeight) {
+      return this._checkItemHeight(this._render.bind(this, arguments[0]));
+    }
+
+    const isScrollUp = !forceScrollDown && this.lastScrollTop > this._pageContent.scrollTop;
+    this.lastScrollTop = this._pageContent.scrollTop;
+    const keep = {};
+
+    const offset = this._wrapperElement.getBoundingClientRect().top;
+    const limit = 4 * window.innerHeight - offset;
+    const count = this._countItems();
+
+    const items = [];
+    const start = forceFirstIndex || Math.max(0, this._calculateStartIndex(offset) - 30); // Recalculate for 0 or undefined
+    let i = start;
+
+    for (let top = this._topPositions[i]; i < count && top < limit; i++) {
+      if (i >= this._topPositions.length) { // perf optimization
+        this._topPositions.length += 100;
+      }
+
+      this._topPositions[i] = top;
+      top += this._getItemHeight(i);
+    }
+
+    if (this._delegate.hasRenderFunction && this._delegate.hasRenderFunction()) {
+      return this._delegate._render(start, i, () => {
+        this.padding = this._topPositions[start];
       });
     }
 
-    /**
-     * @param {Number} index
-     * @param {Boolean} isScrollUp
-     */
+    if (isScrollUp) {
+      for (let j = i - 1; j >= start; j--) {
+        keep[j] = true;
+        this._renderElement(j, isScrollUp);
+      }
+    } else {
+      const lastIndex = forceLastIndex || Math.max(i - 1, ...Object.keys(this._renderedItems)); // Recalculate for 0 or undefined
+      for (let j = start; j <= lastIndex; j++) {
+        keep[j] = true;
+        this._renderElement(j, isScrollUp);
+      }
+    }
 
-  }, {
-    key: '_removeElement',
-    value: function _removeElement(index) {
-      var isScrollUp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+    Object.keys(this._renderedItems).forEach(key => keep[key] || this._removeElement(key, isScrollUp));
+  }
 
-      index = +index;
-      var item = this._renderedItems[index];
-      this._delegate.destroyItem(index, item);
+  /**
+   * @param {Number} index
+   * @param {Boolean} isScrollUp
+   */
+  _renderElement(index, isScrollUp) {
+    const item = this._renderedItems[index];
+    if (item) {
+      this._delegate.updateItem(index, item); // update if it exists
+      return;
+    }
 
+    this._delegate.loadItemElement(index, item => {
       if (isScrollUp) {
-        this._topPositions[index + 1] = undefined;
+        this._wrapperElement.insertBefore(item.element, this._wrapperElement.children[this._insertIndex]);
+        this.padding = this._topPositions[index];
+        item.height = this._topPositions[index + 1] - this._topPositions[index];
       } else {
-        this.padding = this.padding + this._getItemHeight(index);
+        this._wrapperElement.appendChild(item.element);
       }
 
-      if (item.element.parentElement) {
-        item.element.parentElement.removeChild(item.element);
+      this._renderedItems[index] = item;
+    });
+  }
+
+  /**
+   * @param {Number} index
+   * @param {Boolean} isScrollUp
+   */
+  _removeElement(index, isScrollUp = true) {
+    index = +(index);
+    const item = this._renderedItems[index];
+    this._delegate.destroyItem(index, item);
+
+    if (isScrollUp) {
+      this._topPositions[index + 1] = undefined;
+    } else {
+      this.padding = this.padding + this._getItemHeight(index);
+    }
+
+    if (item.element.parentElement) {
+      item.element.parentElement.removeChild(item.element);
+    }
+
+    delete this._renderedItems[index];
+  }
+
+  _removeAllElements() {
+    Object.keys(this._renderedItems).forEach(key => this._removeElement(key));
+  }
+
+  _recalculateTopPositions(start, end) {
+    for (let i = start; i <= end; i++) {
+      this._topPositions[i + 1] = this._topPositions[i] + this._getItemHeight(i);
+    }
+  }
+
+  _calculateStartIndex(current) {
+    const firstItemIndex = this._firstItemRendered();
+    const lastItemIndex = this._lastItemRendered();
+
+    // Fix for Safari scroll and Angular 2
+    this._recalculateTopPositions(firstItemIndex, lastItemIndex);
+
+    let start = 0;
+    let end = this._countItems() - 1;
+
+    // Binary search for index at top of screen so we can speed up rendering.
+    for (;;) {
+      const middle = Math.floor((start + end) / 2);
+      const value = current + this._topPositions[middle];
+
+      if (end < start) {
+        return 0;
+      } else if (value <= 0 && value + this._getItemHeight(middle) > 0) {
+        return middle;
+      } else if (isNaN(value) || value >= 0) {
+        end = middle - 1;
+      } else {
+        start = middle + 1;
       }
-
-      delete this._renderedItems[index];
     }
-  }, {
-    key: '_removeAllElements',
-    value: function _removeAllElements() {
-      var _this5 = this;
+  }
 
-      Object.keys(this._renderedItems).forEach(function (key) {
-        return _this5._removeElement(key);
-      });
-    }
-  }, {
-    key: '_recalculateTopPositions',
-    value: function _recalculateTopPositions(start, end) {
-      for (var i = start; i <= end; i++) {
-        this._topPositions[i + 1] = this._topPositions[i] + this._getItemHeight(i);
-      }
-    }
-  }, {
-    key: '_calculateStartIndex',
-    value: function _calculateStartIndex(current) {
-      var firstItemIndex = this._firstItemRendered();
-      var lastItemIndex = this._lastItemRendered();
-
-      // Fix for Safari scroll and Angular 2
-      this._recalculateTopPositions(firstItemIndex, lastItemIndex);
-
-      var start = 0;
-      var end = this._countItems() - 1;
-
-      // Binary search for index at top of screen so we can speed up rendering.
-      for (;;) {
-        var middle = Math.floor((start + end) / 2);
-        var value = current + this._topPositions[middle];
-
-        if (end < start) {
-          return 0;
-        } else if (value <= 0 && value + this._getItemHeight(middle) > 0) {
-          return middle;
-        } else if (isNaN(value) || value >= 0) {
-          end = middle - 1;
-        } else {
-          start = middle + 1;
-        }
-      }
-    }
-  }, {
-    key: '_debounce',
-    value: function _debounce(func, wait, immediate) {
-      var timeout = void 0;
-      return function () {
-        var _this6 = this,
-            _arguments = arguments;
-
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        if (callNow) {
+  _debounce(func, wait, immediate) {
+    let timeout;
+    return function() {
+      const callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      if (callNow) {
+        func.apply(this, arguments);
+      } else {
+        timeout = setTimeout(() => {
+          timeout = null;
           func.apply(this, arguments);
-        } else {
-          timeout = setTimeout(function () {
-            timeout = null;
-            func.apply(_this6, _arguments);
-          }, wait);
-        }
-      };
-    }
-  }, {
-    key: '_doubleFireOnTouchend',
-    value: function _doubleFireOnTouchend() {
-      this._render();
-      this._debounce(this._render.bind(this), 100);
-    }
-  }, {
-    key: '_addEventListeners',
-    value: function _addEventListeners() {
-      _util2.default.bindListeners(this, ['_onChange', '_doubleFireOnTouchend']);
-
-      if (_platform2.default.isIOS()) {
-        this._boundOnChange = this._debounce(this._boundOnChange, 30);
+        }, wait);
       }
+    };
+  }
 
-      this._pageContent.addEventListener('scroll', this._boundOnChange, true);
+  _doubleFireOnTouchend() {
+    this._render();
+    this._debounce(this._render.bind(this), 100);
+  }
 
-      if (_platform2.default.isIOS()) {
-        _util2.default.addEventListener(this._pageContent, 'touchmove', this._boundOnChange, { capture: true, passive: true });
-        this._pageContent.addEventListener('touchend', this._boundDoubleFireOnTouchend, true);
-      }
+  _addEventListeners() {
+    util.bindListeners(this, ['_onChange', '_doubleFireOnTouchend']);
 
-      window.document.addEventListener('resize', this._boundOnChange, true);
+    if (platform.isIOS()) {
+      this._boundOnChange = this._debounce(this._boundOnChange, 30);
     }
-  }, {
-    key: '_removeEventListeners',
-    value: function _removeEventListeners() {
-      this._pageContent.removeEventListener('scroll', this._boundOnChange, true);
 
-      if (_platform2.default.isIOS()) {
-        _util2.default.removeEventListener(this._pageContent, 'touchmove', this._boundOnChange, { capture: true, passive: true });
-        this._pageContent.removeEventListener('touchend', this._boundDoubleFireOnTouchend, true);
-      }
+    this._pageContent.addEventListener('scroll', this._boundOnChange, true);
 
-      window.document.removeEventListener('resize', this._boundOnChange, true);
+    if (platform.isIOS()) {
+      util.addEventListener(this._pageContent, 'touchmove', this._boundOnChange, { capture: true, passive: true });
+      this._pageContent.addEventListener('touchend', this._boundDoubleFireOnTouchend, true);
     }
-  }, {
-    key: 'destroy',
-    value: function destroy() {
-      this._removeAllElements();
-      this._delegate.destroy();
-      this._parentElement = this._delegate = this._renderedItems = null;
-      this._removeEventListeners();
-    }
-  }, {
-    key: 'padding',
-    get: function get() {
-      return parseInt(this._wrapperElement.style.paddingTop, 10);
-    },
-    set: function set(newValue) {
-      this._wrapperElement.style.paddingTop = newValue + 'px';
-    }
-  }, {
-    key: 'staticItemHeight',
-    get: function get() {
-      return this._delegate.itemHeight || this._itemHeight;
-    }
-  }]);
 
-  return LazyRepeatProvider;
-}();
+    window.document.addEventListener('resize', this._boundOnChange, true);
+  }
+
+  _removeEventListeners() {
+    this._pageContent.removeEventListener('scroll', this._boundOnChange, true);
+
+    if (platform.isIOS()) {
+      util.removeEventListener(this._pageContent, 'touchmove', this._boundOnChange, { capture: true, passive: true });
+      this._pageContent.removeEventListener('touchend', this._boundDoubleFireOnTouchend, true);
+    }
+
+    window.document.removeEventListener('resize', this._boundOnChange, true);
+  }
+
+  destroy() {
+    this._removeAllElements();
+    this._delegate.destroy();
+    this._parentElement = this._delegate = this._renderedItems = null;
+    this._removeEventListeners();
+  }
+}
+

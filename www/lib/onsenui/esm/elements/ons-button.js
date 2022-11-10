@@ -1,41 +1,22 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _baseButton = require('./base/base-button');
-
-var _baseButton2 = _interopRequireDefault(_baseButton);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+import onsElements from '../ons/elements.js';
+import BaseButtonElement from './base/base-button.js';
 
 /**
  * @element ons-button
@@ -84,64 +65,54 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * </ons-button>
  */
 
-var ButtonElement = function (_BaseButtonElement) {
-  _inherits(ButtonElement, _BaseButtonElement);
+export default class ButtonElement extends BaseButtonElement {
 
-  function ButtonElement() {
-    _classCallCheck(this, ButtonElement);
+  /**
+   * @attribute modifier
+   * @type {String}
+   * @description
+   *  [en]The appearance of the button.[/en]
+   *  [ja]ボタンの表現を指定します。[/ja]
+   */
 
-    return _possibleConstructorReturn(this, (ButtonElement.__proto__ || Object.getPrototypeOf(ButtonElement)).apply(this, arguments));
+  /**
+   * @attribute ripple
+   * @description
+   *  [en]If this attribute is defined, the button will have a ripple effect.[/en]
+   *  [ja][/ja]
+   */
+
+  /**
+   * @property ripple
+   * @type {Boolean}
+   * @description
+   *  [en]Whether the button has a ripple effect or not.[/en]
+   *  [ja][/ja]
+   */
+
+  /**
+   * @attribute disabled
+   * @description
+   *   [en]Specify if button should be disabled.[/en]
+   *   [ja]ボタンを無効化する場合は指定します。[/ja]
+   */
+
+  /**
+   * @property disabled
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the button is disabled or not.[/en]
+   *   [ja]無効化されている場合に`true`。[/ja]
+   */
+
+  get _scheme() {
+    return { '': 'button--*' };
   }
 
-  _createClass(ButtonElement, [{
-    key: '_scheme',
+  get _defaultClassName() {
+    return 'button';
+  }
+}
 
-
-    /**
-     * @attribute modifier
-     * @type {String}
-     * @description
-     *  [en]The appearance of the button.[/en]
-     *  [ja]ボタンの表現を指定します。[/ja]
-     */
-
-    /**
-     * @attribute ripple
-     * @description
-     *  [en]If this attribute is defined, the button will have a ripple effect.[/en]
-     *  [ja][/ja]
-     */
-
-    /**
-     * @attribute disabled
-     * @description
-     *   [en]Specify if button should be disabled.[/en]
-     *   [ja]ボタンを無効化する場合は指定します。[/ja]
-     */
-
-    /**
-     * @property disabled
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the button is disabled or not.[/en]
-     *   [ja]無効化されている場合に`true`。[/ja]
-     */
-
-    get: function get() {
-      return { '': 'button--*' };
-    }
-  }, {
-    key: '_defaultClassName',
-    get: function get() {
-      return 'button';
-    }
-  }]);
-
-  return ButtonElement;
-}(_baseButton2.default);
-
-exports.default = ButtonElement;
-
-
-_elements2.default.Button = ButtonElement;
+onsElements.Button = ButtonElement;
 customElements.define('ons-button', ButtonElement);

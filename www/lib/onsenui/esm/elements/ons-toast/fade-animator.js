@@ -1,26 +1,4 @@
-'use strict';
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _animit = require('../../ons/animit');
-
-var _animit2 = _interopRequireDefault(_animit);
-
-var _animator = require('./animator');
-
-var _animator2 = _interopRequireDefault(_animator);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -38,61 +16,47 @@ limitations under the License.
 
 */
 
+import animit from '../../ons/animit.js';
+import ToastAnimator from './animator.js';
+
 /**
  * iOS style animator for dialog.
  */
-var FadeToastAnimator = function (_ToastAnimator) {
-  _inherits(FadeToastAnimator, _ToastAnimator);
+export default class FadeToastAnimator extends ToastAnimator {
 
-  function FadeToastAnimator() {
-    var _ref = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-        _ref$timing = _ref.timing,
-        timing = _ref$timing === undefined ? 'linear' : _ref$timing,
-        _ref$delay = _ref.delay,
-        delay = _ref$delay === undefined ? 0 : _ref$delay,
-        _ref$duration = _ref.duration,
-        duration = _ref$duration === undefined ? 0.3 : _ref$duration;
-
-    _classCallCheck(this, FadeToastAnimator);
-
-    return _possibleConstructorReturn(this, (FadeToastAnimator.__proto__ || Object.getPrototypeOf(FadeToastAnimator)).call(this, { timing: timing, delay: delay, duration: duration }));
+  constructor({timing = 'linear', delay = 0, duration = 0.3} = {}) {
+    super({ timing, delay, duration });
   }
 
   /**
    * @param {HTMLElement} toast
    * @param {Function} callback
    */
+  show(toast, callback) {
+    callback = callback ? callback : function() {};
 
-
-  _createClass(FadeToastAnimator, [{
-    key: 'show',
-    value: function show(toast, callback) {
-      callback = callback ? callback : function () {};
-
-      (0, _animit2.default)(toast, this.def).default({ opacity: 0 }, { opacity: 1 }).queue(function (done) {
+    animit(toast, this.def)
+      .default({ opacity: 0 }, { opacity: 1 })
+      .queue(done => {
         callback();
         done();
-      }).play();
-    }
+      })
+      .play();
+  }
 
-    /**
-     * @param {HTMLElement} toast
-     * @param {Function} callback
-     */
+  /**
+   * @param {HTMLElement} toast
+   * @param {Function} callback
+   */
+  hide(toast, callback) {
+    callback = callback ? callback : function() {};
 
-  }, {
-    key: 'hide',
-    value: function hide(toast, callback) {
-      callback = callback ? callback : function () {};
-
-      (0, _animit2.default)(toast, this.def).default({ opacity: 1 }, { opacity: 0 }).queue(function (done) {
+    animit(toast, this.def)
+      .default({ opacity: 1 }, { opacity: 0 })
+      .queue(done => {
         callback();
         done();
-      }).play();
-    }
-  }]);
-
-  return FadeToastAnimator;
-}(_animator2.default);
-
-exports.default = FadeToastAnimator;
+      })
+      .play();
+  }
+}

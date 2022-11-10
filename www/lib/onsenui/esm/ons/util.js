@@ -1,83 +1,49 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('./elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _styler = require('./styler');
+import onsElements from './elements.js';
+import styler from './styler.js';
+import internal from './internal/index.js';
+import autoStyle from './autostyle.js';
+import ModifierUtil from './internal/modifier-util.js';
+import animationOptionsParse from './animation-options-parser.js';
+import platform from './platform.js';
 
-var _styler2 = _interopRequireDefault(_styler);
-
-var _internal = require('./internal');
-
-var _internal2 = _interopRequireDefault(_internal);
-
-var _autostyle = require('./autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _modifierUtil = require('./internal/modifier-util');
-
-var _modifierUtil2 = _interopRequireDefault(_modifierUtil);
-
-var _animationOptionsParser = require('./animation-options-parser');
-
-var _animationOptionsParser2 = _interopRequireDefault(_animationOptionsParser);
-
-var _platform = require('./platform');
-
-var _platform2 = _interopRequireDefault(_platform);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } } /*
-                                                                                                                                                                                                    Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                    
-                                                                                                                                                                                                    Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                    you may not use this file except in compliance with the License.
-                                                                                                                                                                                                    You may obtain a copy of the License at
-                                                                                                                                                                                                    
-                                                                                                                                                                                                       http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                    
-                                                                                                                                                                                                    Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                    distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                    See the License for the specific language governing permissions and
-                                                                                                                                                                                                    limitations under the License.
-                                                                                                                                                                                                    
-                                                                                                                                                                                                    */
-
-var util = {};
-var errorPrefix = '[Onsen UI]';
+const util = {};
+const errorPrefix = '[Onsen UI]';
 
 util.globals = {
   fabOffset: 0,
-  errorPrefix: errorPrefix,
+  errorPrefix,
   supportsPassive: false
 };
 
-_platform2.default._runOnActualPlatform(function () {
-  util.globals.actualMobileOS = _platform2.default.getMobileOS();
-  util.globals.isWKWebView = _platform2.default.isWKWebView();
+platform._runOnActualPlatform(() => {
+  util.globals.actualMobileOS = platform.getMobileOS();
+  util.globals.isWKWebView = platform.isWKWebView();
 });
 
 try {
-  var opts = Object.defineProperty({}, 'passive', {
-    get: function get() {
-      util.globals.supportsPassive = true;
-    }
+  const opts = Object.defineProperty({}, 'passive', {
+    get() { util.globals.supportsPassive = true; } // eslint-disable-line getter-return
   });
   window.addEventListener('testPassive', null, opts);
   window.removeEventListener('testPassive', null, opts);
-} catch (e) {
-  null;
-}
+} catch (e) { null; }
 
 /**
  * @param {Element} el Target
@@ -86,10 +52,10 @@ try {
  * @param {Object} [opt] Event options (passive, capture...)
  * @param {Boolean} [isGD] If comes from GestureDetector. Just for testing.
  */
-util.addEventListener = function (el, name, handler, opt, isGD) {
+util.addEventListener = (el, name, handler, opt, isGD) => {
   el.addEventListener(name, handler, util.globals.supportsPassive ? opt : (opt || {}).capture);
 };
-util.removeEventListener = function (el, name, handler, opt, isGD) {
+util.removeEventListener = (el, name, handler, opt, isGD) => {
   el.removeEventListener(name, handler, util.globals.supportsPassive ? opt : (opt || {}).capture);
 };
 
@@ -97,10 +63,8 @@ util.removeEventListener = function (el, name, handler, opt, isGD) {
  * @param {String/Function} query dot class name or node name or matcher function.
  * @return {Function}
  */
-util.prepareQuery = function (query) {
-  return query instanceof Function ? query : function (element) {
-    return util.match(element, query);
-  };
+util.prepareQuery = (query) => {
+  return query instanceof Function ? query : (element) => util.match(element, query);
 };
 
 /**
@@ -108,23 +72,20 @@ util.prepareQuery = function (query) {
  * @param {String/Function} s CSS Selector.
  * @return {Boolean}
  */
-util.match = function (e, s) {
-  return (e.matches || e.webkitMatchesSelector || e.mozMatchesSelector || e.msMatchesSelector).call(e, s);
-};
+util.match = (e, s) => (e.matches || e.webkitMatchesSelector || e.mozMatchesSelector || e.msMatchesSelector).call(e, s);
 
 /**
  * @param {Element} element
  * @param {String/Function} query dot class name or node name or matcher function.
  * @return {HTMLElement/null}
  */
-util.findChild = function (element, query) {
-  var match = util.prepareQuery(query);
+util.findChild = (element, query) => {
+  const match = util.prepareQuery(query);
 
   // Caution: `element.children` is `undefined` in some environments if `element` is `svg`
-  for (var i = 0; i < element.childNodes.length; i++) {
-    var node = element.childNodes[i];
-    if (node.nodeType !== Node.ELEMENT_NODE) {
-      // process only element nodes
+  for (let i = 0; i < element.childNodes.length; i++) {
+    const node = element.childNodes[i];
+    if (node.nodeType !== Node.ELEMENT_NODE) { // process only element nodes
       continue;
     }
     if (match(node)) {
@@ -139,12 +100,12 @@ util.findChild = function (element, query) {
  * @param {String/Function} query dot class name or node name or matcher function.
  * @return {HTMLElement/null}
  */
-util.findParent = function (element, query, until) {
-  var match = util.prepareQuery(query);
+util.findParent = (element, query, until) => {
+  const match = util.prepareQuery(query);
 
-  var parent = element.parentNode;
+  let parent = element.parentNode;
   for (;;) {
-    if (!parent || parent === document || parent instanceof DocumentFragment || until && until(parent)) {
+    if (!parent || parent === document || parent instanceof DocumentFragment || (until && until(parent))) {
       return null;
     } else if (match(parent)) {
       return parent;
@@ -157,15 +118,13 @@ util.findParent = function (element, query, until) {
  * @param {Element} element
  * @return {boolean}
  */
-util.isAttached = function (element) {
-  return document.body.contains(element);
-};
+util.isAttached = element => document.body.contains(element);
 
 /**
  * @param {Element} element
  * @return {boolean}
  */
-util.hasAnyComponentAsParent = function (element) {
+util.hasAnyComponentAsParent = (element) => {
   while (element && document.documentElement !== element) {
     element = element.parentNode;
     if (element && element.nodeName.toLowerCase().match(/(ons-navigator|ons-tabbar|ons-modal)/)) {
@@ -179,29 +138,27 @@ util.hasAnyComponentAsParent = function (element) {
  * @param {Object} element
  * @return {Array}
  */
-util.getAllChildNodes = function (element) {
-  var _ref;
-
-  return (_ref = [element]).concat.apply(_ref, _toConsumableArray(Array.from(element.children).map(function (childEl) {
-    return util.getAllChildNodes(childEl);
-  })));
+util.getAllChildNodes = (element) => {
+  return [element].concat(
+    ...Array.from(element.children).map(childEl => {
+      return util.getAllChildNodes(childEl);
+    })
+  );
 };
 
 /**
  * @param {Element} element
  * @return {boolean}
  */
-util.isPageControl = function (element) {
-  return element.nodeName.match(/^ons-(navigator|splitter|tabbar|page)$/i);
-};
+util.isPageControl = element => element.nodeName.match(/^ons-(navigator|splitter|tabbar|page)$/i);
 
 /**
  * @param {Element} element
  * @param {String} action to propagate
  */
-util.propagateAction = function (element, action) {
-  for (var i = 0; i < element.childNodes.length; i++) {
-    var child = element.childNodes[i];
+util.propagateAction = (element, action) => {
+  for (let i = 0; i < element.childNodes.length; i++) {
+    const child = element.childNodes[i];
     if (child[action] instanceof Function) {
       child[action]();
     } else {
@@ -214,37 +171,28 @@ util.propagateAction = function (element, action) {
  * @param {String} string - string to be camelized
  * @return {String} Camelized string
  */
-util.camelize = function (string) {
-  return string.toLowerCase().replace(/-([a-z])/g, function (m, l) {
-    return l.toUpperCase();
-  });
-};
+util.camelize = string => string.toLowerCase().replace(/-([a-z])/g, (m, l) => l.toUpperCase());
 
 /**
  * @param {String} string - string to be hyphenated
  * @return {String} Hyphenated string
  */
-util.hyphenate = function (string) {
-  return string.replace(/([a-zA-Z])([A-Z])/g, '$1-$2').toLowerCase();
-};
+util.hyphenate = string => string.replace(/([a-zA-Z])([A-Z])/g, '$1-$2').toLowerCase();
 
 /**
  * @param {String} selector - tag and class only
  * @param {Object} style
  * @param {Element}
  */
-util.create = function () {
-  var selector = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
-  var style = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-  var classList = selector.split('.');
-  var element = document.createElement(classList.shift() || 'div');
+util.create = (selector = '', style = {}) => {
+  const classList = selector.split('.');
+  const element = document.createElement(classList.shift() || 'div');
 
   if (classList.length) {
     element.className = classList.join(' ');
   }
 
-  (0, _styler2.default)(element, style);
+  styler(element, style);
 
   return element;
 };
@@ -253,8 +201,8 @@ util.create = function () {
  * @param {String} html
  * @return {Element}
  */
-util.createElement = function (html) {
-  var wrapper = document.createElement('div');
+util.createElement = (html) => {
+  const wrapper = document.createElement('div');
 
   if (html instanceof DocumentFragment) {
     wrapper.appendChild(document.importNode(html, true));
@@ -266,7 +214,7 @@ util.createElement = function (html) {
     util.throw('HTML template must contain a single root element');
   }
 
-  var element = wrapper.children[0];
+  const element = wrapper.children[0];
   wrapper.children[0].remove();
   return element;
 };
@@ -275,8 +223,8 @@ util.createElement = function (html) {
  * @param {String} html
  * @return {HTMLFragment}
  */
-util.createFragment = function (html) {
-  var template = document.createElement('template');
+util.createFragment = (html) => {
+  const template = document.createElement('template');
   template.innerHTML = html;
   return document.importNode(template.content, true);
 };
@@ -286,16 +234,12 @@ util.createFragment = function (html) {
  * @param {...Object} src Source object(s).
  * @returns {Object} Reference to `dst`.
  */
-util.extend = function (dst) {
-  for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
-
-  for (var i = 0; i < args.length; i++) {
+util.extend = (dst, ...args) => {
+  for (let i = 0; i < args.length; i++) {
     if (args[i]) {
-      var keys = Object.keys(args[i]);
-      for (var j = 0; j < keys.length; j++) {
-        var key = keys[j];
+      const keys = Object.keys(args[i]);
+      for (let j = 0; j < keys.length; j++) {
+        const key = keys[j];
         dst[key] = args[i][key];
       }
     }
@@ -308,7 +252,7 @@ util.extend = function (dst) {
  * @param {Object} arrayLike
  * @return {Array}
  */
-util.arrayFrom = function (arrayLike) {
+util.arrayFrom = (arrayLike) => {
   return Array.prototype.slice.apply(arrayLike);
 };
 
@@ -317,12 +261,10 @@ util.arrayFrom = function (arrayLike) {
  * @param {Object} [failSafe]
  * @return {Object}
  */
-util.parseJSONObjectSafely = function (jsonString) {
-  var failSafe = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
+util.parseJSONObjectSafely = (jsonString, failSafe = {}) => {
   try {
-    var result = JSON.parse('' + jsonString);
-    if ((typeof result === 'undefined' ? 'undefined' : _typeof(result)) === 'object' && result !== null) {
+    const result = JSON.parse('' + jsonString);
+    if (typeof result === 'object' && result !== null) {
       return result;
     }
   } catch (e) {
@@ -335,12 +277,10 @@ util.parseJSONObjectSafely = function (jsonString) {
  * @param {String} path - path such as 'myApp.controllers.data.loadData'
  * @return {Any} - whatever is located at that path
  */
-util.findFromPath = function (path) {
+util.findFromPath = (path) => {
   path = path.split('.');
-  var el = window,
-      key;
-  while (key = path.shift()) {
-    // eslint-disable-line no-cond-assign
+  var el = window, key;
+  while (key = path.shift()) { // eslint-disable-line no-cond-assign
     el = el[key];
   }
   return el;
@@ -350,24 +290,22 @@ util.findFromPath = function (path) {
  * @param {HTMLElement} container - Page or page-container that implements 'topPage'
  * @return {HTMLElement|null} - Visible page element or null if not found.
  */
-util.getTopPage = function (container) {
-  return container && (container.tagName.toLowerCase() === 'ons-page' ? container : container.topPage) || null;
-};
+util.getTopPage = container => container && (container.tagName.toLowerCase() === 'ons-page' ? container : container.topPage) || null;
 
 /**
  * @param {HTMLElement} container - Element where the search begins
  * @return {HTMLElement|null} - Page element that contains the visible toolbar or null.
  */
-util.findToolbarPage = function (container) {
-  var page = util.getTopPage(container);
+util.findToolbarPage = container => {
+  const page = util.getTopPage(container);
 
   if (page) {
     if (page._canAnimateToolbar()) {
       return page;
     }
 
-    for (var i = 0; i < page._contentElement.children.length; i++) {
-      var nextPage = util.getTopPage(page._contentElement.children[i]);
+    for (let i = 0; i < page._contentElement.children.length; i++) {
+      const nextPage = util.getTopPage(page._contentElement.children[i]);
       if (nextPage && !/ons-tabbar/i.test(page._contentElement.children[i].tagName)) {
         return util.findToolbarPage(nextPage);
       }
@@ -383,17 +321,15 @@ util.findToolbarPage = function (container) {
  * @param {Object} [detail]
  * @return {CustomEvent}
  */
-util.triggerElementEvent = function (target, eventName) {
-  var detail = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+util.triggerElementEvent = (target, eventName, detail = {}) => {
 
-
-  var event = new CustomEvent(eventName, {
+  const event = new CustomEvent(eventName, {
     bubbles: true,
     cancelable: true,
     detail: detail
   });
 
-  Object.keys(detail).forEach(function (key) {
+  Object.keys(detail).forEach(key => {
     event[key] = detail[key];
   });
 
@@ -407,12 +343,12 @@ util.triggerElementEvent = function (target, eventName) {
  * @param {String} modifierName
  * @return {Boolean}
  */
-util.hasModifier = function (target, modifierName) {
+util.hasModifier = (target, modifierName) => {
   if (!target.hasAttribute('modifier')) {
     return false;
   }
 
-  return RegExp('(^|\\s+)' + modifierName + '($|\\s+)', 'i').test(target.getAttribute('modifier'));
+  return RegExp(`(^|\\s+)${modifierName}($|\\s+)`, 'i').test(target.getAttribute('modifier'));
 };
 
 /**
@@ -422,11 +358,9 @@ util.hasModifier = function (target, modifierName) {
  * @param {Object} options.forceAutoStyle Ignores platform limitation.
  * @return {Boolean} Whether it was added or not.
  */
-util.addModifier = function (target, modifierName) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
+util.addModifier = (target, modifierName, options = {}) => {
   if (options.autoStyle) {
-    modifierName = _autostyle2.default.mapModifier(modifierName, target, options.forceAutoStyle);
+    modifierName = autoStyle.mapModifier(modifierName, target, options.forceAutoStyle);
   }
 
   if (util.hasModifier(target, modifierName)) {
@@ -444,20 +378,16 @@ util.addModifier = function (target, modifierName) {
  * @param {Object} options.forceAutoStyle Ignores platform limitation.
  * @return {Boolean} Whether it was found or not.
  */
-util.removeModifier = function (target, modifierName) {
-  var options = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
+util.removeModifier = (target, modifierName, options = {}) => {
   if (options.autoStyle) {
-    modifierName = _autostyle2.default.mapModifier(modifierName, target, options.forceAutoStyle);
+    modifierName = autoStyle.mapModifier(modifierName, target, options.forceAutoStyle);
   }
 
   if (!target.getAttribute('modifier') || !util.hasModifier(target, modifierName)) {
     return false;
   }
 
-  var newModifiers = target.getAttribute('modifier').split(/\s+/).filter(function (m) {
-    return m && m !== modifierName;
-  });
+  const newModifiers = target.getAttribute('modifier').split(/\s+/).filter(m => m && m !== modifierName);
   newModifiers.length ? target.setAttribute('modifier', newModifiers.join(' ')) : target.removeAttribute('modifier');
   return true;
 };
@@ -470,12 +400,12 @@ util.removeModifier = function (target, modifierName) {
  * @param {Boolean} options.forceAutoStyle Ignores platform limitation.
  * @return {Boolean} Whether it was found or not.
  */
-util.toggleModifier = function () {
-  var options = arguments.length > 2 ? arguments.length <= 2 ? undefined : arguments[2] : {};
-  var force = typeof options === 'boolean' ? options : options.force;
+util.toggleModifier = (...args) => {
+  const options = args.length > 2 ? args[2] : {};
+  const force = typeof options === 'boolean' ? options : options.force;
 
-  var toggle = typeof force === 'boolean' ? force : !util.hasModifier.apply(util, arguments);
-  toggle ? util.addModifier.apply(util, arguments) : util.removeModifier.apply(util, arguments);
+  const toggle = typeof force === 'boolean' ? force : !util.hasModifier(...args);
+  toggle ? util.addModifier(...args) : util.removeModifier(...args);
 };
 
 /**
@@ -483,15 +413,13 @@ util.toggleModifier = function () {
  * @param {String} defaultClass
  * @param {Object} scheme
  */
-util.restoreClass = function (el, defaultClass, scheme) {
-  defaultClass.split(/\s+/).forEach(function (c) {
-    return c !== '' && !el.classList.contains(c) && el.classList.add(c);
-  });
-  el.hasAttribute('modifier') && _modifierUtil2.default.refresh(el, scheme);
+util.restoreClass = (el, defaultClass, scheme) => {
+  defaultClass.split(/\s+/).forEach(c => c !== '' && !el.classList.contains(c) && el.classList.add(c));
+  el.hasAttribute('modifier') && ModifierUtil.refresh(el, scheme);
 };
 
 // TODO: FIX
-util.updateParentPosition = function (el) {
+util.updateParentPosition = (el) => {
   if (!el._parentUpdated && el.parentElement) {
     if (window.getComputedStyle(el.parentElement).getPropertyValue('position') === 'static') {
       el.parentElement.style.position = 'relative';
@@ -500,7 +428,7 @@ util.updateParentPosition = function (el) {
   }
 };
 
-util.toggleAttribute = function (element, name, value) {
+util.toggleAttribute = (element, name, value) => {
   if (value) {
     element.setAttribute(name, typeof value === 'boolean' ? '' : value);
   } else {
@@ -508,39 +436,32 @@ util.toggleAttribute = function (element, name, value) {
   }
 };
 
-util.bindListeners = function (element, listenerNames) {
-  listenerNames.forEach(function (name) {
-    var boundName = name.replace(/^_[a-z]/, '_bound' + name[1].toUpperCase());
+util.bindListeners = (element, listenerNames) => {
+  listenerNames.forEach(name => {
+    const boundName = name.replace(/^_[a-z]/, '_bound' + name[1].toUpperCase());
     element[boundName] = element[boundName] || element[name].bind(element);
   });
 };
 
-util.each = function (obj, f) {
-  return Object.keys(obj).forEach(function (key) {
-    return f(key, obj[key]);
-  });
-};
+util.each = (obj, f) => Object.keys(obj).forEach(key => f(key, obj[key]));
+
 
 /**
  * @param {Element} target
  * @param {boolean} hasRipple
  * @param {Object} attrs
  */
-util.updateRipple = function (target, hasRipple) {
-  var attrs = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
-
+util.updateRipple = (target, hasRipple, attrs = {}) => {
   if (hasRipple === undefined) {
     hasRipple = target.hasAttribute('ripple');
   }
 
-  var rippleElement = util.findChild(target, 'ons-ripple');
+  const rippleElement = util.findChild(target, 'ons-ripple');
 
   if (hasRipple) {
     if (!rippleElement) {
-      var element = document.createElement('ons-ripple');
-      Object.keys(attrs).forEach(function (key) {
-        return element.setAttribute(key, attrs[key]);
-      });
+      const element = document.createElement('ons-ripple');
+      Object.keys(attrs).forEach(key => element.setAttribute(key, attrs[key]));
       target.insertBefore(element, target.firstChild);
     }
   } else if (rippleElement) {
@@ -552,21 +473,23 @@ util.updateRipple = function (target, hasRipple) {
  * @param {String}
  * @return {Object}
  */
-util.animationOptionsParse = _animationOptionsParser2.default;
+util.animationOptionsParse = animationOptionsParse;
 
 /**
  * @param {*} value
  */
-util.isInteger = function (value) {
-  return typeof value === 'number' && isFinite(value) && Math.floor(value) === value;
+util.isInteger = (value) => {
+  return typeof value === 'number' &&
+    isFinite(value) &&
+    Math.floor(value) === value;
 };
 
 /**
  * @return {Object} Deferred promise.
  */
-util.defer = function () {
-  var deferred = {};
-  deferred.promise = new Promise(function (resolve, reject) {
+util.defer = () => {
+  const deferred = {};
+  deferred.promise = new Promise((resolve, reject) => {
     deferred.resolve = resolve;
     deferred.reject = reject;
   });
@@ -578,47 +501,32 @@ util.defer = function () {
  *
  * @param {*} arguments to console.warn
  */
-util.warn = function () {
-  for (var _len2 = arguments.length, args = Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-    args[_key2] = arguments[_key2];
-  }
-
-  if (!_internal2.default.config.warningsDisabled) {
-    var _console;
-
-    (_console = console).warn.apply(_console, [errorPrefix].concat(args));
+util.warn = (...args) => {
+  if (!internal.config.warningsDisabled) {
+    console.warn(errorPrefix, ...args);
   }
 };
 
-util.throw = function (message) {
-  throw new Error(errorPrefix + ' ' + message);
+util.throw = (message) => {
+  throw new Error(`${errorPrefix} ${message}`);
 };
 
-util.throwAbstract = function () {
-  return util.throw('Cannot instantiate abstract class');
-};
-util.throwMember = function () {
-  return util.throw('Class member must be implemented');
-};
-util.throwPageLoader = function () {
-  return util.throw('First parameter should be an instance of PageLoader');
-};
-util.throwAnimator = function (el) {
-  return util.throw('"Animator" param must inherit ' + el + 'Animator');
-};
+util.throwAbstract = () => util.throw('Cannot instantiate abstract class');
+util.throwMember = () => util.throw('Class member must be implemented');
+util.throwPageLoader = () => util.throw('First parameter should be an instance of PageLoader');
+util.throwAnimator = (el) => util.throw(`"Animator" param must inherit ${el}Animator`);
 
-var prevent = function prevent(e) {
-  return e.cancelable && e.preventDefault();
-};
+
+const prevent = e => e.cancelable && e.preventDefault();
 
 /**
  * Prevent scrolling while draging horizontally on iOS.
  *
  * @param {gd} GestureDetector instance
  */
-util.iosPreventScroll = function (gd) {
+util.iosPreventScroll = gd => {
   if (util.globals.actualMobileOS === 'ios') {
-    var clean = function clean(e) {
+    const clean = (e) => {
       gd.off('touchmove', prevent);
       gd.off('dragend', clean);
     };
@@ -634,8 +542,7 @@ util.iosPreventScroll = function (gd) {
  * @param {el} HTMLElement that prevents the events
  * @param {add} Boolean Add or remove event listeners
  */
-util.iosPageScrollFix = function (add) {
-  // Full fix - May cause issues with UIWebView's momentum scroll
+util.iosPageScrollFix = (add) => { // Full fix - May cause issues with UIWebView's momentum scroll
   if (util.globals.actualMobileOS === 'ios') {
     document.body.classList.toggle('ons-ios-scroll', add); // Allows custom and localized fixes (#2274)
     document.body.classList.toggle('ons-ios-scroll-fix', add);
@@ -647,20 +554,103 @@ util.iosPageScrollFix = function (add) {
  *
  * @param {event}
  */
-util.isValidGesture = function (event) {
-  return event.gesture !== undefined && (event.gesture.distance <= 15 || event.gesture.deltaTime <= 100);
-};
+util.isValidGesture = event => event.gesture !== undefined && (event.gesture.distance <= 15 || event.gesture.deltaTime <= 100);
 
-util.checkMissingImport = function () {
-  for (var _len3 = arguments.length, elementNames = Array(_len3), _key3 = 0; _key3 < _len3; _key3++) {
-    elementNames[_key3] = arguments[_key3];
-  }
-
-  elementNames.forEach(function (name) {
-    if (!_elements2.default[name]) {
-      util.throw('Ons' + name + ' is required but was not imported (Custom Elements)');
+util.checkMissingImport = (...elementNames) => {
+  elementNames.forEach(name => {
+    if (!onsElements[name]) {
+      util.throw(`Ons${name} is required but was not imported (Custom Elements)`);
     }
   });
 };
 
-exports.default = util;
+/**
+ * Defines a boolean property that reflects an attribute of the same name for a
+ * given list of attributes.
+ */
+util.defineBooleanProperties = (object, attributeList) => {
+  attributeList.forEach(attributeName => {
+    const propertyName = util.camelize(attributeName);
+    Object.defineProperty(object.prototype, propertyName, {
+      get() {
+        return this.hasAttribute(attributeName);
+      },
+      set(value) {
+        if (value) {
+          this.setAttribute(attributeName, '');
+        } else {
+          this.removeAttribute(attributeName);
+        }
+      },
+      configurable: true
+    });
+  });
+};
+
+/**
+ * Defines a string property that reflects an attribute of the same name for a
+ * given list of attributes.
+ */
+util.defineStringProperties = (object, attributeList) => {
+  attributeList.forEach(attributeName => {
+    const propertyName = util.camelize(attributeName);
+    Object.defineProperty(object.prototype, propertyName, {
+      get() {
+        return this.getAttribute(attributeName);
+      },
+      set(value) {
+        if (value === null || value === undefined) {
+          this.removeAttribute(attributeName);
+        } else {
+          this.setAttribute(attributeName, value);
+        }
+      },
+      configurable: true
+    });
+  });
+};
+/**
+ * Makes a property for a listener e.g. onClick.
+ *
+ * Returns `onConnected` function which should be called in the element's
+ * connectedCallback, and `onDisconnected` function which should be called in
+ * the element's disconnectedCallback.
+ */
+util.defineListenerProperty = (element, eventName) => {
+  const camelized = util.camelize(eventName);
+  const propertyName = 'on' + camelized.charAt(0).toUpperCase() + camelized.slice(1);
+
+  let handler;
+  Object.defineProperty(element, propertyName, {
+    get() {
+      return handler;
+    },
+    set(newHandler) {
+      if (element.isConnected) {
+        if (handler) {
+          element.removeEventListener(eventName, handler);
+        }
+        element.addEventListener(eventName, newHandler);
+      }
+
+      handler = newHandler;
+    },
+    configurable: true
+  });
+
+  return {
+    onConnected() {
+      if (element[propertyName]) {
+        element.addEventListener(eventName, element[propertyName]);
+      }
+    },
+
+    onDisconnected() {
+      if (element[propertyName]) {
+        element.removeEventListener(eventName, element[propertyName]);
+      }
+    }
+  };
+};
+
+export default util;

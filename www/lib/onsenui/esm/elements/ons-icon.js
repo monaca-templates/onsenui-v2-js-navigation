@@ -1,55 +1,27 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _elements = require('../ons/elements');
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements2 = _interopRequireDefault(_elements);
+*/
 
-var _util = require('../ons/util');
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import autoStyle from '../ons/autostyle.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
 
-var _util2 = _interopRequireDefault(_util);
-
-var _autostyle = require('../ons/autostyle');
-
-var _autostyle2 = _interopRequireDefault(_autostyle);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
-
-var autoPrefix = 'fa'; // FIXME: To be removed in v3
+let autoPrefix = 'fa'; // FIXME: To be removed in v3
 
 /**
  * @element ons-icon
@@ -80,9 +52,7 @@ var autoPrefix = 'fa'; // FIXME: To be removed in v3
  *   Car
  * </ons-button>
  */
-
-var IconElement = function (_BaseElement) {
-  _inherits(IconElement, _BaseElement);
+export default class IconElement extends BaseElement {
 
   /**
    * @attribute icon
@@ -142,150 +112,129 @@ var IconElement = function (_BaseElement) {
    */
 
   /**
+   * @property fixedWidth
+   * @type {Boolean}
+   * @default false
+   * @description
+   *  [en]When used in a list, you want the icons to have the same width so that they align vertically by defining this attribute.[/en]
+   *  [ja][/ja]
+   */
+
+  /**
    * @attribute spin
    * @description
    *   [en]Specify whether the icon should be spinning.[/en]
    *   [ja]アイコンを回転するかどうかを指定します。[/ja]
    */
 
-  function IconElement() {
-    _classCallCheck(this, IconElement);
+  /**
+   * @property spin
+   * @type {Boolean}
+   * @description
+   *   [en]Specify whether the icon should be spinning.[/en]
+   *   [ja]アイコンを回転するかどうかを指定します。[/ja]
+   */
 
-    var _this = _possibleConstructorReturn(this, (IconElement.__proto__ || Object.getPrototypeOf(IconElement)).call(this));
+  constructor() {
+    super();
 
-    (0, _contentReady2.default)(_this, function () {
-      _this._compile();
+    contentReady(this, () => {
+      this._compile();
     });
-    return _this;
   }
 
-  _createClass(IconElement, [{
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      this._cleanClassAttribute(name === 'icon' ? last : this.getAttribute('icon'), name === 'modifier' ? last : undefined);
-      this._update();
-    }
-  }, {
-    key: '_compile',
-    value: function _compile() {
-      _autostyle2.default.prepare(this);
-      this._update();
-    }
-  }, {
-    key: '_update',
-    value: function _update() {
-      var _this2 = this;
+  static get observedAttributes() {
+    return ['icon', 'size', 'modifier', 'class'];
+  }
 
-      var _buildClassAndStyle2 = this._buildClassAndStyle(this._parseAttr('icon'), this._parseAttr('size')),
-          classList = _buildClassAndStyle2.classList,
-          style = _buildClassAndStyle2.style;
+  attributeChangedCallback(name, last, current) {
+    this._cleanClassAttribute(name === 'icon' ? last : this.getAttribute('icon'), name === 'modifier' ? last : undefined);
+    this._update();
+  }
 
-      _util2.default.extend(this.style, style);
+  _compile() {
+    autoStyle.prepare(this);
+    this._update();
+  }
 
-      classList.forEach(function (className) {
-        return _this2.classList.add(className);
-      });
-    }
-  }, {
-    key: '_parseAttr',
-    value: function _parseAttr(attrName) {
-      var modifier = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.getAttribute('modifier') || '';
+  _update() {
+    const {classList, style} = this._buildClassAndStyle(this._parseAttr('icon'), this._parseAttr('size'));
+    util.extend(this.style, style);
 
-      var attr = this.getAttribute(attrName) || attrName || '';
-      var parts = attr.split(/\s*,\s*/);
-      var def = parts[0];
-      var md = parts[1];
-      md = (md || '').split(/\s*:\s*/);
+    classList.forEach(className => this.classList.add(className));
+  }
 
-      return (modifier && RegExp('(^|\\s+)' + md[0] + '($|\\s+)', 'i').test(modifier) ? md[1] : def) || '';
-    }
+  _parseAttr(attrName, modifier = this.getAttribute('modifier') || '') {
+    const attr = this.getAttribute(attrName) || attrName || '';
+    const parts = attr.split(/\s*,\s*/);
+    const def = parts[0];
+    let md = parts[1];
+    md = (md || '').split(/\s*:\s*/);
 
-    /**
-     * Remove unneeded class value.
-     */
+    return (modifier && (RegExp(`(^|\\s+)${md[0]}($|\\s+)`, 'i').test(modifier)) ? md[1] : def) || '';
+  }
 
-  }, {
-    key: '_cleanClassAttribute',
-    value: function _cleanClassAttribute(lastIcon, lastModifier) {
-      var _this3 = this;
+  /**
+   * Remove unneeded class value.
+   */
+  _cleanClassAttribute(lastIcon, lastModifier) {
+    const { className, prefix } = this._prefixIcon(this._parseAttr(lastIcon, lastModifier));
+    const customPrefixRE = className !== prefix ? `|${prefix}$|${prefix}-` : `|${className}$` || '';
+    const re = new RegExp(`^(fa$|fa-|ion-|zmdi$|zmdi-|ons-icon--${customPrefixRE})`);
 
-      var _prefixIcon2 = this._prefixIcon(this._parseAttr(lastIcon, lastModifier)),
-          className = _prefixIcon2.className,
-          prefix = _prefixIcon2.prefix;
+    util.arrayFrom(this.classList)
+      .filter(className => re.test(className))
+      .forEach(className => this.classList.remove(className));
+  }
 
-      var customPrefixRE = className !== prefix ? '|' + prefix + '$|' + prefix + '-' : '|' + className + '$' || '';
-      var re = new RegExp('^(fa$|fa-|ion-|zmdi$|zmdi-|ons-icon--' + customPrefixRE + ')');
+  _prefixIcon(iconName) {
+    const className = autoPrefix + (autoPrefix ? '-' : '') + iconName;
+    return { className, prefix: className.split('-')[0] };
+  }
 
-      _util2.default.arrayFrom(this.classList).filter(function (className) {
-        return re.test(className);
-      }).forEach(function (className) {
-        return _this3.classList.remove(className);
-      });
-    }
-  }, {
-    key: '_prefixIcon',
-    value: function _prefixIcon(iconName) {
-      var className = autoPrefix + (autoPrefix ? '-' : '') + iconName;
-      return { className: className, prefix: className.split('-')[0] };
-    }
-  }, {
-    key: '_buildClassAndStyle',
-    value: function _buildClassAndStyle(iconName, size) {
-      var classList = ['ons-icon'];
-      var style = {};
+  _buildClassAndStyle(iconName, size) {
+    const classList = ['ons-icon'];
+    const style = {};
 
-      // Icon
-      if (iconName.indexOf('ion-') === 0) {
-        classList.push(iconName);
-        classList.push('ons-icon--ion');
-      } else if (iconName.indexOf('fa-') === 0) {
-        classList.push(iconName);
-        // default icon style to Font Awesome Solid if icon style is not specified already
-        if (!(this.classList.contains('far') || this.classList.contains('fab') || this.classList.contains('fal'))) {
-          classList.push('fa');
-        }
-      } else if (iconName.indexOf('md-') === 0) {
-        classList.push('zmdi');
-        classList.push('zmdi-' + iconName.split(/-(.+)?/)[1]);
-      } else {
-        var _prefixIcon3 = this._prefixIcon(iconName),
-            className = _prefixIcon3.className,
-            prefix = _prefixIcon3.prefix;
-
-        prefix && classList.push(prefix);
-        className && classList.push(className);
+    // Icon
+    if (iconName.indexOf('ion-') === 0) {
+      classList.push(iconName);
+      classList.push('ons-icon--ion');
+    } else if (iconName.indexOf('fa-') === 0) {
+      classList.push(iconName);
+      // default icon style to Font Awesome Solid if icon style is not specified already
+      if (!(this.classList.contains('far') || this.classList.contains('fab') || this.classList.contains('fal'))) {
+        classList.push('fa');
       }
-
-      // Size
-      if (size.match(/^[1-5]x|lg$/)) {
-        classList.push('ons-icon--' + size);
-        this.style.removeProperty('font-size');
-      } else {
-        style.fontSize = size;
-      }
-
-      return {
-        classList: classList,
-        style: style
-      };
+    } else if (iconName.indexOf('md-') === 0)  {
+      classList.push('zmdi');
+      classList.push('zmdi-' + iconName.split(/-(.+)?/)[1]);
+    } else {
+      const { className, prefix } = this._prefixIcon(iconName);
+      prefix && classList.push(prefix);
+      className && classList.push(className);
     }
-  }], [{
-    key: 'setAutoPrefix',
-    value: function setAutoPrefix(prefix) {
-      autoPrefix = prefix ? typeof prefix === 'string' && prefix || 'fa' : '';
+
+    // Size
+    if (size.match(/^[1-5]x|lg$/)) {
+      classList.push('ons-icon--' + size);
+      this.style.removeProperty('font-size');
+    } else {
+      style.fontSize = size;
     }
-  }, {
-    key: 'observedAttributes',
-    get: function get() {
-      return ['icon', 'size', 'modifier', 'class'];
-    }
-  }]);
 
-  return IconElement;
-}(_baseElement2.default);
+    return {
+      classList: classList,
+      style: style
+    };
+  }
 
-exports.default = IconElement;
+  static setAutoPrefix(prefix) {
+    autoPrefix = prefix ? (typeof prefix === 'string' && prefix || 'fa') : '';
+  }
+}
 
+util.defineBooleanProperties(IconElement, ['fixed-width', 'spin']);
 
-_elements2.default.Icon = IconElement;
+onsElements.Icon = IconElement;
 customElements.define('ons-icon', IconElement);

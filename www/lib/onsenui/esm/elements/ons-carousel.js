@@ -1,55 +1,25 @@
-'use strict';
+/*
+Copyright 2013-2015 ASIAL CORPORATION
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+   http://www.apache.org/licenses/LICENSE-2.0
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 
-var _elements = require('../ons/elements');
+*/
 
-var _elements2 = _interopRequireDefault(_elements);
-
-var _util = require('../ons/util');
-
-var _util2 = _interopRequireDefault(_util);
-
-var _baseElement = require('./base/base-element');
-
-var _baseElement2 = _interopRequireDefault(_baseElement);
-
-var _contentReady = require('../ons/content-ready');
-
-var _contentReady2 = _interopRequireDefault(_contentReady);
-
-var _swiper = require('../ons/internal/swiper');
-
-var _swiper2 = _interopRequireDefault(_swiper);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Copyright 2013-2015 ASIAL CORPORATION
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Licensed under the Apache License, Version 2.0 (the "License");
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               you may not use this file except in compliance with the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               You may obtain a copy of the License at
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  http://www.apache.org/licenses/LICENSE-2.0
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               Unless required by applicable law or agreed to in writing, software
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               distributed under the License is distributed on an "AS IS" BASIS,
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               See the License for the specific language governing permissions and
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               limitations under the License.
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               */
+import onsElements from '../ons/elements.js';
+import util from '../ons/util.js';
+import BaseElement from './base/base-element.js';
+import contentReady from '../ons/content-ready.js';
+import Swiper from '../ons/internal/swiper.js';
 
 /**
  * @element ons-carousel
@@ -76,14 +46,32 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  *   </ons-carousel-item>
  * </ons-carousel>
  */
-var CarouselElement = function (_BaseElement) {
-  _inherits(CarouselElement, _BaseElement);
+export default class CarouselElement extends BaseElement {
 
   /**
    * @event postchange
    * @description
    *   [en]Fired just after the current carousel item has changed.[/en]
    *   [ja]現在表示しているカルーセルの要素が変わった時に発火します。[/ja]
+   * @param {Object} event
+   *   [en]Event object.[/en]
+   *   [ja]イベントオブジェクトです。[/ja]
+   * @param {Object} event.carousel
+   *   [en]Carousel object.[/en]
+   *   [ja]イベントが発火したCarouselオブジェクトです。[/ja]
+   * @param {Number} event.activeIndex
+   *   [en]Current active index.[/en]
+   *   [ja]現在アクティブになっている要素のインデックス。[/ja]
+   * @param {Number} event.lastActiveIndex
+   *   [en]Previous active index.[/en]
+   *   [ja]以前アクティブだった要素のインデックス。[/ja]
+   */
+
+  /**
+   * @event prechange
+   * @description
+   *   [en]Fired just before the current carousel item changes.[/en]
+   *   [ja][/ja]
    * @param {Object} event
    *   [en]Event object.[/en]
    *   [ja]イベントオブジェクトです。[/ja]
@@ -134,6 +122,22 @@ var CarouselElement = function (_BaseElement) {
    */
 
   /**
+   * @event swipe
+   * @description
+   *   [en]Fires when the carousel swipes.[/en]
+   *   [ja][/ja]
+   * @param {Object} event
+   *   [en]Event object.[/en]
+   *   [ja]イベントオブジェクト。[/ja]
+   * @param {Number} event.index
+   *   [en]Current index.[/en]
+   *   [ja]現在アクティブになっているons-carouselのインデックスを返します。[/ja]
+   * @param {Object} event.options
+   *   [en]Animation options object.[/en]
+   *   [ja][/ja]
+   */
+
+  /**
    * @attribute direction
    * @type {String}
    * @description
@@ -145,6 +149,14 @@ var CarouselElement = function (_BaseElement) {
    * @attribute fullscreen
    * @description
    *   [en]If this attribute is set the carousel will cover the whole screen.[/en]
+   *   [ja]この属性があると、absoluteポジションを使ってカルーセルが自動的に画面いっぱいに広がります。[/ja]
+   */
+
+  /**
+   * @property fullscreen
+   * @type {Boolean}
+   * @description
+   *   [en]If this property is set the carousel will cover the whole screen.[/en]
    *   [ja]この属性があると、absoluteポジションを使ってカルーセルが自動的に画面いっぱいに広がります。[/ja]
    */
 
@@ -213,7 +225,7 @@ var CarouselElement = function (_BaseElement) {
    * @default 0
    * @type {Number}
    * @description
-   *   [en]Specify the index of the ons-carousel-item to show initially. Default is 0.[/en]
+   *   [en]Specify the index of the ons-carousel-item to show initially. Default is 0. If active-index is set, initial-index is ignored.[/en]
    *   [ja]最初に表示するons-carousel-itemを0始まりのインデックスで指定します。デフォルト値は 0 です。[/ja]
    */
 
@@ -221,6 +233,14 @@ var CarouselElement = function (_BaseElement) {
    * @attribute auto-refresh
    * @description
    *   [en]When this attribute is set the carousel will automatically refresh when the number of child nodes change.[/en]
+   *   [ja]この属性がある時、子要素の数が変わるとカルーセルは自動的に更新されるようになります。[/ja]
+   */
+
+  /**
+   * @property autoRefresh
+   * @type {Boolean}
+   * @description
+   *   [en]When this property is set the carousel will automatically refresh when the number of child nodes change.[/en]
    *   [ja]この属性がある時、子要素の数が変わるとカルーセルは自動的に更新されるようになります。[/ja]
    */
 
@@ -240,509 +260,443 @@ var CarouselElement = function (_BaseElement) {
    *   [ja]アニメーション時のduration, timing, delayをオブジェクトリテラルで指定します。例：{duration: 0.2, delay: 1, timing: 'ease-in'}[/ja]
    */
 
-  function CarouselElement() {
-    _classCallCheck(this, CarouselElement);
+  constructor() {
+    super();
 
-    var _this = _possibleConstructorReturn(this, (CarouselElement.__proto__ || Object.getPrototypeOf(CarouselElement)).call(this));
+    const {onConnected, onDisconnected} = util.defineListenerProperty(this, 'swipe');
+    this._connectOnSwipe = onConnected;
+    this._disconnectOnSwipe = onDisconnected;
 
-    (0, _contentReady2.default)(_this, function () {
-      return _this._compile();
-    });
-    return _this;
+    contentReady(this, () => this._compile());
   }
 
-  _createClass(CarouselElement, [{
-    key: '_compile',
-    value: function _compile() {
-      var target = this.children[0] && this.children[0].tagName !== 'ONS-CAROUSEL-ITEM' && this.children[0] || document.createElement('div');
-      if (!target.parentNode) {
-        while (this.firstChild) {
-          target.appendChild(this.firstChild);
-        }
-        this.appendChild(target);
+  _compile() {
+    const target = this.children[0] && this.children[0].tagName !== 'ONS-CAROUSEL-ITEM' && this.children[0] || document.createElement('div');
+    if (!target.parentNode) {
+      while (this.firstChild) {
+        target.appendChild(this.firstChild);
       }
-
-      !this.children[1] && this.appendChild(document.createElement('div'));
-
-      this.appendChild = this.appendChild.bind(target);
-      this.insertBefore = this.insertBefore.bind(target);
+      this.appendChild(target);
     }
-  }, {
-    key: 'connectedCallback',
-    value: function connectedCallback() {
-      var _this2 = this;
 
-      if (!this._swiper) {
-        this._swiper = new _swiper2.default({
-          getElement: function getElement() {
-            return _this2;
-          },
-          getInitialIndex: function getInitialIndex() {
-            return _this2.getAttribute('initial-index');
-          },
-          getAutoScrollRatio: function getAutoScrollRatio() {
-            return _this2.autoScrollRatio;
-          },
-          isVertical: function isVertical() {
-            return _this2.vertical;
-          },
-          isOverScrollable: function isOverScrollable() {
-            return _this2.overscrollable;
-          },
-          isCentered: function isCentered() {
-            return _this2.centered;
-          },
-          isAutoScrollable: function isAutoScrollable() {
-            return _this2.autoScroll;
-          },
-          itemSize: this.itemSize,
-          overScrollHook: this._onOverScroll.bind(this),
-          preChangeHook: this._onChange.bind(this, 'prechange'),
-          postChangeHook: this._onChange.bind(this, 'postchange'),
-          refreshHook: this._onRefresh.bind(this),
-          scrollHook: function scrollHook() {
-            return _this2._onSwipe && _this2._onSwipe.apply(_this2, arguments);
-          }
-        });
+    !this.children[1] && this.appendChild(document.createElement('div'));
 
-        (0, _contentReady2.default)(this, function () {
-          return _this2._swiper.init({
-            swipeable: _this2.hasAttribute('swipeable'),
-            autoRefresh: _this2.hasAttribute('auto-refresh')
-          });
-        });
-      }
-    }
-  }, {
-    key: 'disconnectedCallback',
-    value: function disconnectedCallback() {
-      if (this._swiper && this._swiper.initialized) {
-        this._swiper.dispose();
-        this._swiper = null;
-      }
-    }
-  }, {
-    key: 'attributeChangedCallback',
-    value: function attributeChangedCallback(name, last, current) {
-      if (!this._swiper) {
-        return;
-      }
+    this.appendChild = this.appendChild.bind(target);
+    this.insertBefore = this.insertBefore.bind(target);
+  }
 
-      switch (name) {
-        case 'swipeable':
-          this._swiper.updateSwipeable(this.hasAttribute('swipeable'));
-          break;
-        case 'auto-refresh':
-          this._swiper.updateAutoRefresh(this.hasAttribute('auto-refresh'));
-          break;
-        case 'item-height':
-          this.vertical && this._swiper.updateItemSize(this.itemSize);
-          break;
-        case 'item-width':
-          this.vertical || this._swiper.updateItemSize(this.itemSize);
-          break;
-        case 'direction':
-          this._swiper.refresh();
-      }
-    }
-  }, {
-    key: '_show',
-    value: function _show() {
-      this._swiper.show();
-    }
-  }, {
-    key: '_hide',
-    value: function _hide() {
-      this._swiper.hide();
-    }
-  }, {
-    key: '_onOverScroll',
-    value: function _onOverScroll(_ref) {
-      var direction = _ref.direction,
-          killOverScroll = _ref.killOverScroll;
-
-      var waitForAction = false;
-      _util2.default.triggerElementEvent(this, 'overscroll', {
-        carousel: this,
-        activeIndex: this.getActiveIndex(),
-        direction: direction,
-        waitToReturn: function waitToReturn(promise) {
-          waitForAction = true;
-          promise.then(killOverScroll);
-        }
+  connectedCallback() {
+    if (!this._swiper) {
+      this._swiper = new Swiper({
+        getElement: () => this,
+        getInitialIndex: () => this.getAttribute('active-index') || this.getAttribute('initial-index'),
+        getAutoScrollRatio: () => this.autoScrollRatio,
+        isVertical: () => this.vertical,
+        isOverScrollable: () => this.overscrollable,
+        isCentered: () => this.centered,
+        isAutoScrollable: () => this.autoScroll,
+        itemSize: this.itemSize,
+        overScrollHook: this._onOverScroll.bind(this),
+        preChangeHook: this._onPreChange.bind(this),
+        postChangeHook: this._onPostChange.bind(this),
+        refreshHook: this._onRefresh.bind(this),
+        scrollHook: (index, options) => util.triggerElementEvent(this, 'swipe', { index, options })
       });
 
-      return waitForAction;
-    }
-  }, {
-    key: '_onChange',
-    value: function _onChange(eventName, _ref2) {
-      var activeIndex = _ref2.activeIndex,
-          lastActiveIndex = _ref2.lastActiveIndex;
-
-      _util2.default.triggerElementEvent(this, eventName, { carousel: this, activeIndex: activeIndex, lastActiveIndex: lastActiveIndex });
-    }
-  }, {
-    key: '_onRefresh',
-    value: function _onRefresh() {
-      _util2.default.triggerElementEvent(this, 'refresh', { carousel: this });
+      contentReady(this, () => this._swiper.init({
+        swipeable: this.hasAttribute('swipeable'),
+        autoRefresh: this.hasAttribute('auto-refresh')
+      }));
     }
 
-    /**
-     * @method setActiveIndex
-     * @signature setActiveIndex(index, [options])
-     * @param {Number} index
-     *   [en]The index that the carousel should be set to.[/en]
-     *   [ja]carousel要素のインデックスを指定します。[/ja]
-     * @param {Object} [options]
-     *   [en]Parameter object.[/en]
-     *   [ja][/ja]
-     * @param {Function} [options.callback]
-     *   [en]A function that will be called after the animation is finished.[/en]
-     *   [ja][/ja]
-     * @param {String} [options.animation]
-     *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
-     *   [ja][/ja]
-     * @param {Object} [options.animationOptions]
-     *   [en]An object that can be used to specify duration, delay and timing function of the animation.[/en]
-     *   [ja][/ja]
-     * @description
-     *   [en]Specify the index of the `<ons-carousel-item>` to show.[/en]
-     *   [ja]表示するons-carousel-itemをindexで指定します。[/ja]
-     * @return {Promise}
-     *   [en]Resolves to the carousel element.[/en]
-     *   [ja][/ja]
-     */
+    this._connectOnSwipe();
+  }
 
-  }, {
-    key: 'setActiveIndex',
-    value: function setActiveIndex(index) {
-      var _this3 = this;
-
-      var options = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-
-      options = _extends({
-        animation: this.getAttribute('animation'),
-        animationOptions: this.hasAttribute('animation-options') ? _util2.default.animationOptionsParse(this.getAttribute('animation-options')) : { duration: .3, timing: 'cubic-bezier(.4, .7, .5, 1)' }
-      }, options);
-
-      return this._swiper.setActiveIndex(index, options).then(function () {
-        options.callback instanceof Function && options.callback(_this3);
-        return Promise.resolve(_this3);
-      });
+  disconnectedCallback() {
+    if (this._swiper && this._swiper.initialized) {
+      this._swiper.dispose();
+      this._swiper = null;
     }
 
-    /**
-     * @method getActiveIndex
-     * @signature getActiveIndex()
-     * @return {Number}
-     *   [en]The current carousel item index.[/en]
-     *   [ja]現在表示しているカルーセル要素のインデックスが返されます。[/ja]
-     * @description
-     *   [en]Returns the index of the currently visible `<ons-carousel-item>`.[/en]
-     *   [ja]現在表示されているons-carousel-item要素のインデックスを返します。[/ja]
-     */
+    this._disconnectOnSwipe();
+  }
 
-  }, {
-    key: 'getActiveIndex',
-    value: function getActiveIndex() {
-      return this._swiper.getActiveIndex();
+  static get observedAttributes() {
+    return ['swipeable', 'auto-refresh', 'direction', 'item-height', 'item-width', 'active-index'];
+  }
+
+  attributeChangedCallback(name, last, current) {
+    if (!this._swiper) {
+      return;
     }
 
-    /**
-     * @method next
-     * @signature next([options])
-     * @param {Object} [options]
-     *   [en]Parameter object.[/en]
-     *   [ja][/ja]
-     * @param {Function} [options.callback]
-     *   [en]A function that will be executed after the animation has finished.[/en]
-     *   [ja][/ja]
-     * @param {String} [options.animation]
-     *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
-     *   [ja][/ja]
-     * @param {Object} [options.animationOptions]
-     *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
-     *   [ja][/ja]
-     * @return {Promise}
-     *   [en]Resolves to the carousel element[/en]
-     *   [ja][/ja]
-     * @description
-     *   [en]Show next `<ons-carousel-item>`.[/en]
-     *   [ja]次のons-carousel-itemを表示します。[/ja]
-     */
-
-  }, {
-    key: 'next',
-    value: function next(options) {
-      return this.setActiveIndex(this.getActiveIndex() + 1, options);
+    switch (name) {
+      case 'swipeable':
+        this._swiper.updateSwipeable(this.hasAttribute('swipeable'));
+        break;
+      case 'auto-refresh':
+        this._swiper.updateAutoRefresh(this.hasAttribute('auto-refresh'));
+        break;
+      case 'item-height':
+        this.vertical && this._swiper.updateItemSize(this.itemSize);
+        break;
+      case 'item-width':
+        this.vertical || this._swiper.updateItemSize(this.itemSize);
+        break;
+      case 'direction':
+        this._swiper.refresh();
+        break;
+      case 'active-index':
+        if (this.getActiveIndex() !== this.activeIndex) {
+          this.setActiveIndex(this.activeIndex);
+        }
+        break;
     }
+  }
 
-    /**
-     * @method prev
-     * @signature prev([options])
-     * @param {Object} [options]
-     *   [en]Parameter object.[/en]
-     *   [ja][/ja]
-     * @param {Function} [options.callback]
-     *   [en]A function that will be executed after the animation has finished.[/en]
-     *   [ja][/ja]
-     * @param {String} [options.animation]
-     *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
-     *   [ja][/ja]
-     * @param {Object} [options.animationOptions]
-     *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
-     *   [ja][/ja]
-     * @return {Promise}
-     *   [en]Resolves to the carousel element[/en]
-     *   [ja][/ja]
-     * @description
-     *   [en]Show previous `<ons-carousel-item>`.[/en]
-     *   [ja]前のons-carousel-itemを表示します。[/ja]
-     */
+  _show() {
+    this._swiper.show();
+  }
 
-  }, {
-    key: 'prev',
-    value: function prev(options) {
-      return this.setActiveIndex(this.getActiveIndex() - 1, options);
-    }
+  _hide() {
+    this._swiper.hide();
+  }
 
-    /**
-     * @method first
-     * @signature first()
-     * @param {Object} [options]
-     *   [en]Parameter object.[/en]
-     *   [ja][/ja]
-     * @param {Function} [options.callback]
-     *   [en]A function that will be executed after the animation has finished.[/en]
-     *   [ja][/ja]
-     * @param {String} [options.animation]
-     *   [en]If this is set to `"none"`, the transitions will not be animated.[/en]
-     *   [ja][/ja]
-     * @param {Object} [options.animationOptions]
-     *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
-     *   [ja][/ja]
-     * @return {Promise}
-     *   [en]Resolves to the carousel element[/en]
-     *   [ja][/ja]
-     * @description
-     *   [en]Show first `<ons-carousel-item>`.[/en]
-     *   [ja]最初のons-carousel-itemを表示します。[/ja]
-     */
-
-  }, {
-    key: 'first',
-    value: function first(options) {
-      return this.setActiveIndex(0, options);
-    }
-
-    /**
-     * @method last
-     * @signature last()
-     * @param {Object} [options]
-     *   [en]Parameter object.[/en]
-     *   [ja][/ja]
-     * @param {Function} [options.callback]
-     *   [en]A function that will be executed after the animation has finished.[/en]
-     *   [ja][/ja]
-     * @param {String} [options.animation]
-     *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
-     *   [ja][/ja]
-     * @param {Object} [options.animationOptions]
-     *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
-     *   [ja][/ja]
-     * @return {Promise}
-     *   [en]Resolves to the carousel element[/en]
-     *   [ja]Resolves to the carousel element[/ja]
-     * @description
-     *   [en]Show last ons-carousel item.[/en]
-     *   [ja]最後のons-carousel-itemを表示します。[/ja]
-     */
-
-  }, {
-    key: 'last',
-    value: function last(options) {
-      this.setActiveIndex(Math.max(this.itemCount - 1, 0), options);
-    }
-
-    /**
-     * @method refresh
-     * @signature refresh()
-     * @description
-     *   [en]Update the layout of the carousel. Used when adding `<ons-carousel-items>` dynamically or to automatically adjust the size.[/en]
-     *   [ja]レイアウトや内部の状態を最新のものに更新します。ons-carousel-itemを動的に増やしたり、ons-carouselの大きさを動的に変える際に利用します。[/ja]
-     */
-
-  }, {
-    key: 'refresh',
-    value: function refresh() {
-      this._swiper.refresh();
-    }
-
-    /**
-     * @property itemCount
-     * @readonly
-     * @type {Number}
-     * @description
-     *   [en]The number of carousel items.[/en]
-     *   [ja]カルーセル要素の数です。[/ja]
-     */
-
-  }, {
-    key: 'itemCount',
-    get: function get() {
-      return this._swiper.itemCount;
-    }
-
-    /**
-     * @property swipeable
-     * @type {Boolean}
-     * @description
-     *   [en]true if the carousel is swipeable.[/en]
-     *   [ja]swipeableであればtrueを返します。[/ja]
-     */
-
-  }, {
-    key: 'swipeable',
-    get: function get() {
-      return this.hasAttribute('swipeable');
-    },
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'swipeable', value);
-    }
-
-    /**
-     * @property onSwipe
-     * @type {Function}
-     * @description
-     *   [en]Hook called whenever the user slides the carousel. It gets a decimal index and an animationOptions object as arguments.[/en]
-     *   [ja][/ja]
-     */
-
-  }, {
-    key: 'onSwipe',
-    get: function get() {
-      return this._onSwipe;
-    },
-    set: function set(value) {
-      if (value && !(value instanceof Function)) {
-        _util2.default.throw('"onSwipe" must be a function');
+  _onOverScroll({ direction, killOverScroll }) {
+    let waitForAction = false;
+    util.triggerElementEvent(this, 'overscroll', {
+      carousel: this,
+      activeIndex: this.getActiveIndex(),
+      direction,
+      waitToReturn: promise => {
+        waitForAction = true;
+        promise.then(killOverScroll);
       }
-      this._onSwipe = value;
+    });
+
+    return waitForAction;
+  }
+
+  _onPreChange({ activeIndex, lastActiveIndex }) {
+    util.triggerElementEvent(this, 'prechange', { carousel: this, activeIndex, lastActiveIndex });
+  }
+
+  _onPostChange({ activeIndex, lastActiveIndex }) {
+    this.activeIndex = activeIndex;
+    util.triggerElementEvent(this, 'postchange', { carousel: this, activeIndex, lastActiveIndex });
+  }
+
+  _onRefresh() {
+    util.triggerElementEvent(this, 'refresh', { carousel: this });
+  }
+
+  /**
+   * @method setActiveIndex
+   * @signature setActiveIndex(index, [options])
+   * @param {Number} index
+   *   [en]The index that the carousel should be set to.[/en]
+   *   [ja]carousel要素のインデックスを指定します。[/ja]
+   * @param {Object} [options]
+   *   [en]Parameter object.[/en]
+   *   [ja][/ja]
+   * @param {Function} [options.callback]
+   *   [en]A function that will be called after the animation is finished.[/en]
+   *   [ja][/ja]
+   * @param {String} [options.animation]
+   *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
+   *   [ja][/ja]
+   * @param {Object} [options.animationOptions]
+   *   [en]An object that can be used to specify duration, delay and timing function of the animation.[/en]
+   *   [ja][/ja]
+   * @description
+   *   [en]Specify the index of the `<ons-carousel-item>` to show.[/en]
+   *   [ja]表示するons-carousel-itemをindexで指定します。[/ja]
+   * @return {Promise}
+   *   [en]Resolves to the carousel element.[/en]
+   *   [ja][/ja]
+   */
+  setActiveIndex(index, options = {}) {
+    options = {
+      animation: this.getAttribute('animation'),
+      animationOptions: this.animationOptions || { duration: .3, timing: 'cubic-bezier(.4, .7, .5, 1)' },
+      ...options
+    };
+
+    return this._swiper.setActiveIndex(index, options)
+      .then(() => {
+        options.callback instanceof Function && options.callback(this);
+        return Promise.resolve(this);
+      });
+  }
+
+  /**
+   * @method getActiveIndex
+   * @signature getActiveIndex()
+   * @return {Number}
+   *   [en]The current carousel item index.[/en]
+   *   [ja]現在表示しているカルーセル要素のインデックスが返されます。[/ja]
+   * @description
+   *   [en]Returns the index of the currently visible `<ons-carousel-item>`.[/en]
+   *   [ja]現在表示されているons-carousel-item要素のインデックスを返します。[/ja]
+   */
+  getActiveIndex() {
+    return this._swiper.getActiveIndex();
+  }
+
+  /**
+   * @method next
+   * @signature next([options])
+   * @param {Object} [options]
+   *   [en]Parameter object.[/en]
+   *   [ja][/ja]
+   * @param {Function} [options.callback]
+   *   [en]A function that will be executed after the animation has finished.[/en]
+   *   [ja][/ja]
+   * @param {String} [options.animation]
+   *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
+   *   [ja][/ja]
+   * @param {Object} [options.animationOptions]
+   *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
+   *   [ja][/ja]
+   * @return {Promise}
+   *   [en]Resolves to the carousel element[/en]
+   *   [ja][/ja]
+   * @description
+   *   [en]Show next `<ons-carousel-item>`.[/en]
+   *   [ja]次のons-carousel-itemを表示します。[/ja]
+   */
+  next(options) {
+    return this.setActiveIndex(this.getActiveIndex() + 1, options);
+  }
+
+  /**
+   * @method prev
+   * @signature prev([options])
+   * @param {Object} [options]
+   *   [en]Parameter object.[/en]
+   *   [ja][/ja]
+   * @param {Function} [options.callback]
+   *   [en]A function that will be executed after the animation has finished.[/en]
+   *   [ja][/ja]
+   * @param {String} [options.animation]
+   *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
+   *   [ja][/ja]
+   * @param {Object} [options.animationOptions]
+   *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
+   *   [ja][/ja]
+   * @return {Promise}
+   *   [en]Resolves to the carousel element[/en]
+   *   [ja][/ja]
+   * @description
+   *   [en]Show previous `<ons-carousel-item>`.[/en]
+   *   [ja]前のons-carousel-itemを表示します。[/ja]
+   */
+  prev(options) {
+    return this.setActiveIndex(this.getActiveIndex() - 1, options);
+  }
+
+  /**
+   * @method first
+   * @signature first()
+   * @param {Object} [options]
+   *   [en]Parameter object.[/en]
+   *   [ja][/ja]
+   * @param {Function} [options.callback]
+   *   [en]A function that will be executed after the animation has finished.[/en]
+   *   [ja][/ja]
+   * @param {String} [options.animation]
+   *   [en]If this is set to `"none"`, the transitions will not be animated.[/en]
+   *   [ja][/ja]
+   * @param {Object} [options.animationOptions]
+   *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
+   *   [ja][/ja]
+   * @return {Promise}
+   *   [en]Resolves to the carousel element[/en]
+   *   [ja][/ja]
+   * @description
+   *   [en]Show first `<ons-carousel-item>`.[/en]
+   *   [ja]最初のons-carousel-itemを表示します。[/ja]
+   */
+  first(options) {
+    return this.setActiveIndex(0, options);
+  }
+
+  /**
+   * @method last
+   * @signature last()
+   * @param {Object} [options]
+   *   [en]Parameter object.[/en]
+   *   [ja][/ja]
+   * @param {Function} [options.callback]
+   *   [en]A function that will be executed after the animation has finished.[/en]
+   *   [ja][/ja]
+   * @param {String} [options.animation]
+   *   [en]If this attribute is set to `"none"` the transitions will not be animated.[/en]
+   *   [ja][/ja]
+   * @param {Object} [options.animationOptions]
+   *   [en]An object that can be used to specify the duration, delay and timing function of the animation.[/en]
+   *   [ja][/ja]
+   * @return {Promise}
+   *   [en]Resolves to the carousel element[/en]
+   *   [ja]Resolves to the carousel element[/ja]
+   * @description
+   *   [en]Show last ons-carousel item.[/en]
+   *   [ja]最後のons-carousel-itemを表示します。[/ja]
+   */
+  last(options) {
+    this.setActiveIndex(Math.max(this.itemCount - 1, 0), options);
+  }
+
+  /**
+   * @method refresh
+   * @signature refresh()
+   * @description
+   *   [en]Update the layout of the carousel. Used when adding `<ons-carousel-items>` dynamically or to automatically adjust the size.[/en]
+   *   [ja]レイアウトや内部の状態を最新のものに更新します。ons-carousel-itemを動的に増やしたり、ons-carouselの大きさを動的に変える際に利用します。[/ja]
+   */
+  refresh() {
+    this._swiper.refresh();
+  }
+
+  /**
+   * @property itemCount
+   * @readonly
+   * @type {Number}
+   * @description
+   *   [en]The number of carousel items.[/en]
+   *   [ja]カルーセル要素の数です。[/ja]
+   */
+  get itemCount() {
+    return this._swiper.itemCount;
+  }
+
+  /**
+   * @property swipeable
+   * @type {Boolean}
+   * @description
+   *   [en]true if the carousel is swipeable.[/en]
+   *   [ja]swipeableであればtrueを返します。[/ja]
+   */
+
+  /**
+   * @property onSwipe
+   * @type {Function}
+   * @description
+   *   [en]Hook called whenever the user slides the carousel. It gets a decimal index and an animationOptions object as arguments.[/en]
+   *   [ja][/ja]
+   */
+
+  /**
+   * @property autoScroll
+   * @type {Boolean}
+   * @description
+   *   [en]true if auto scroll is enabled.[/en]
+   *   [ja]オートスクロールが有効であればtrueを返します。[/ja]
+   */
+
+  get vertical() {
+    return this.getAttribute('direction') === 'vertical';
+  }
+
+  get itemSize() {
+    const itemSizeAttr = (this.getAttribute(`item-${this.vertical ? 'height' : 'width'}`) || '').trim();
+    return itemSizeAttr.match(/^\d+(px|%)$/) ? itemSizeAttr : '100%';
+  }
+
+  /**
+   * @property autoScrollRatio
+   * @type {Number}
+   * @description
+   *   [en]The current auto scroll ratio. [/en]
+   *   [ja]現在のオートスクロールのratio値。[/ja]
+   */
+  get autoScrollRatio() {
+    return parseFloat(this.getAttribute('auto-scroll-ratio'));
+  }
+
+  set autoScrollRatio(ratio) {
+    this.setAttribute('auto-scroll-ratio', ratio);
+  }
+
+  /**
+   * @property disabled
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the carousel is disabled or not.[/en]
+   *   [ja]無効化されている場合に`true`。[/ja]
+   */
+
+  /**
+   * @property overscrollable
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the carousel is overscrollable or not.[/en]
+   *   [ja]overscrollできればtrueを返します。[/ja]
+   */
+
+  /**
+   * @property centered
+   * @type {Boolean}
+   * @description
+   *   [en]Whether the carousel is centered or not.[/en]
+   *   [ja]centered状態になっていればtrueを返します。[/ja]
+   */
+
+  static get events() {
+    return ['postchange', 'refresh', 'overscroll', 'prechange', 'swipe'];
+  }
+
+  /**
+   * @property animationOptions
+   * @type {Object}
+   * @description
+   *   [en]Specify the animation's duration, timing and delay with an object literal. E.g. `{duration: 0.2, delay: 1, timing: 'ease-in'}`.[/en]
+   *   [ja]アニメーション時のduration, timing, delayをオブジェクトリテラルで指定します。例：{duration: 0.2, delay: 1, timing: 'ease-in'}[/ja]
+   */
+  get animationOptions() {
+    const attr = this.getAttribute('animation-options');
+    if (attr) {
+      return util.animationOptionsParse(attr);
+    } else {
+      return attr;
     }
+  }
 
-    /**
-     * @property autoScroll
-     * @type {Boolean}
-     * @description
-     *   [en]true if auto scroll is enabled.[/en]
-     *   [ja]オートスクロールが有効であればtrueを返します。[/ja]
-     */
-
-  }, {
-    key: 'autoScroll',
-    get: function get() {
-      return this.hasAttribute('auto-scroll');
-    },
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'auto-scroll', value);
+  set animationOptions(value) {
+    if (value === undefined || value === null) {
+      this.removeAttribute('animation-options');
+    } else {
+      this.setAttribute('animation-options', JSON.stringify(value));
     }
-  }, {
-    key: 'vertical',
-    get: function get() {
-      return this.getAttribute('direction') === 'vertical';
+  }
+
+  /**
+   * @attribute active-index
+   * @type {Number}
+   * @description
+   *   [en]Specify the index of the carousel item that should be shown.[/en]
+   *   [ja][/ja]
+   */
+
+  /**
+   * @property activeIndex
+   * @type {Number}
+   * @description
+   *   [en]Specify the index of the carousel item that should be shown.[/en]
+   *   [ja][/ja]
+   */
+  get activeIndex() {
+    return parseInt(this.getAttribute('active-index'));
+  }
+
+  set activeIndex(value) {
+    if (value !== undefined && value !== null) {
+      this.setAttribute('active-index', value);
     }
-  }, {
-    key: 'itemSize',
-    get: function get() {
-      var itemSizeAttr = (this.getAttribute('item-' + (this.vertical ? 'height' : 'width')) || '').trim();
-      return itemSizeAttr.match(/^\d+(px|%)$/) ? itemSizeAttr : '100%';
-    }
+  }
+}
 
-    /**
-     * @property autoScrollRatio
-     * @type {Number}
-     * @description
-     *   [en]The current auto scroll ratio. [/en]
-     *   [ja]現在のオートスクロールのratio値。[/ja]
-     */
+util.defineBooleanProperties(CarouselElement, ['swipeable', 'disabled', 'overscrollable', 'auto-scroll', 'centered', 'fullscreen', 'auto-refresh']);
 
-  }, {
-    key: 'autoScrollRatio',
-    get: function get() {
-      return parseFloat(this.getAttribute('auto-scroll-ratio'));
-    },
-    set: function set(ratio) {
-      this.setAttribute('auto-scroll-ratio', ratio);
-    }
-
-    /**
-     * @property disabled
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the carousel is disabled or not.[/en]
-     *   [ja]無効化されている場合に`true`。[/ja]
-     */
-
-  }, {
-    key: 'disabled',
-    get: function get() {
-      return this.hasAttribute('disabled');
-    },
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'disabled', value);
-    }
-
-    /**
-     * @property overscrollable
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the carousel is overscrollable or not.[/en]
-     *   [ja]overscrollできればtrueを返します。[/ja]
-     */
-
-  }, {
-    key: 'overscrollable',
-    get: function get() {
-      return this.hasAttribute('overscrollable');
-    },
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'overscrollable', value);
-    }
-
-    /**
-     * @property centered
-     * @type {Boolean}
-     * @description
-     *   [en]Whether the carousel is centered or not.[/en]
-     *   [ja]centered状態になっていればtrueを返します。[/ja]
-     */
-
-  }, {
-    key: 'centered',
-    get: function get() {
-      return this.hasAttribute('centered');
-    },
-    set: function set(value) {
-      return _util2.default.toggleAttribute(this, 'centered', value);
-    }
-  }], [{
-    key: 'observedAttributes',
-    get: function get() {
-      return ['swipeable', 'auto-refresh', 'direction', 'item-height', 'item-width'];
-    }
-  }, {
-    key: 'events',
-    get: function get() {
-      return ['postchange', 'refresh', 'overscroll'];
-    }
-  }]);
-
-  return CarouselElement;
-}(_baseElement2.default);
-
-exports.default = CarouselElement;
-
-
-_elements2.default.Carousel = CarouselElement;
+onsElements.Carousel = CarouselElement;
 customElements.define('ons-carousel', CarouselElement);

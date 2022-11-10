@@ -1,13 +1,3 @@
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 /*
 Copyright 2013-2015 ASIAL CORPORATION
 
@@ -25,35 +15,26 @@ limitations under the License.
 
 */
 
-var ToastQueue = function () {
-  function ToastQueue() {
-    _classCallCheck(this, ToastQueue);
-
+class ToastQueue {
+  constructor() {
     this.queue = [];
   }
 
-  _createClass(ToastQueue, [{
-    key: "add",
-    value: function add(fn, promise) {
-      var _this = this;
+  add(fn, promise) {
+    this.queue.push(fn);
 
-      this.queue.push(fn);
-
-      if (this.queue.length === 1) {
-        setImmediate(this.queue[0]);
-      }
-
-      promise.then(function () {
-        _this.queue.shift();
-
-        if (_this.queue.length > 0) {
-          setTimeout(_this.queue[0], 1000 / 30); // Apply some visual delay
-        }
-      });
+    if (this.queue.length === 1) {
+      setImmediate(this.queue[0]);
     }
-  }]);
 
-  return ToastQueue;
-}();
+    promise.then(() => {
+      this.queue.shift();
 
-exports.default = new ToastQueue();
+      if (this.queue.length > 0) {
+        setTimeout(this.queue[0], 1000/30); // Apply some visual delay
+      }
+    });
+  }
+}
+
+export default new ToastQueue();
