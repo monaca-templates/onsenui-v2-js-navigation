@@ -1,6 +1,6 @@
 {
     "name": "monaca-template-onsenui-v2-js-navigation",
-    "version": "4.0.0",
+    "version": "4.1.0",
     "dependencies": {
         "monaca-plugin-monaca-core": "3.3.1"
     },
