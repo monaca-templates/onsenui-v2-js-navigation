@@ -1,6 +1,9 @@
 {
   "name": "monaca-template-onsenui-v2-js-navigation",
   "version": "4.1.5",
+  "engines": {
+    "node": ">=20.17"
+  },
   "dependencies": {
     "monaca-plugin-monaca-core": "3.3.1"
   },
@@ -15,6 +18,6 @@
   },
   "devDependencies": {
     "browser-sync": "~2.27.7",
-    "cordova": "^12.0.0"
+    "cordova": "^13.0.0"
   }
 }
